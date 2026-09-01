@@ -8,6 +8,7 @@
 **Execution Cycle Date:** 1 September 2026 (Updated Handoff Applied)  
 **Deliverable Status:** `SUBMITTED FOR QA REVIEW (Pending Ashish Gill QA & CEO Approval)`  
 **Staging Status Reply:** `Staging Shell READY FOR QA | Form Route Functional | Calculator Status Verified`  
+**GitHub Repository:** [https://github.com/gv-gaurav/insta-utility-project](https://github.com/gv-gaurav/insta-utility-project)  
 
 ---
 
@@ -16,6 +17,9 @@
 As assigned under **Priority P1** of the VoltOS CEO Execution Workflow and Mayank Bhola's 1 Sep 2026 handoff document, I have completed and submitted the **Staging Conversion Journey Landing Page**, **Diagnostic Intake Form Specification**, and **CRM Data Field Map** for Insta Utility.
 
 The landing page is constructed as a **claim-safe, modular staging shell** in an **Executive Light Theme System** using **Outfit & Inter** Google Fonts. It integrates the official logo URL (`https://www.instautility.com/assets/img/logo/insta-utility-logo.png`), 11 modular claim-safe sections, an 8-field intake form, an automatic `Submission_Ref` generator, and a 1:1 CRM schema payload builder for Aman Khatana's pipeline contract.
+
+All project files have been committed and pushed live to the team's official GitHub repository:  
+👉 **[https://github.com/gv-gaurav/insta-utility-project](https://github.com/gv-gaurav/insta-utility-project)**
 
 > [!NOTE]  
 > **QA Governance Boundary**: All deliverables are submitted as **Ready for Review**. Final QA gate status (`PASS` / `PASS WITH CONDITIONS` / `HOLD`) remains strictly under the authority of **Ashish Gill (Venture QA Guard)** and the **VoltOS CEO**.
@@ -28,11 +32,11 @@ The landing page is constructed as a **claim-safe, modular staging shell** in an
 
 | Asset File | Purpose & Function | Self-Check Verification | QA Gate Target |
 | :--- | :--- | :---: | :---: |
-| [`index.html`](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/index.html) | Main Staging Landing Journey featuring official logo (`https://www.instautility.com/assets/img/logo/insta-utility-logo.png`), 11 claim-safe sections, 8 intake form fields, top staging banner, and QA schema inspector drawer. | Structure Complete | **Pending Ashish QA** |
-| [`styles.css`](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/styles.css) | Custom Executive Light Theme CSS system (`#f8fafc` canvas, `#ffffff` card modules, `#46a340` emerald green logo accents) using Google Fonts `Outfit` & `Inter`. | Layout Verified | **Pending Ashish QA** |
-| [`app.js`](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/app.js) | Interactive step routing, field validation, `Submission_Ref` generator (`IU-2026-0901-XXXX`), preliminary qualification scorer, and live CRM payload display. | Functional | **Pending Ashish QA** |
-| [`form_field_map.json`](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/form_field_map.json) | JSON Schema field dictionary mapping all 8 intake inputs 1:1 to Aman Khatana's CRM schema (`Account`, `Contact`, `Opportunity`, `Submission_Ref`). | Schema Aligned | **For Aman & Ashish** |
-| [`staging_handover_guide.md`](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/staging_handover_guide.md) | Technical integration guide for Mayank (copy injection), Aman (CRM contract), and Ashish (QA compliance checklist). | Documentation Ready | **For Team Review** |
+| [`index.html`](https://github.com/gv-gaurav/insta-utility-project/blob/main/index.html) | Main Staging Landing Journey featuring official logo (`https://www.instautility.com/assets/img/logo/insta-utility-logo.png`), 11 claim-safe sections, 8 intake form fields, top staging banner, and QA schema inspector drawer. | Structure Complete | **Pending Ashish QA** |
+| [`styles.css`](https://github.com/gv-gaurav/insta-utility-project/blob/main/styles.css) | Custom Executive Light Theme CSS system (`#f8fafc` canvas, `#ffffff` card modules, `#46a340` emerald green logo accents) using Google Fonts `Outfit` & `Inter`. | Layout Verified | **Pending Ashish QA** |
+| [`app.js`](https://github.com/gv-gaurav/insta-utility-project/blob/main/app.js) | Interactive step routing, field validation, `Submission_Ref` generator (`IU-2026-0901-XXXX`), preliminary qualification scorer, and live CRM payload display. | Functional | **Pending Ashish QA** |
+| [`form_field_map.json`](https://github.com/gv-gaurav/insta-utility-project/blob/main/form_field_map.json) | JSON Schema field dictionary mapping all 8 intake inputs 1:1 to Aman Khatana's CRM schema (`Account`, `Contact`, `Opportunity`, `Submission_Ref`). | Schema Aligned | **For Aman & Ashish** |
+| [`staging_handover_guide.md`](https://github.com/gv-gaurav/insta-utility-project/blob/main/staging_handover_guide.md) | Technical integration guide for Mayank (copy injection), Aman (CRM contract), and Ashish (QA compliance checklist). | Documentation Ready | **For Team Review** |
 
 ---
 
@@ -80,16 +84,16 @@ During the build process, one key commercial alignment delta was identified betw
 
 ---
 
-## 5. Team Deployment & Repository Access Instructions
+## 5. Live GitHub Repository & Deployment Instructions
 
-To ensure Ashish Gill, Aman Khatana, and Mayank Bhola can access and test these files across shared environments:
+All files have been pushed to GitHub and are accessible to team members (Ashish Gill, Aman Khatana, Mayank Bhola) at:
 
-1. **Local Staging Server / Preview**:
-   - Run any local web server (e.g. `npx serve .` or XAMPP / Python `python -m http.server 8000`) inside `c:\Users\Admin.KRIPA\Desktop\insta-utility-project\`.
+1. **GitHub Repository URL**:  
+   👉 **[https://github.com/gv-gaurav/insta-utility-project](https://github.com/gv-gaurav/insta-utility-project)**
+
+2. **Local Staging Server / Preview**:
+   - Run a local web server inside `c:\Users\Admin.KRIPA\Desktop\insta-utility-project\` (e.g., `python -m http.server 8000`).
    - Access via `http://localhost:8000/index.html`.
-
-2. **Shared Git Repository Push**:
-   - All files are organized in the root directory `insta-utility-project/` and ready to be committed (`git add . && git commit -m "feat: Gaurav P1 staging conversion journey shell v2.0"`) and pushed to the team's central staging repository branch (`origin/staging-conversion-journey`).
 
 3. **Staging Reply Status Submission**:
 ```json
@@ -98,6 +102,7 @@ To ensure Ashish Gill, Aman Khatana, and Mayank Bhola can access and test these 
     "Owner": "Gaurav Pal",
     "TaskPriority": "P1 (MVP Conversion Journey / Staging)",
     "Status": "Staging Shell READY FOR QA REVIEW",
+    "GitHubRepo": "https://github.com/gv-gaurav/insta-utility-project",
     "FormRoute": "Functional",
     "CalculatorStatus": "Placeholder Verified",
     "OfficialLogoURL": "https://www.instautility.com/assets/img/logo/insta-utility-logo.png",
