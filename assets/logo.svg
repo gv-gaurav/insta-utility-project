@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 120" width="520" height="120">
+  <defs>
+    <linearGradient id="leafGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3d9737"/>
+      <stop offset="100%" stop-color="#69c34d"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Left Leaf Mark (4 Fanning Petals) -->
+  <g transform="translate(10, 10)">
+    <!-- Smallest Bottom Left Leaf -->
+    <path d="M 5 60 C 2 75 10 90 28 95 C 28 80 20 65 5 60 Z" fill="url(#leafGrad)"/>
+    
+    <!-- Tall Vertical Center Leaf -->
+    <path d="M 28 10 C 26 40 28 75 48 95 C 48 65 42 30 28 10 Z" fill="url(#leafGrad)"/>
+    
+    <!-- Top-Right Diagonal Leaf -->
+    <path d="M 52 18 C 38 38 48 70 85 80 C 72 58 68 32 52 18 Z" fill="url(#leafGrad)"/>
+    
+    <!-- Wide Bottom Right Horizontal Leaf -->
+    <path d="M 52 95 C 75 95 110 92 120 70 C 95 68 70 80 52 95 Z" fill="url(#leafGrad)"/>
+  </g>
+
+  <!-- Typography -->
+  <text x="145" y="60" font-family="'Outfit', 'Quicksand', 'Arial Rounded MT Bold', sans-serif" font-weight="800" font-size="42" fill="#46a340" letter-spacing="1.5">INSTA UTILITY</text>
+  <text x="146" y="92" font-family="'Outfit', 'Quicksand', 'Arial Rounded MT Bold', sans-serif" font-weight="700" font-size="22" fill="#46a340" letter-spacing="3.5">GREENER TOMORROW</text>
+</svg>

@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "InstaUtility_DiagnosticIntake_FieldMap_v2",
+  "description": "Field mapping specification based on Mayank Bhola's 1 Sep 2026 handoff document connected to Aman Khatana's CRM schema contract.",
+  "version": "2.0.0-staging-light",
+  "beachhead": "C&I Renewable-Power Procurement Advisory",
+  "target_persona": "Facilities / Plant / Finance Decision-Makers (~100 kW - 5 MW contracted demand)",
+  "crm_mapping_contract": {
+    "account": {
+      "company_name": {
+        "form_field_id": "account_name",
+        "data_type": "string",
+        "required": true,
+        "label": "Company / Facility Name",
+        "crm_field_name": "Account.Name",
+        "example": "Apex Auto Components India Pvt Ltd"
+      },
+      "state_location": {
+        "form_field_id": "state_location",
+        "data_type": "string",
+        "required": true,
+        "label": "State / Plant Location",
+        "crm_field_name": "Account.BillingState",
+        "example": "Maharashtra (Pune Industrial Zone)"
+      },
+      "sector_type": {
+        "form_field_id": "sector_type",
+        "data_type": "enum",
+        "required": false,
+        "options": ["Manufacturing", "Commercial Real Estate (CRE)", "Logistics & Warehousing", "Other C&I Site"],
+        "crm_field_name": "Account.IndustrySector",
+        "example": "Manufacturing"
+      }
+    },
+    "contact": {
+      "contact_name": {
+        "form_field_id": "contact_name",
+        "data_type": "string",
+        "required": true,
+        "label": "Contact Name",
+        "crm_field_name": "Contact.FullName",
+        "example": "Rajesh V. Sharma"
+      },
+      "buyer_role": {
+        "form_field_id": "buyer_role",
+        "data_type": "enum",
+        "required": true,
+        "options": ["Facilities Head", "Plant Manager", "CFO / Finance Director", "Procurement Lead", "Other Decision Maker"],
+        "crm_field_name": "Contact.Role",
+        "example": "Facilities Head"
+      },
+      "contact_email": {
+        "form_field_id": "contact_email",
+        "data_type": "email",
+        "required": true,
+        "label": "Corporate Email Address",
+        "crm_field_name": "Contact.Email",
+        "example": "r.sharma@apexauto.in"
+      },
+      "contact_phone": {
+        "form_field_id": "contact_phone",
+        "data_type": "phone",
+        "required": true,
+        "label": "Contact Phone / WhatsApp Number",
+        "crm_field_name": "Contact.Phone",
+        "example": "+91 98230 12345"
+      }
+    },
+    "opportunity_assessment_inputs": {
+      "contracted_demand_kw": {
+        "form_field_id": "contracted_demand_kw",
+        "data_type": "number",
+        "required": false,
+        "label": "Contracted / Connected Demand (kW)",
+        "crm_field_name": "Opportunity.ContractedDemand_kW",
+        "example": 750
+      },
+      "monthly_bill_inr": {
+        "form_field_id": "monthly_bill_inr",
+        "data_type": "number",
+        "required": false,
+        "label": "Approx Monthly Electricity Bill (₹ Lakhs)",
+        "crm_field_name": "Opportunity.MonthlySpend_INR_Lakhs",
+        "example": 18.5
+      },
+      "utility_bill_file": {
+        "form_field_id": "utility_bill_file",
+        "data_type": "file_ref",
+        "required": false,
+        "label": "12-Month Electricity Bills Attachment (PDF/ZIP)",
+        "crm_field_name": "Opportunity.BillAttachmentRef",
+        "example": "bills_12month_apex_2026.pdf"
+      },
+      "privacy_consent": {
+        "form_field_id": "privacy_consent",
+        "data_type": "boolean",
+        "required": true,
+        "label": "Consent: Data used for eligibility & savings assessment only",
+        "crm_field_name": "Opportunity.PrivacyConsentAccepted",
+        "example": true
+      }
+    },
+    "system_meta": {
+      "Submission_Ref": {
+        "auto_generated": true,
+        "format": "IU-2026-0901-XXXX",
+        "crm_field_name": "Opportunity.Submission_Ref"
+      },
+      "qualification_score": {
+        "auto_calculated": true,
+        "logic": "Demand 100kW-5MW (+40), Monthly bill >= ₹10L (+30), Bill attachment uploaded (+20), Role = Facilities/Plant/CFO (+10)",
+        "crm_field_name": "Opportunity.QualificationScore"
+      },
+      "stage": {
+        "default": "Staging Shell Eligibility Intake Received",
+        "crm_field_name": "Opportunity.StageName"
+      },
+      "owner": {
+        "default": "Mayank Bhola / Tarun Tiwari",
+        "crm_field_name": "Opportunity.Owner"
+      }
+    }
+  }
+}
