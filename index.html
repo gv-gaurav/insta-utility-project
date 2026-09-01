@@ -43,7 +43,7 @@
     <div class="container hero-grid">
       <div class="hero-content">
         <div class="pill-badge">
-          <span>⚡ C&I Energy Decision Support</span>
+          <span>C&I Energy Decision Support</span>
         </div>
         
         <!-- Section 1: H1 & Hero -->
@@ -107,7 +107,7 @@
         </div>
 
         <div style="margin-top:1.25rem; padding:0.85rem; background:var(--bg-surface-subtle); border-radius:var(--radius-sm); border:1px solid var(--border-subtle); font-size:0.8rem; color:var(--text-muted);">
-          📌 <strong>Staging Claim Rule:</strong> Savings figures if shown are indicative ranges, not hard-coded guarantees. No invented client logos or testimonials.
+          <strong>Staging Claim Rule:</strong> Savings figures if shown are indicative ranges, not hard-coded guarantees. No invented client logos or testimonials.
         </div>
       </div>
     </div>
@@ -124,19 +124,19 @@
 
       <div class="persona-grid">
         <div class="persona-card">
-          <div class="persona-icon">🏭</div>
+          <div class="persona-icon-badge">01</div>
           <h3>Facilities & Plant Heads</h3>
           <p>Evaluating continuous power availability, DISCOM HT tariffs, and site-level rooftop or open-access solar feasibility.</p>
         </div>
 
         <div class="persona-card">
-          <div class="persona-icon">📊</div>
+          <div class="persona-icon-badge">02</div>
           <h3>CFOs & Finance Directors</h3>
           <p>Seeking objective tariff reduction models, wheeling loss calculations, and cross-subsidy surcharge exposure reviews.</p>
         </div>
 
         <div class="persona-card">
-          <div class="persona-icon">⚡</div>
+          <div class="persona-icon-badge">03</div>
           <h3>Procurement & Utility Managers</h3>
           <p>Comparing third-party Open Access PPA terms against Group Captive equity models before engaging developers.</p>
         </div>
@@ -251,7 +251,7 @@
     </div>
   </section>
 
-  <!-- INTAKE FORM SECTION (Section 7: 8 Exact Fields) -->
+  <!-- INTAKE FORM SECTION (Section 7: 8 Exact Fields - Wide Minimalist Aesthetic) -->
   <section class="form-section" id="intake-form">
     <div class="container">
       <div class="section-header">
@@ -261,41 +261,56 @@
       </div>
 
       <div class="form-card-container">
+        
+        <!-- Minimalist Header Note -->
+        <div class="form-minimal-header">
+          <span class="meta-tag">Confidential Diagnostic Intake</span>
+          <span class="meta-note">256-Bit SSL Encrypted Data Exchange</span>
+        </div>
+
         <form id="diagnosticForm" onsubmit="handleFormSubmit(event)">
           <div class="form-grid">
             
             <!-- Field 1: Company / Facility Name -->
             <div class="form-group">
-              <label class="form-label" for="account_name">
-                Company / Facility Name <span class="req">*</span>
+              <div class="label-wrapper">
+                <label class="form-label" for="account_name">
+                  <span>Company / Facility Name</span> <span class="req">*</span>
+                </label>
                 <span class="field-tag">Account.Name</span>
-              </label>
+              </div>
               <input type="text" id="account_name" class="form-control" placeholder="e.g. Apex Auto Components Pvt Ltd" required>
             </div>
 
             <!-- Field 2: State / Location -->
             <div class="form-group">
-              <label class="form-label" for="state_location">
-                State / Location <span class="req">*</span>
+              <div class="label-wrapper">
+                <label class="form-label" for="state_location">
+                  <span>State / Location</span> <span class="req">*</span>
+                </label>
                 <span class="field-tag">Account.BillingState</span>
-              </label>
+              </div>
               <input type="text" id="state_location" class="form-control" placeholder="e.g. Maharashtra (Pune Industrial Area)" required>
             </div>
 
             <!-- Field 3: Contact Name & Role -->
             <div class="form-group">
-              <label class="form-label" for="contact_name">
-                Contact Name <span class="req">*</span>
+              <div class="label-wrapper">
+                <label class="form-label" for="contact_name">
+                  <span>Contact Name</span> <span class="req">*</span>
+                </label>
                 <span class="field-tag">Contact.FullName</span>
-              </label>
+              </div>
               <input type="text" id="contact_name" class="form-control" placeholder="e.g. Rajesh Sharma" required>
             </div>
 
             <div class="form-group">
-              <label class="form-label" for="buyer_role">
-                Role (Facilities / Plant / CFO) <span class="req">*</span>
+              <div class="label-wrapper">
+                <label class="form-label" for="buyer_role">
+                  <span>Decision-Maker Role</span> <span class="req">*</span>
+                </label>
                 <span class="field-tag">Contact.Role</span>
-              </label>
+              </div>
               <select id="buyer_role" class="form-control" required>
                 <option value="">-- Select Decision Role --</option>
                 <option value="Facilities Head">Facilities Head</option>
@@ -308,38 +323,46 @@
 
             <!-- Field 4: Email & Phone -->
             <div class="form-group">
-              <label class="form-label" for="contact_email">
-                Corporate Email Address <span class="req">*</span>
+              <div class="label-wrapper">
+                <label class="form-label" for="contact_email">
+                  <span>Corporate Email Address</span> <span class="req">*</span>
+                </label>
                 <span class="field-tag">Contact.Email</span>
-              </label>
+              </div>
               <input type="email" id="contact_email" class="form-control" placeholder="r.sharma@company.com" required>
             </div>
 
             <div class="form-group">
-              <label class="form-label" for="contact_phone">
-                Phone Number <span class="req">*</span>
+              <div class="label-wrapper">
+                <label class="form-label" for="contact_phone">
+                  <span>Phone Number</span> <span class="req">*</span>
+                </label>
                 <span class="field-tag">Contact.Phone</span>
-              </label>
+              </div>
               <input type="tel" id="contact_phone" class="form-control" placeholder="+91 98230 12345" required>
             </div>
 
             <!-- Field 5: Contracted / Connected Demand (kW) -->
             <div class="form-group">
-              <label class="form-label" for="contracted_demand_kw">
-                Contracted / Connected Demand (kW)
+              <div class="label-wrapper">
+                <label class="form-label" for="contracted_demand_kw">
+                  <span>Contracted Demand (kW)</span>
+                </label>
                 <span class="field-tag">Opportunity.ContractedDemand_kW</span>
-              </label>
+              </div>
               <input type="number" id="contracted_demand_kw" class="form-control" placeholder="e.g. 750 (Range: 100 kW - 5 MW)">
             </div>
 
             <!-- Field 7: Sector (Optional) -->
             <div class="form-group">
-              <label class="form-label" for="sector_type">
-                Sector (Optional)
+              <div class="label-wrapper">
+                <label class="form-label" for="sector_type">
+                  <span>Industry Sector</span>
+                </label>
                 <span class="field-tag">Account.IndustrySector</span>
-              </label>
+              </div>
               <select id="sector_type" class="form-control">
-                <option value="">-- Select Sector --</option>
+                <option value="">-- Select Sector (Optional) --</option>
                 <option value="Manufacturing">Manufacturing & Industrial</option>
                 <option value="Commercial Real Estate (CRE)">Commercial Real Estate (CRE)</option>
                 <option value="Logistics & Warehousing">Logistics & Warehousing</option>
@@ -349,17 +372,21 @@
 
             <!-- Field 6: Approx monthly bill OR 12-month bills upload -->
             <div class="form-group full-width">
-              <label class="form-label">
-                Approx Monthly Electricity Bill (₹ Lakhs) OR 12-Month Bills Upload <span class="req">*</span>
-              </label>
-              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+              <div class="label-wrapper">
+                <label class="form-label">
+                  <span>Monthly Spend (₹ Lakhs) OR 12-Month Bills Upload</span> <span class="req">*</span>
+                </label>
+                <span class="field-tag">Opportunity.MonthlySpend_INR / BillRef</span>
+              </div>
+              
+              <div class="spend-upload-grid">
                 <div>
                   <input type="number" step="0.5" id="monthly_bill_inr" class="form-control" placeholder="Monthly Spend in ₹ Lakhs (e.g. 15)">
                 </div>
                 <div>
                   <div class="file-upload-box" onclick="simulateFileUpload()">
-                    <span id="fileNameDisplay" style="font-weight:600; font-size:0.85rem; color:var(--text-main);">
-                      📎 Click to attach 12-Month Bills (.pdf)
+                    <span id="fileNameDisplay" class="upload-text">
+                      Attach 12-Month DISCOM Bills (.pdf / .zip)
                     </span>
                   </div>
                 </div>
@@ -371,23 +398,31 @@
               <div class="checkbox-group">
                 <input type="checkbox" id="privacy_consent" required>
                 <label for="privacy_consent">
-                  <strong>Consent:</strong> I agree to share facility energy details strictly for the open access eligibility & savings assessment. Data used for assessment only.
+                  <strong>Data Protection & Non-Disclosure Consent:</strong> I agree to share facility energy details strictly for the Open Access eligibility & savings assessment. Information remains strictly confidential and will never be shared with unauthorized third parties.
                 </label>
               </div>
             </div>
 
           </div>
 
-          <div style="margin-top:1.5rem; text-align:center;">
-            <button type="submit" class="btn btn-emerald" style="width:100%; max-width:400px; padding:0.9rem;">
-              Get Your Free Eligibility & Savings Check →
+          <div class="form-submit-container">
+            <button type="submit" class="btn btn-emerald btn-lg-submit">
+              <span>Get Your Free Eligibility & Savings Check</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </button>
+
+            <!-- Minimalist Trust Row -->
+            <div class="micro-trust-row">
+              <div class="micro-trust-item"><span>Strict Non-Disclosure</span></div>
+              <div class="micro-trust-item"><span>100% Free Assessment</span></div>
+              <div class="micro-trust-item"><span>Confidential Handling</span></div>
+            </div>
           </div>
         </form>
 
         <!-- Result Box Output for Aman's Schema -->
         <div class="result-box" id="submissionResult">
-          <div style="font-size:2rem; color:var(--primary-emerald); margin-bottom:0.5rem;">✅</div>
+          <div style="font-size:2rem; color:var(--primary-emerald); margin-bottom:0.5rem;">✓</div>
           <h3 style="font-size:1.3rem; font-weight:700;">Intake Details Submitted Successfully</h3>
           <p style="font-size:0.875rem; color:var(--text-muted);">
             Your details have been mapped to Aman Khatana's CRM schema contract.
