@@ -420,20 +420,37 @@
           </div>
         </form>
 
-        <!-- Result Box Output for Aman's Schema -->
+        <!-- Result Box Output for Aman's Schema & Stage 2 Diagnostic Invite -->
         <div class="result-box" id="submissionResult">
           <div style="font-size:2rem; color:var(--primary-emerald); margin-bottom:0.5rem;">✓</div>
-          <h3 style="font-size:1.3rem; font-weight:700;">Intake Details Submitted Successfully</h3>
+          <h3 style="font-size:1.3rem; font-weight:700;">Stage 1: Free Eligibility Screening Complete</h3>
           <p style="font-size:0.875rem; color:var(--text-muted);">
-            Your details have been mapped to Aman Khatana's CRM schema contract.
+            Your intake details have been processed and mapped to Aman Khatana's CRM schema contract.
           </p>
 
-          <div>
+          <div style="margin-bottom:1.5rem;">
             <span style="font-size:0.8rem; color:var(--text-muted);">Generated Submission Ref:</span><br>
             <span class="ref-badge" id="generatedRef">IU-2026-0901-8941</span>
           </div>
 
-          <div style="margin-top:1rem; text-align:left;">
+          <!-- STAGE 2: PAID DIAGNOSTIC ASSESSMENT INVITATION CARD (NO fixed price figure per Directive 2) -->
+          <div class="paid-invite-card" id="stage2InviteCard" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:1.5rem; margin:1.5rem 0; text-align:left;">
+            <span style="display:inline-block; background:var(--primary-emerald-light); color:var(--primary-emerald); border:1px solid var(--primary-emerald-border); padding:0.2rem 0.6rem; border-radius:4px; font-size:0.75rem; font-weight:700; margin-bottom:0.75rem;">STAGE 2 INVITATION</span>
+            <h4 style="font-size:1.1rem; font-weight:700; color:var(--text-main); margin-bottom:0.5rem;">
+              Invitation to Detailed Paid Diagnostic Assessment
+            </h4>
+            <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.6; margin-bottom:1rem;">
+              Based on your facility load profile, your site is eligible for an in-depth engineering and commercial tariff diagnostic. This comprehensive assessment models 12-month interval demand curves, DISCOM HT wheeling losses, and group captive 26% equity structure feasibility.
+            </p>
+            <button class="btn btn-emerald" style="padding:0.75rem 1.5rem; font-size:0.9rem;" onclick="requestPaidDiagnostic()">
+              Request Detailed Paid Diagnostic Assessment →
+            </button>
+            <p style="font-size:0.75rem; color:var(--text-light); margin-top:0.5rem; font-style:italic;">
+              Commercial terms and diagnostic scope outlined upon advisory confirmation (no fixed numbers published prior to lock-in).
+            </p>
+          </div>
+
+          <div style="margin-top:1.5rem; text-align:left;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
               <strong style="font-size:0.85rem; color:var(--accent-navy);">Aman Khatana's CRM JSON Schema Output:</strong>
               <button class="btn btn-outline btn-sm" onclick="copyJSONPayload()">Copy JSON</button>
@@ -442,7 +459,7 @@
           </div>
 
           <div style="margin-top:1.25rem;">
-            <button class="btn btn-outline btn-sm" onclick="resetForm()">Submit Another Check</button>
+            <button class="btn btn-outline btn-sm" onclick="resetForm()">Submit Another Screening Request</button>
           </div>
         </div>
 

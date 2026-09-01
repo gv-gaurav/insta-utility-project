@@ -132,6 +132,11 @@ function handleFormSubmit(e) {
   document.getElementById("submissionResult").classList.add("active");
 }
 
+// Request Stage 2 Detailed Paid Diagnostic Assessment
+function requestPaidDiagnostic() {
+  alert("Stage 2 Request Logged: Your request for the detailed paid diagnostic assessment has been submitted. Our advisory team will contact you with engagement scope details.");
+}
+
 // Copy JSON Payload
 function copyJSONPayload() {
   const jsonText = document.getElementById("payloadJsonDisplay").innerText;
@@ -148,8 +153,8 @@ function resetForm() {
   document.getElementById("diagnosticForm").style.display = "block";
   document.getElementById("submissionResult").classList.remove("active");
   uploadedFileName = null;
-  document.getElementById("fileNameDisplay").innerText = "📎 Click to attach 12-Month Bills (.pdf)";
-  document.getElementById("fileNameDisplay").style.color = "var(--text-main)";
+  document.getElementById("fileNameDisplay").innerText = "Attach 12-Month DISCOM Bills (.pdf / .zip)";
+  document.getElementById("fileNameDisplay").style.color = "var(--text-muted)";
 }
 
 // Toggle QA Inspector Drawer
