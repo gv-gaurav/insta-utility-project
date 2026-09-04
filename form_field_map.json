@@ -240,12 +240,12 @@
       },
       "qualification_score": {
         "auto_calculated": true,
-        "logic": "Demand 100kW-5MW (+40), Monthly bill >= ₹10L (+30), Bill attachment uploaded (+20), Role = Facilities/Plant/CFO (+10)",
+        "logic": "Approved 7-dimension 100-point scorecard (D1:Sector 15pt, D2:Demand 25pt, D3:Spend 20pt, D4:BillFile 15pt, D5:Role 10pt, D6:Contact 10pt, D7:Consent 5pt)",
         "crm_field_name": "Opportunity.QualificationScore",
         "zoho_website_leads_api_name": null
       },
       "stage": {
-        "default": "Staging Shell Eligibility Intake Received",
+        "default": "New Intake",
         "crm_field_name": "Opportunity.StageName",
         "zoho_website_leads_api_name": null
       },
@@ -256,7 +256,7 @@
         "note": "Hard-coded individual owner references removed per 04 Sep 2026 CEO directive"
       },
       "probability": {
-        "default": 0.10,
+        "default": 0.05,
         "crm_field_name": "Opportunity.Probability",
         "zoho_website_leads_api_name": null
       },

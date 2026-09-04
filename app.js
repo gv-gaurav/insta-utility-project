@@ -26,31 +26,55 @@ function generateSubmissionRef() {
   return `IU-${dateStr}-${randNum}`;
 }
 
-// Calculate Qualification Score (Mayank & Tarun Scorecard)
-function calculateQualificationScore(demandKW, billINR, hasFile, role) {
+// Calculate Qualification Score (Approved 7-Dimension 100-Point Scorecard)
+function calculateQualificationScore(sector, demandKW, billINR, hasFile, role, hasContactInfo, hasConsent) {
   let score = 0;
 
-  // Demand within 100 kW - 5 MW target range
-  if (demandKW >= 100 && demandKW <= 5000) {
-    score += 40;
-  } else if (demandKW > 0) {
-    score += 20;
+  // D1: Beachhead / Sector Fit (Max 15 pts)
+  if (sector === "Manufacturing" || sector === "Commercial Real Estate (CRE)" || sector === "Logistics & Warehousing") {
+    score += 15;
   } else {
+    score += 10;
+  }
+
+  // D2: Contracted Demand Fit (Max 25 pts)
+  if (demandKW >= 100 && demandKW <= 5000) {
+    score += 25;
+  } else if (demandKW > 0) {
+    score += 15;
+  } else {
+    score += 5;
+  }
+
+  // D3: Monthly Spend Fit (Max 20 pts)
+  if (billINR >= 10) {
+    score += 20;
+  } else if (billINR > 0) {
+    score += 10;
+  } else {
+    score += 5;
+  }
+
+  // D4: Utility Bill Upload Evidence (Max 15 pts)
+  if (hasFile) {
     score += 15;
   }
 
-  // Monthly Bill Spend
-  if (billINR >= 25) score += 30;
-  else if (billINR >= 10) score += 20;
-  else if (billINR > 0) score += 10;
-  else score += 5;
-
-  // 12-Month Bills Upload Provided
-  if (hasFile) score += 20;
-
-  // Buyer Role Fit
-  if (role === "Facilities Head" || role === "Plant Head" || role === "CFO / Finance Director") {
+  // D5: Buyer Role Fit (Max 10 pts)
+  if (["Facilities Head", "Plant Manager", "CFO / Finance Director", "Procurement Lead"].includes(role)) {
     score += 10;
+  } else {
+    score += 5;
+  }
+
+  // D6: Contact Detail Verification (Max 10 pts)
+  if (hasContactInfo) {
+    score += 10;
+  }
+
+  // D7: Privacy Consent Accepted (Max 5 pts)
+  if (hasConsent) {
+    score += 5;
   }
 
   return Math.min(score, 100);
@@ -84,7 +108,8 @@ function handleFormSubmit(e) {
   }
 
   const subRef = generateSubmissionRef();
-  const qualScore = calculateQualificationScore(contractedDemandKW, monthlyBillINR, !!uploadedFileName, buyerRole);
+  const hasContactInfo = !!(contactEmail && contactPhone);
+  const qualScore = calculateQualificationScore(sectorType, contractedDemandKW, monthlyBillINR, !!uploadedFileName, buyerRole, hasContactInfo, consentAccepted);
 
   // Construct JSON payload conforming strictly to Aman Khatana's 04 Sep 2026 Zoho Website_Leads verified contract
   const crmPayload = {
@@ -104,10 +129,11 @@ function handleFormSubmit(e) {
       Opportunity_MonthlySpend_INR_Lakhs: monthlyBillINR,
       Opportunity_BillAttachmentRef: uploadedFileName || "None uploaded",
       Opportunity_PrivacyConsentAccepted: consentAccepted,
-      Opportunity_StageName: "Staging Shell Eligibility Intake Received",
+      Opportunity_StageName: "New Intake",
       Opportunity_QualificationScore: qualScore,
+      Opportunity_QualificationLogic: "Approved 7-Dimension 100-Point Scorecard (D1:Sector 15pt, D2:Demand 25pt, D3:Spend 20pt, D4:BillFile 15pt, D5:Role 10pt, D6:Contact 10pt, D7:Consent 5pt)",
       Opportunity_Owner: "Role_Inbound_Lead_Queue",
-      Opportunity_Probability: 0.10,
+      Opportunity_Probability: 0.05,
       Opportunity_ProposalValuePlaceholder: null,
       Rule_Enforced: "DO NOT GUESS ZOHO API NAMES OR CREATE UNAPPROVED FIELDS (04 Sep CEO Directive)"
     },

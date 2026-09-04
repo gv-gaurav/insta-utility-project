@@ -15,11 +15,14 @@ In strict alignment with the **VOLTOS CEO Internal Execution Control Directive (
 
 ### Key Achievements Today:
 1. **UtilityFix Mobile Risk Closure (Prior Condition)**: Direct source-video review verified bank account correction window; closed without requiring unnecessary live checkout re-tests or Tickd partner escalations (CEO Rating: `9.1/10`).
-2. **Insta Staging Payload Diff Preparation (P1 - Action #5)**: Prepared the exact current staging payload diff from `form_field_map.json` and `app.js`.
-3. **Removal of Hard-Coded Individual Dependencies (P1)**: Stripped individual owner references (`"Mayank Bhola / Tarun Tiwari"`) from code and JSON schema dictionaries, replacing them with role-based queue governance (`"Role_Inbound_Lead_Queue"`).
-4. **Staging Schema Placeholders (P1)**: Added `Probability` (`0.10` / `10%`) and blank `ProposalValue` (`null`) placeholders into the staging payload builder.
-5. **Block F Checksum Hardening Documented (P2)**: Authored [block_f_checksum_hardening.md](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/block_f_checksum_hardening.md) detailing client-side SHA-256 file verification using Web Crypto API. Kept off Sprint 01 critical path per CEO explicit instruction to ensure zero delay to autonomy proof.
-6. **Governance Integrity (Zero API Guessing Rule)**: Maintained strict compliance with the CEO directive: *"If metadata not ready, prepare exact current payload diff and wait; no guessed API names."* Aman Khatana has acknowledged and confirmed alignment.
+2. **Zoho Website_Leads 1:1 Verified Normalization (P1)**: Mapped 6 verified direct fields (`Business_Name`, `Name`, `Contact_Email`, `Contact_Number`, `Submission_Ref`, `Brand = Insta utility`) into [form_field_map.json](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/form_field_map.json) and [app.js](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/app.js).
+3. **Staging Contract Items Normalized per Aman QA Handoff**:
+   * **Stage**: Standardized to `"New Intake"`.
+   * **Probability**: Adjusted to `0.05` (5%).
+   * **Qualification Logic**: Implemented approved 7-dimension 100-point scorecard (D1:Sector 15pt, D2:Demand 25pt, D3:Spend 20pt, D4:BillFile 15pt, D5:Role 10pt, D6:Contact 10pt, D7:Consent 5pt).
+4. **Explicit Unmapped Staging Diff Isolated (P1)**: Explicitly isolated all 12 unmapped staging contract fields without creating unapproved fields or guessing API names per CEO governance rule.
+5. **Removal of Hard-Coded Individual Dependencies (P1)**: Stripped individual owner references (`"Mayank Bhola / Tarun Tiwari"`) replacing them with role-based queue governance (`"Role_Inbound_Lead_Queue"`).
+6. **Block F Checksum Hardening Documented (P2)**: Authored [block_f_checksum_hardening.md](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/block_f_checksum_hardening.md) detailing client-side SHA-256 file verification using Web Crypto API.
 
 ---
 
@@ -27,8 +30,8 @@ In strict alignment with the **VOLTOS CEO Internal Execution Control Directive (
 
 | Asset / File | Type / Purpose | Governance & Compliance Status | Reviewer Gate |
 | :--- | :--- | :--- | :---: |
-| [`form_field_map.json`](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/form_field_map.json) | JSON Schema Field Dictionary | **UPDATED**: Hard-coded owner stripped (`Role_Inbound_Lead_Queue`); `Probability` (0.10) & `ProposalValue` (null) added. | **Aman / Ashish** |
-| [`app.js`](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/app.js) | Staging Payload Generator & Routing Logic | **UPDATED**: Payload constructor outputs role-based ownership, probability, and proposal value placeholders. | **Ashish Gill QA** |
+| [`form_field_map.json`](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/form_field_map.json) | JSON Schema Field Dictionary | **UPDATED v2.1.1**: 1:1 Verified Zoho `Website_Leads` contract mapped + Stage: `New Intake`, Prob: `0.05`, 7-Dim 100-pt Scorecard. | **Ashish Gill / Aman** |
+| [`app.js`](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/app.js) | Staging Payload Generator & Routing Logic | **UPDATED**: Output normalized for Stage `New Intake`, Prob `0.05`, and 7-Dimension 100-Point Scorecard calculator. | **Ashish Gill QA** |
 | [`block_f_checksum_hardening.md`](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/block_f_checksum_hardening.md) | P2 Technical Production Hardening Spec | **COMPLETED**: Full SHA-256 Web Crypto API file integrity spec created. Retained as future hardening path. | **CEO / Ashish** |
 | [`staging_handover_guide.md`](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/staging_handover_guide.md) | Technical Handoff Guide | **UPDATED**: Integration steps updated for Aman metadata handoff and Ashish QA checklist. | **Team Review** |
 | [`gaurav_pal_execution_report.md`](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/gaurav_pal_execution_report.md) | EOD Authority & State Report | **COMPLETED**: Authoritative record of 04 Sep execution. | **Ashish / CEO** |
