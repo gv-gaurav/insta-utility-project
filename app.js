@@ -109,8 +109,10 @@ function handleFormSubmit(e) {
       PrivacyConsentAccepted: consentAccepted,
       StageName: "Staging Shell Eligibility Intake Received",
       QualificationScore: qualScore,
-      NextStep: "Mayank / Tarun Initial Eligibility Screening & Savings Bandwidth Check",
-      Owner: "Mayank Bhola / Tarun Tiwari",
+      NextStep: "Initial Eligibility Screening & Savings Bandwidth Check",
+      Owner: "Role_Inbound_Lead_Queue",
+      Probability: 0.10,
+      ProposalValuePlaceholder: null,
       Source: "Staging Shell v2.0 Intake Form"
     },
     StagingReplyStatus: {

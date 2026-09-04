@@ -116,8 +116,17 @@
         "crm_field_name": "Opportunity.StageName"
       },
       "owner": {
-        "default": "Mayank Bhola / Tarun Tiwari",
-        "crm_field_name": "Opportunity.Owner"
+        "default": "Role_Inbound_Lead_Queue",
+        "crm_field_name": "Opportunity.Owner",
+        "note": "Hard-coded individual owner references removed per 04 Sep 2026 CEO directive"
+      },
+      "probability": {
+        "default": 0.10,
+        "crm_field_name": "Opportunity.Probability"
+      },
+      "proposal_value_placeholder": {
+        "default": null,
+        "crm_field_name": "Opportunity.ProposalValue"
       }
     }
   }
