@@ -86,44 +86,40 @@ function handleFormSubmit(e) {
   const subRef = generateSubmissionRef();
   const qualScore = calculateQualificationScore(contractedDemandKW, monthlyBillINR, !!uploadedFileName, buyerRole);
 
-  // Construct JSON object adhering strictly to Aman Khatana's CRM schema contract
+  // Construct JSON payload conforming strictly to Aman Khatana's 04 Sep 2026 Zoho Website_Leads verified contract
   const crmPayload = {
-    Submission_Ref: subRef,
-    beachhead: "C&I Open Access & Renewable Procurement Advisory",
-    Account: {
-      Name: accountName,
-      BillingState: stateLocation,
-      IndustrySector: sectorType
+    Zoho_Website_Leads_Verified_Payload: {
+      Business_Name: accountName,
+      Name: contactName,
+      Contact_Email: contactEmail,
+      Contact_Number: contactPhone,
+      Submission_Ref: subRef,
+      Brand: "Insta utility"
     },
-    Contact: {
-      FullName: contactName,
-      Role: buyerRole,
-      Email: contactEmail,
-      Phone: contactPhone
-    },
-    Opportunity: {
-      Name: `${accountName} - Open Access Eligibility Check`,
-      ContractedDemand_kW: contractedDemandKW,
-      MonthlySpend_INR_Lakhs: monthlyBillINR,
-      BillAttachmentRef: uploadedFileName || "None uploaded",
-      PrivacyConsentAccepted: consentAccepted,
-      StageName: "Staging Shell Eligibility Intake Received",
-      QualificationScore: qualScore,
-      NextStep: "Initial Eligibility Screening & Savings Bandwidth Check",
-      Owner: "Role_Inbound_Lead_Queue",
-      Probability: 0.10,
-      ProposalValuePlaceholder: null,
-      Source: "Staging Shell v2.0 Intake Form"
+    Unmapped_Staging_Diff_No_Website_Leads_Equivalent: {
+      Account_BillingState: stateLocation,
+      Account_IndustrySector: sectorType,
+      Contact_Role: buyerRole,
+      Opportunity_ContractedDemand_kW: contractedDemandKW,
+      Opportunity_MonthlySpend_INR_Lakhs: monthlyBillINR,
+      Opportunity_BillAttachmentRef: uploadedFileName || "None uploaded",
+      Opportunity_PrivacyConsentAccepted: consentAccepted,
+      Opportunity_StageName: "Staging Shell Eligibility Intake Received",
+      Opportunity_QualificationScore: qualScore,
+      Opportunity_Owner: "Role_Inbound_Lead_Queue",
+      Opportunity_Probability: 0.10,
+      Opportunity_ProposalValuePlaceholder: null,
+      Rule_Enforced: "DO NOT GUESS ZOHO API NAMES OR CREATE UNAPPROVED FIELDS (04 Sep CEO Directive)"
     },
     StagingReplyStatus: {
-      Status: "Staging Shell READY (held)",
+      Status: "VERIFIED_ZOHO_WEBSITE_LEADS_MAPPED",
       FormRoute: "Functional",
-      PlaceholderCalculatorStatus: "Verified",
-      ApprovalPending: "Ashish QA + Owner GO"
+      ZohoContractPass: "Aman Khatana 04 Sep Handoff Verified",
+      ApprovalPending: "Ashish QA Final Gate Signoff"
     },
     SystemMeta: {
       SubmissionTimestamp: new Date().toISOString(),
-      SpecVersion: "Mayank 1 Sep 2026 Handoff"
+      SpecVersion: "04 Sep 2026 Zoho Website_Leads Verified Contract"
     }
   };
 

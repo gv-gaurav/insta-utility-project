@@ -1,10 +1,125 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "InstaUtility_DiagnosticIntake_FieldMap_v2",
-  "description": "Field mapping specification based on Mayank Bhola's 1 Sep 2026 handoff document connected to Aman Khatana's CRM schema contract.",
-  "version": "2.0.0-staging-light",
+  "description": "Field mapping specification based on Mayank Bhola's 1 Sep 2026 handoff document and normalized against Aman Khatana's 04 Sep 2026 Zoho Website_Leads verified contract.",
+  "version": "2.1.0-zoho-website-leads-verified",
   "beachhead": "C&I Renewable-Power Procurement Advisory",
   "target_persona": "Facilities / Plant / Finance Decision-Makers (~100 kW - 5 MW contracted demand)",
+  "zoho_website_leads_verified_contract": {
+    "status": "VERIFIED_PER_AMAN_KHATANA_04_SEP_METADATA_PASS",
+    "brand_identifier": "Insta utility",
+    "verified_direct_mappings": {
+      "Business_Name": {
+        "form_field_id": "account_name",
+        "crm_api_name": "Business_Name",
+        "verified": true,
+        "sample": "Apex Auto Components India Pvt Ltd"
+      },
+      "Name": {
+        "form_field_id": "contact_name",
+        "crm_api_name": "Name",
+        "verified": true,
+        "sample": "Rajesh V. Sharma"
+      },
+      "Contact_Email": {
+        "form_field_id": "contact_email",
+        "crm_api_name": "Contact_Email",
+        "verified": true,
+        "sample": "r.sharma@apexauto.in"
+      },
+      "Contact_Number": {
+        "form_field_id": "contact_phone",
+        "crm_api_name": "Contact_Number",
+        "verified": true,
+        "sample": "+91 98230 12345"
+      },
+      "Submission_Ref": {
+        "form_field_id": "system_generated",
+        "crm_api_name": "Submission_Ref",
+        "verified": true,
+        "sample": "IU-2026-0901-4821"
+      },
+      "Brand": {
+        "static_value": "Insta utility",
+        "crm_api_name": "Brand",
+        "verified": true
+      }
+    },
+    "unmapped_fields_no_zoho_website_leads_equivalent": [
+      {
+        "form_field_id": "state_location",
+        "staging_label": "State / Plant Location",
+        "crm_field_name": "Account.BillingState",
+        "status": "UNMAPPED_PER_CEO_RULE_DO_NOT_GUESS"
+      },
+      {
+        "form_field_id": "sector_type",
+        "staging_label": "Sector Type",
+        "crm_field_name": "Account.IndustrySector",
+        "status": "UNMAPPED_PER_CEO_RULE_DO_NOT_GUESS"
+      },
+      {
+        "form_field_id": "buyer_role",
+        "staging_label": "Contact Role",
+        "crm_field_name": "Contact.Role",
+        "status": "UNMAPPED_PER_CEO_RULE_DO_NOT_GUESS"
+      },
+      {
+        "form_field_id": "contracted_demand_kw",
+        "staging_label": "Contracted Demand (kW)",
+        "crm_field_name": "Opportunity.ContractedDemand_kW",
+        "status": "UNMAPPED_PER_CEO_RULE_DO_NOT_GUESS"
+      },
+      {
+        "form_field_id": "monthly_bill_inr",
+        "staging_label": "Approx Monthly Electricity Bill (₹ Lakhs)",
+        "crm_field_name": "Opportunity.MonthlySpend_INR_Lakhs",
+        "status": "UNMAPPED_PER_CEO_RULE_DO_NOT_GUESS"
+      },
+      {
+        "form_field_id": "utility_bill_file",
+        "staging_label": "12-Month DISCOM Bills Upload",
+        "crm_field_name": "Opportunity.BillAttachmentRef",
+        "status": "UNMAPPED_PER_CEO_RULE_DO_NOT_GUESS"
+      },
+      {
+        "form_field_id": "privacy_consent",
+        "staging_label": "Privacy Consent Accepted",
+        "crm_field_name": "Opportunity.PrivacyConsentAccepted",
+        "status": "UNMAPPED_PER_CEO_RULE_DO_NOT_GUESS"
+      },
+      {
+        "form_field_id": "qualification_score",
+        "staging_label": "Qualification Score",
+        "crm_field_name": "Opportunity.QualificationScore",
+        "status": "UNMAPPED_PER_CEO_RULE_DO_NOT_GUESS"
+      },
+      {
+        "form_field_id": "stage",
+        "staging_label": "Stage Name",
+        "crm_field_name": "Opportunity.StageName",
+        "status": "UNMAPPED_PER_CEO_RULE_DO_NOT_GUESS"
+      },
+      {
+        "form_field_id": "owner",
+        "staging_label": "Opportunity Owner",
+        "crm_field_name": "Opportunity.Owner",
+        "status": "UNMAPPED_PER_CEO_RULE_DO_NOT_GUESS"
+      },
+      {
+        "form_field_id": "probability",
+        "staging_label": "Probability",
+        "crm_field_name": "Opportunity.Probability",
+        "status": "UNMAPPED_PER_CEO_RULE_DO_NOT_GUESS"
+      },
+      {
+        "form_field_id": "proposal_value_placeholder",
+        "staging_label": "Proposal Value",
+        "crm_field_name": "Opportunity.ProposalValue",
+        "status": "UNMAPPED_PER_CEO_RULE_DO_NOT_GUESS"
+      }
+    ]
+  },
   "crm_mapping_contract": {
     "account": {
       "company_name": {
@@ -13,6 +128,7 @@
         "required": true,
         "label": "Company / Facility Name",
         "crm_field_name": "Account.Name",
+        "zoho_website_leads_api_name": "Business_Name",
         "example": "Apex Auto Components India Pvt Ltd"
       },
       "state_location": {
@@ -21,6 +137,7 @@
         "required": true,
         "label": "State / Plant Location",
         "crm_field_name": "Account.BillingState",
+        "zoho_website_leads_api_name": null,
         "example": "Maharashtra (Pune Industrial Zone)"
       },
       "sector_type": {
@@ -29,6 +146,7 @@
         "required": false,
         "options": ["Manufacturing", "Commercial Real Estate (CRE)", "Logistics & Warehousing", "Other C&I Site"],
         "crm_field_name": "Account.IndustrySector",
+        "zoho_website_leads_api_name": null,
         "example": "Manufacturing"
       }
     },
@@ -39,6 +157,7 @@
         "required": true,
         "label": "Contact Name",
         "crm_field_name": "Contact.FullName",
+        "zoho_website_leads_api_name": "Name",
         "example": "Rajesh V. Sharma"
       },
       "buyer_role": {
@@ -47,6 +166,7 @@
         "required": true,
         "options": ["Facilities Head", "Plant Manager", "CFO / Finance Director", "Procurement Lead", "Other Decision Maker"],
         "crm_field_name": "Contact.Role",
+        "zoho_website_leads_api_name": null,
         "example": "Facilities Head"
       },
       "contact_email": {
@@ -55,6 +175,7 @@
         "required": true,
         "label": "Corporate Email Address",
         "crm_field_name": "Contact.Email",
+        "zoho_website_leads_api_name": "Contact_Email",
         "example": "r.sharma@apexauto.in"
       },
       "contact_phone": {
@@ -63,6 +184,7 @@
         "required": true,
         "label": "Contact Phone / WhatsApp Number",
         "crm_field_name": "Contact.Phone",
+        "zoho_website_leads_api_name": "Contact_Number",
         "example": "+91 98230 12345"
       }
     },
@@ -73,6 +195,7 @@
         "required": false,
         "label": "Contracted / Connected Demand (kW)",
         "crm_field_name": "Opportunity.ContractedDemand_kW",
+        "zoho_website_leads_api_name": null,
         "example": 750
       },
       "monthly_bill_inr": {
@@ -81,6 +204,7 @@
         "required": false,
         "label": "Approx Monthly Electricity Bill (₹ Lakhs)",
         "crm_field_name": "Opportunity.MonthlySpend_INR_Lakhs",
+        "zoho_website_leads_api_name": null,
         "example": 18.5
       },
       "utility_bill_file": {
@@ -89,6 +213,7 @@
         "required": false,
         "label": "12-Month Electricity Bills Attachment (PDF/ZIP)",
         "crm_field_name": "Opportunity.BillAttachmentRef",
+        "zoho_website_leads_api_name": null,
         "example": "bills_12month_apex_2026.pdf"
       },
       "privacy_consent": {
@@ -97,6 +222,7 @@
         "required": true,
         "label": "Consent: Data used for eligibility & savings assessment only",
         "crm_field_name": "Opportunity.PrivacyConsentAccepted",
+        "zoho_website_leads_api_name": null,
         "example": true
       }
     },
@@ -104,29 +230,40 @@
       "Submission_Ref": {
         "auto_generated": true,
         "format": "IU-2026-0901-XXXX",
-        "crm_field_name": "Opportunity.Submission_Ref"
+        "crm_field_name": "Opportunity.Submission_Ref",
+        "zoho_website_leads_api_name": "Submission_Ref"
+      },
+      "brand": {
+        "default": "Insta utility",
+        "crm_field_name": "Lead.Brand",
+        "zoho_website_leads_api_name": "Brand"
       },
       "qualification_score": {
         "auto_calculated": true,
         "logic": "Demand 100kW-5MW (+40), Monthly bill >= ₹10L (+30), Bill attachment uploaded (+20), Role = Facilities/Plant/CFO (+10)",
-        "crm_field_name": "Opportunity.QualificationScore"
+        "crm_field_name": "Opportunity.QualificationScore",
+        "zoho_website_leads_api_name": null
       },
       "stage": {
         "default": "Staging Shell Eligibility Intake Received",
-        "crm_field_name": "Opportunity.StageName"
+        "crm_field_name": "Opportunity.StageName",
+        "zoho_website_leads_api_name": null
       },
       "owner": {
         "default": "Role_Inbound_Lead_Queue",
         "crm_field_name": "Opportunity.Owner",
+        "zoho_website_leads_api_name": null,
         "note": "Hard-coded individual owner references removed per 04 Sep 2026 CEO directive"
       },
       "probability": {
         "default": 0.10,
-        "crm_field_name": "Opportunity.Probability"
+        "crm_field_name": "Opportunity.Probability",
+        "zoho_website_leads_api_name": null
       },
       "proposal_value_placeholder": {
         "default": null,
-        "crm_field_name": "Opportunity.ProposalValue"
+        "crm_field_name": "Opportunity.ProposalValue",
+        "zoho_website_leads_api_name": null
       }
     }
   }
