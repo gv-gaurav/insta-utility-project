@@ -26,58 +26,11 @@ function generateSubmissionRef() {
   return `IU-${dateStr}-${randNum}`;
 }
 
-// Calculate Qualification Score (Approved 7-Dimension 100-Point Scorecard)
-function calculateQualificationScore(sector, demandKW, billINR, hasFile, role, hasContactInfo, hasConsent) {
-  let score = 0;
-
-  // D1: Beachhead / Sector Fit (Max 15 pts)
-  if (sector === "Manufacturing" || sector === "Commercial Real Estate (CRE)" || sector === "Logistics & Warehousing") {
-    score += 15;
-  } else {
-    score += 10;
-  }
-
-  // D2: Contracted Demand Fit (Max 25 pts)
-  if (demandKW >= 100 && demandKW <= 5000) {
-    score += 25;
-  } else if (demandKW > 0) {
-    score += 15;
-  } else {
-    score += 5;
-  }
-
-  // D3: Monthly Spend Fit (Max 20 pts)
-  if (billINR >= 10) {
-    score += 20;
-  } else if (billINR > 0) {
-    score += 10;
-  } else {
-    score += 5;
-  }
-
-  // D4: Utility Bill Upload Evidence (Max 15 pts)
-  if (hasFile) {
-    score += 15;
-  }
-
-  // D5: Buyer Role Fit (Max 10 pts)
-  if (["Facilities Head", "Plant Manager", "CFO / Finance Director", "Procurement Lead"].includes(role)) {
-    score += 10;
-  } else {
-    score += 5;
-  }
-
-  // D6: Contact Detail Verification (Max 10 pts)
-  if (hasContactInfo) {
-    score += 10;
-  }
-
-  // D7: Privacy Consent Accepted (Max 5 pts)
-  if (hasConsent) {
-    score += 5;
-  }
-
-  return Math.min(score, 100);
+// Approved 7-Dimension 100-Point Scorecard (Score remains null pending required evidence)
+// Approved dimensions: Organisation/ICP (15), Material Electricity Decision (20), Buyer Role/Access (15),
+// Minimum Data Readiness (15), Urgency/Next Step (15), Ability to Progress (10), Delivery/Scope Fit (10).
+function calculateQualificationScore() {
+  return null; // Score remains null until required evidence exists
 }
 
 // Handle Form Submission & Output to Aman's CRM Schema Contract
@@ -90,7 +43,7 @@ function handleFormSubmit(e) {
   const buyerRole = document.getElementById("buyer_role").value;
   const contactEmail = document.getElementById("contact_email").value.trim();
   const contactPhone = document.getElementById("contact_phone").value.trim();
-  
+
   const contractedDemandKW = document.getElementById("contracted_demand_kw").value ? parseFloat(document.getElementById("contracted_demand_kw").value) : null;
   const monthlyBillINR = document.getElementById("monthly_bill_inr").value ? parseFloat(document.getElementById("monthly_bill_inr").value) : null;
   const sectorType = document.getElementById("sector_type").value || "Unspecified";
@@ -108,8 +61,7 @@ function handleFormSubmit(e) {
   }
 
   const subRef = generateSubmissionRef();
-  const hasContactInfo = !!(contactEmail && contactPhone);
-  const qualScore = calculateQualificationScore(sectorType, contractedDemandKW, monthlyBillINR, !!uploadedFileName, buyerRole, hasContactInfo, consentAccepted);
+  const qualScore = null;
 
   // Construct JSON payload conforming strictly to Aman Khatana's 04 Sep 2026 Zoho Website_Leads verified contract
   const crmPayload = {
@@ -131,7 +83,7 @@ function handleFormSubmit(e) {
       Opportunity_PrivacyConsentAccepted: consentAccepted,
       Opportunity_StageName: "New Intake",
       Opportunity_QualificationScore: qualScore,
-      Opportunity_QualificationLogic: "Approved 7-Dimension 100-Point Scorecard (D1:Sector 15pt, D2:Demand 25pt, D3:Spend 20pt, D4:BillFile 15pt, D5:Role 10pt, D6:Contact 10pt, D7:Consent 5pt)",
+      Opportunity_QualificationLogic: "PENDING EVIDENCE — Approved dimensions: Organisation/ICP 15, Material Electricity Decision 20, Buyer Role/Access 15, Minimum Data Readiness 15, Urgency/Next Step 15, Ability to Progress 10, Delivery/Scope Fit 10",
       Opportunity_Owner: "Role_Inbound_Lead_Queue",
       Opportunity_Probability: 0.05,
       Opportunity_ProposalValuePlaceholder: null,

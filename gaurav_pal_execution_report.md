@@ -19,7 +19,7 @@ In strict alignment with the **VOLTOS CEO Internal Execution Control Directive (
 3. **Staging Contract Items Normalized per Aman QA Handoff**:
    * **Stage**: Standardized to `"New Intake"`.
    * **Probability**: Adjusted to `0.05` (5%).
-   * **Qualification Logic**: Implemented approved 7-dimension 100-point scorecard (D1:Sector 15pt, D2:Demand 25pt, D3:Spend 20pt, D4:BillFile 15pt, D5:Role 10pt, D6:Contact 10pt, D7:Consent 5pt).
+   * **Qualification Logic**: Aligned to exact approved 7-dimension contract (Organisation/ICP 15, Material Decision 20, Buyer Role 15, Data Readiness 15, Urgency 15, Ability to Progress 10, Delivery Fit 10). `QualificationScore` set to `null` pending required evidence to prevent inventing scores.
 4. **Explicit Unmapped Staging Diff Isolated (P1)**: Explicitly isolated all 12 unmapped staging contract fields without creating unapproved fields or guessing API names per CEO governance rule.
 5. **Removal of Hard-Coded Individual Dependencies (P1)**: Stripped individual owner references (`"Mayank Bhola / Tarun Tiwari"`) replacing them with role-based queue governance (`"Role_Inbound_Lead_Queue"`).
 6. **Block F Checksum Hardening Documented (P2)**: Authored [block_f_checksum_hardening.md](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/block_f_checksum_hardening.md) detailing client-side SHA-256 file verification using Web Crypto API.

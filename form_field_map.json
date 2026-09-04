@@ -239,8 +239,8 @@
         "zoho_website_leads_api_name": "Brand"
       },
       "qualification_score": {
-        "auto_calculated": true,
-        "logic": "Approved 7-dimension 100-point scorecard (D1:Sector 15pt, D2:Demand 25pt, D3:Spend 20pt, D4:BillFile 15pt, D5:Role 10pt, D6:Contact 10pt, D7:Consent 5pt)",
+        "auto_calculated": false,
+        "logic": "Organisation/ICP Fit 15; Material Electricity Decision 20; Buyer Role/Access 15; Minimum Data Readiness 15; Urgency/Next Step 15; Ability to Progress 10; Delivery/Scope Fit 10. Score remains null until required evidence exists.",
         "crm_field_name": "Opportunity.QualificationScore",
         "zoho_website_leads_api_name": null
       },
