@@ -851,15 +851,34 @@ select.form-control {
   justify-content: center;
 }
 
-.file-upload-box:hover {
+.file-upload-box:hover,
+.file-upload-box.dragover {
   background: var(--primary-emerald-light);
   border-color: var(--primary-emerald);
+  border-style: solid;
 }
 
 .upload-text {
   font-weight: 600;
   font-size: 0.85rem;
   color: var(--text-muted);
+}
+
+.remove-file-btn {
+  margin-left: 0.5rem;
+  color: #dc2626;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  background: #fee2e2;
+  font-size: 0.75rem;
+  transition: var(--transition);
+}
+
+.remove-file-btn:hover {
+  background: #fca5a5;
+  color: #991b1b;
 }
 
 /* Privacy Consent Checkbox Box */

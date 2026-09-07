@@ -315,7 +315,6 @@
                 <label class="form-label" for="account_name">
                   <span>Company / Facility Name</span> <span class="req">*</span>
                 </label>
-                <span class="field-tag">Account.Name</span>
               </div>
               <input type="text" id="account_name" class="form-control" placeholder="e.g. Apex Auto Components Pvt Ltd"
                 required>
@@ -327,7 +326,6 @@
                 <label class="form-label" for="state_location">
                   <span>State / Location</span> <span class="req">*</span>
                 </label>
-                <span class="field-tag">Account.BillingState</span>
               </div>
               <input type="text" id="state_location" class="form-control"
                 placeholder="e.g. Maharashtra (Pune Industrial Area)" required>
@@ -339,7 +337,6 @@
                 <label class="form-label" for="contact_name">
                   <span>Contact Name</span> <span class="req">*</span>
                 </label>
-                <span class="field-tag">Contact.FullName</span>
               </div>
               <input type="text" id="contact_name" class="form-control" placeholder="e.g. Rajesh Sharma" required>
             </div>
@@ -349,7 +346,6 @@
                 <label class="form-label" for="buyer_role">
                   <span>Decision-Maker Role</span> <span class="req">*</span>
                 </label>
-                <span class="field-tag">Contact.Role</span>
               </div>
               <select id="buyer_role" class="form-control" required>
                 <option value="">-- Select Decision Role --</option>
@@ -367,7 +363,6 @@
                 <label class="form-label" for="contact_email">
                   <span>Corporate Email Address</span> <span class="req">*</span>
                 </label>
-                <span class="field-tag">Contact.Email</span>
               </div>
               <input type="email" id="contact_email" class="form-control" placeholder="r.sharma@company.com" required>
             </div>
@@ -377,7 +372,6 @@
                 <label class="form-label" for="contact_phone">
                   <span>Phone Number</span> <span class="req">*</span>
                 </label>
-                <span class="field-tag">Contact.Phone</span>
               </div>
               <input type="tel" id="contact_phone" class="form-control" placeholder="+91 98230 12345" required>
             </div>
@@ -388,7 +382,6 @@
                 <label class="form-label" for="contracted_demand_kw">
                   <span>Contracted Demand (kW)</span>
                 </label>
-                <span class="field-tag">Opportunity.ContractedDemand_kW</span>
               </div>
               <input type="number" id="contracted_demand_kw" class="form-control"
                 placeholder="e.g. 750 (Range: 100 kW - 5 MW)">
@@ -400,7 +393,6 @@
                 <label class="form-label" for="sector_type">
                   <span>Industry Sector</span>
                 </label>
-                <span class="field-tag">Account.IndustrySector</span>
               </div>
               <select id="sector_type" class="form-control">
                 <option value="">-- Select Sector (Optional) --</option>
@@ -417,7 +409,6 @@
                 <label class="form-label">
                   <span>Monthly Spend (₹ Lakhs) OR 12-Month Bills Upload</span> <span class="req">*</span>
                 </label>
-                <span class="field-tag">Opportunity.MonthlySpend_INR / BillRef</span>
               </div>
 
               <div class="spend-upload-grid">
@@ -426,7 +417,8 @@
                     placeholder="Monthly Spend in ₹ Lakhs (e.g. 15)">
                 </div>
                 <div>
-                  <div class="file-upload-box" onclick="simulateFileUpload()">
+                  <input type="file" id="utility_bill_file" accept=".pdf,.zip,.png,.jpg,.jpeg" style="display:none;" onchange="handleFileSelect(event)">
+                  <div class="file-upload-box" id="dropZone" onclick="triggerFileInput()" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleFileDrop(event)">
                     <span id="fileNameDisplay" class="upload-text">
                       Attach 12-Month DISCOM Bills (.pdf / .zip)
                     </span>

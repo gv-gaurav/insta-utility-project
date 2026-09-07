@@ -6,17 +6,76 @@
 
 let uploadedFileName = null;
 
-// Simulate Utility Bill Attachment Upload
-function simulateFileUpload() {
-  const sampleFiles = [
-    "bills_12month_apex_plant.pdf",
-    "discom_electricity_bills_2026.pdf",
-    "utility_statement_pune_facility.pdf"
-  ];
-  uploadedFileName = sampleFiles[Math.floor(Math.random() * sampleFiles.length)];
+// Real File Upload & Drag and Drop Handling
+function triggerFileInput() {
+  document.getElementById("utility_bill_file").click();
+}
+
+function handleFileSelect(e) {
+  const file = e.target.files[0];
+  if (file) {
+    setUploadedFile(file);
+  }
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  const dropZone = document.getElementById("dropZone");
+  if (dropZone) dropZone.classList.add("dragover");
+}
+
+function handleDragLeave(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  const dropZone = document.getElementById("dropZone");
+  if (dropZone) dropZone.classList.remove("dragover");
+}
+
+function handleFileDrop(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  const dropZone = document.getElementById("dropZone");
+  if (dropZone) dropZone.classList.remove("dragover");
+
+  if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+    const file = e.dataTransfer.files[0];
+    const fileInput = document.getElementById("utility_bill_file");
+    if (fileInput) {
+      // Transfer files to input element
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(file);
+      fileInput.files = dataTransfer.files;
+    }
+    setUploadedFile(file);
+  }
+}
+
+function setUploadedFile(file) {
+  uploadedFileName = file.name;
+  const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
   const display = document.getElementById("fileNameDisplay");
-  display.innerText = `📄 Attached: ${uploadedFileName}`;
-  display.style.color = "var(--primary-emerald)";
+  if (display) {
+    const safeName = escapeHtml(file.name);
+    display.innerHTML = `📄 <strong>${safeName}</strong> (${sizeMB} MB) <span class="remove-file-btn" onclick="clearUploadedFile(event)">✕</span>`;
+    display.style.color = "var(--primary-emerald)";
+  }
+}
+
+function clearUploadedFile(e) {
+  if (e) e.stopPropagation();
+  uploadedFileName = null;
+  const fileInput = document.getElementById("utility_bill_file");
+  if (fileInput) fileInput.value = "";
+  const display = document.getElementById("fileNameDisplay");
+  if (display) {
+    display.innerText = "Attach 12-Month DISCOM Bills (.pdf / .zip)";
+    display.style.color = "var(--text-muted)";
+  }
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
 // Generate Unique Submission_Ref (IU-YYYY-MMDD-XXXX)
@@ -128,9 +187,7 @@ function resetForm() {
   document.getElementById("diagnosticForm").reset();
   document.getElementById("diagnosticForm").style.display = "block";
   document.getElementById("submissionResult").classList.remove("active");
-  uploadedFileName = null;
-  document.getElementById("fileNameDisplay").innerText = "Attach 12-Month DISCOM Bills (.pdf / .zip)";
-  document.getElementById("fileNameDisplay").style.color = "var(--text-muted)";
+  clearUploadedFile();
 }
 
 // Toggle QA Inspector Drawer
