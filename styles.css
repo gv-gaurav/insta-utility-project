@@ -196,6 +196,25 @@ header {
   margin: 0 auto;
 }
 
+.header-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+}
+
+.nav-link {
+  font-family: var(--font-title);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.nav-link:hover {
+  color: var(--primary-emerald);
+}
+
 .header-actions {
   display: flex;
   align-items: center;
@@ -960,22 +979,99 @@ select.form-control {
   line-height: 1.6;
 }
 
-/* Footer */
 footer {
-  background: #0f172a;
+  background: #0b132b;
   color: #94a3b8;
-  padding: 3rem 0 1.5rem 0;
+  padding: 4rem 0 2rem 0;
   margin-top: auto;
   font-size: 0.85rem;
+  border-top: 1px solid #1e293b;
 }
 
-.footer-flex {
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr 1fr 1fr;
+  gap: 2.5rem;
+  margin-bottom: 3rem;
+}
+
+.footer-col.brand-col {
+  padding-right: 1rem;
+}
+
+.footer-bio {
+  font-size: 0.85rem;
+  line-height: 1.65;
+  color: #94a3b8;
+  margin-top: 0.75rem;
+}
+
+.footer-heading {
+  font-family: var(--font-title);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 1.15rem;
+  letter-spacing: -0.01em;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
   display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.footer-links a {
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: var(--transition);
+}
+
+.footer-links a:hover {
+  color: var(--primary-emerald);
+  padding-left: 2px;
+}
+
+.footer-cta-desc {
+  font-size: 0.825rem;
+  color: #94a3b8;
+  line-height: 1.6;
+}
+
+.footer-bottom {
+  border-top: 1px solid #1e293b;
+  padding-top: 1.5rem;
+  display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: flex-start;
+  gap: 1rem;
   flex-wrap: wrap;
+}
+
+.footer-copy {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.footer-bottom-links {
+  display: flex;
+  align-items: center;
   gap: 1.5rem;
-  margin-bottom: 2rem;
+}
+
+.footer-bottom-links a {
+  color: #64748b;
+  font-size: 0.8rem;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.footer-bottom-links a:hover {
+  color: #94a3b8;
 }
 
 /* Drawer Overlay */
@@ -1200,9 +1296,9 @@ footer {
     border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   }
 
-  .footer-flex {
-    flex-direction: column;
-    gap: 1.25rem;
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
   }
 }
 
