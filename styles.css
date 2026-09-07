@@ -160,8 +160,52 @@ a:hover {
   flex-shrink: 0;
 }
 
-.staging-banner button:hover {
-  background: #fef3c7;
+/* Top Announcement Bar */
+.top-announcement-bar {
+  background: linear-gradient(90deg, #0b132b 0%, #1e293b 100%);
+  color: #ffffff;
+  padding: 0.5rem 0;
+  font-size: 0.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.announcement-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.announcement-badge {
+  background: var(--primary-emerald);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.7rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.announcement-text {
+  color: #cbd5e1;
+  font-weight: 500;
+}
+
+.announcement-link {
+  color: #34d399;
+  font-weight: 700;
+  text-decoration: none;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.announcement-link:hover {
+  color: #6ee7b7;
+  text-decoration: underline;
 }
 
 /* Header Navigation */
@@ -294,8 +338,9 @@ header {
 
 /* Hero Section */
 .hero {
-  padding: 4rem 0 3.5rem 0;
-  background: linear-gradient(180deg, #ffffff 0%, var(--bg-main) 100%);
+  padding: 4.5rem 0 4rem 0;
+  position: relative;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(241, 245, 249, 0.96) 100%), url('assets/ci_solar_factory_hero.png') center/cover no-repeat;
   border-bottom: 1px solid var(--border-subtle);
 }
 
@@ -1125,6 +1170,10 @@ footer {
 }
 
 @media (max-width: 768px) {
+  .top-announcement-bar {
+    display: none;
+  }
+
   section {
     padding: 3rem 0;
   }
@@ -1158,48 +1207,51 @@ footer {
   }
 
   header {
-    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 0.65rem 0;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
   }
 
   .header-content {
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    justify-content: center;
-    text-align: center;
-    gap: 0.85rem;
+    justify-content: space-between;
+    text-align: left;
+    gap: 0.5rem;
   }
 
   .brand-logo {
-    width: 100%;
-    margin: 0 auto;
-    justify-content: center;
-    text-align: center;
+    width: auto;
+    margin: 0;
+    justify-content: flex-start;
   }
 
   .header-logo-img {
-    height: 40px;
-    max-width: 220px;
-    margin: 0 auto;
-    display: block;
+    height: 34px;
+    max-width: 170px;
+    margin: 0;
+  }
+
+  .header-nav-links {
+    display: none;
   }
 
   .header-actions {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 0.6rem;
-    width: 100%;
-    flex-wrap: wrap;
-    margin: 0 auto;
-  }
-
-  .header-badge {
-    display: none;
+    justify-content: flex-end;
+    margin: 0;
+    width: auto;
   }
 
   .header-btn {
     padding: 0.45rem 0.85rem;
-    font-size: 0.825rem;
+    font-size: 0.8rem;
     white-space: nowrap;
   }
 
