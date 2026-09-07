@@ -195,6 +195,16 @@ a:hover {
   font-weight: 500;
 }
 
+.announcement-icon-img {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  display: inline-block;
+  margin-right: 0.35rem;
+  margin-top: -2px;
+  object-fit: contain;
+}
+
 .announcement-link {
   color: #34d399;
   font-weight: 700;
@@ -420,6 +430,14 @@ header {
   justify-content: center;
   font-size: 0.75rem;
   font-weight: bold;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.spec-icon-img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
   flex-shrink: 0;
   margin-top: 0.1rem;
 }
