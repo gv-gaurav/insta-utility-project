@@ -84,7 +84,7 @@ function handleFormSubmit(e) {
       Opportunity_StageName: "New Intake",
       Opportunity_QualificationScore: qualScore,
       Opportunity_QualificationLogic: "PENDING EVIDENCE — Approved dimensions: Organisation/ICP 15, Material Electricity Decision 20, Buyer Role/Access 15, Minimum Data Readiness 15, Urgency/Next Step 15, Ability to Progress 10, Delivery/Scope Fit 10",
-      Opportunity_Owner: "Role_Inbound_Lead_Queue",
+      Opportunity_Owner: null, // GATED — Owner field exists as Zoho Lookup, but no verified company-controlled Owner/queue value supplied
       Opportunity_Probability: 0.05,
       Opportunity_ProposalValuePlaceholder: null,
       Rule_Enforced: "DO NOT GUESS ZOHO API NAMES OR CREATE UNAPPROVED FIELDS (04 Sep CEO Directive)"

@@ -250,10 +250,11 @@
         "zoho_website_leads_api_name": null
       },
       "owner": {
-        "default": "Role_Inbound_Lead_Queue",
+        "default": null,
         "crm_field_name": "Opportunity.Owner",
         "zoho_website_leads_api_name": null,
-        "note": "Hard-coded individual owner references removed per 04 Sep 2026 CEO directive"
+        "status": "GATED",
+        "note": "Owner field exists as Zoho Lookup, but no verified company-controlled Owner/queue value has been supplied. Do not guess or hard-code a queue/owner."
       },
       "probability": {
         "default": 0.05,
