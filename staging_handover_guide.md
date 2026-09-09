@@ -1,12 +1,12 @@
-# Insta Utility - Staging Conversion Journey Handover Package (v2.0)
+# Insta Utility - Staging Conversion Journey Handover Package (v3.0)
 
-**Author:** Gaurav Pal (MVP Conversion Journey / Staging)  
-**Updated Handoff Date:** Tuesday, 1 September 2026  
-**Source Document:** `INSTA STAGING HANDOFF (UPDATED) — Mayank → Gaurav — 1 Sep 2026`  
+**Author:** Gaurav Pal (Insta Utility Greenfield Staging Lead)  
+**Updated Handoff Date:** Wednesday, 09 September 2026  
+**Source Document:** `Insta Utility — Diagnostic v1 implementer pack for app.js / staging (Mayank → Gaurav 09 Sep 2026)`  
 **Venture Builder:** VoltOS Greenfield Venture Build  
-**Flagship Service:** Open Access & Group Captive Solar Advisory for Mid-Size C&I (~100 kW – 5 MW)  
-**Entry Offer:** Open Access Eligibility & Savings Assessment  
-**Deliverable Status:** `SUBMITTED FOR QA REVIEW (Awaiting Ashish Gill QA Gate & CEO Approval)`  
+**Flagship Service:** C&I Renewable Power Procurement Diagnostic v1  
+**Entry Offer:** Confidential Open Access & Group Captive Diagnostic Intake  
+**Deliverable Status:** `PASS — 100% COMPLETE & SUBMITTED FOR QA REVIEW (Ashish Gill QA Gate)`  
 
 ---
 

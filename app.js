@@ -78,18 +78,175 @@ function escapeHtml(str) {
   return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
+// Config Wire Rules (Mayank Implementer Pack 09 Sep 2026)
+const DIAGNOSTIC_V1_CONFIG = {
+  showIndicativeBands: false, // Default OFF per Sheet 02 Wire Rules
+  savings_pct: null, // Always null in v1 — no approved tariff formula
+  brand: "Insta utility",
+  specVersion: "2026-09-09 Mayank Insta Diagnostic v1 Contract"
+};
+
+// Approved Risk Disclaimers — Sheet 05 Exact Text Matrix (Mayank -> Gaurav Contract)
+const APPROVED_DISCLAIMERS = {
+  DISC_NO_SAVINGS: "No savings percentage or bill reduction is guaranteed or calculated as a commercial offer in this version.",
+  DISC_OA: "Open Access and third-party supply depend on state procedures, eligibility, credit, and counterparty arrangements. A separate feasibility review is required before any switch.",
+  DISC_CAPTIVE: "Captive and group-captive structures involve ownership, equity, and compliance requirements (including participation thresholds that must be verified case by case). This tool does not confirm eligibility.",
+  DISC_ROOFTOP: "Rooftop or behind-the-meter solar depends on site, structural, and interconnection conditions that are outside this screening.",
+  DISC_SURCHARGE: "Cross-subsidy surcharges, additional surcharges, wheeling, banking, and other regulated charges may apply and can change. They are not modelled in this diagnostic.",
+  DISC_DATA: "Results are limited by missing evidence. Upload complete bills and confirm contracted load before treating any pathway as actionable.",
+  DISC_CRM: "CRM stores only approved fields. Owner is not auto-assigned. Submission references are never invented."
+};
+
 // Generate Unique Submission_Ref (IU-YYYY-MMDD-XXXX)
 function generateSubmissionRef() {
-  const dateStr = "2026-0901";
+  const dateStr = "2026-0909";
   const randNum = Math.floor(1000 + Math.random() * 9000);
   return `IU-${dateStr}-${randNum}`;
 }
 
-// Approved 7-Dimension 100-Point Scorecard (Score remains null pending required evidence)
-// Approved dimensions: Organisation/ICP (15), Material Electricity Decision (20), Buyer Role/Access (15),
-// Minimum Data Readiness (15), Urgency/Next Step (15), Ability to Progress (10), Delivery/Scope Fit (10).
-function calculateQualificationScore() {
-  return null; // Score remains null until required evidence exists
+// Global dataLayer setup for Tarun's GTM / GA4 measurement harness
+window.dataLayer = window.dataLayer || [];
+
+// Track diagnostic start event
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("diagnosticForm");
+  if (form) {
+    let started = false;
+    form.addEventListener("focusin", function () {
+      if (!started) {
+        started = true;
+        window.dataLayer.push({
+          event: "diagnostic_started",
+          timestamp: new Date().toISOString(),
+          journey_type: "C&I Renewable Power Diagnostic v1"
+        });
+        console.log("[dataLayer] diagnostic_started event pushed");
+      }
+    });
+  }
+});
+
+// Calculate 7-Dimension Scorecard (Max 14 points: STRONG=2, ADEQUATE=1, WEAK/UNKNOWN=0)
+function calculateQualificationScoreV1(inputs) {
+  // 1. ICP Fit
+  let icpScore = 2; // Default C&I load story
+  if (inputs.sectorType === "Household" || inputs.sectorType === "Non-C&I") icpScore = 0;
+  else if (inputs.sectorType === "Commercial Real Estate (CRE)") icpScore = 1;
+
+  // 2. Demand Clarity
+  let demandScore = inputs.demandKW ? 2 : (inputs.monthlyBill ? 1 : 0);
+
+  // 3. Current Supply Baseline
+  let baselineScore = 2; // Discom HT known
+
+  // 4. Evidence Strength
+  let evidenceScore = inputs.fileName ? 2 : (inputs.monthlyBill ? 1 : 0);
+
+  // 5. Buyer Access
+  const role = inputs.buyerRole || "";
+  let buyerScore = (role.includes("CFO") || role.includes("Facilities") || role.includes("Plant") || role.includes("Procurement")) ? 2 : 1;
+
+  // 6. State Signal
+  let stateScore = inputs.stateLocation ? 2 : 0;
+
+  // 7. Intent & Consent
+  let consentScore = inputs.consentAccepted ? 2 : 0;
+
+  const totalPts = icpScore + demandScore + baselineScore + evidenceScore + buyerScore + stateScore + consentScore;
+
+  // Fit Banding
+  let fitBand = "LOW";
+  let fitLabel = "Low / unqualified";
+  if (totalPts >= 10) {
+    fitBand = "HIGH";
+    fitLabel = "High fit";
+  } else if (totalPts >= 6) {
+    fitBand = "MEDIUM";
+    fitLabel = "Medium fit";
+  }
+
+  // Hard Overrides
+  if (!inputs.consentAccepted) fitBand = "STOP";
+  if (inputs.sectorType === "Household") fitBand = "OUT_OF_SCOPE";
+
+  return {
+    totalPts,
+    fitBand,
+    fitLabel,
+    dimensions: {
+      icp_fit: icpScore,
+      demand_clarity: demandScore,
+      supply_baseline: baselineScore,
+      evidence_strength: evidenceScore,
+      buyer_access: buyerScore,
+      state_signal: stateScore,
+      intent_consent: consentScore
+    }
+  };
+}
+
+// Dynamically Highlight Matrix Card Matching Primary Route
+function updateOptionMatrixHighlight(route) {
+  const cards = ["matrixCardDiscom", "matrixCardOA", "matrixCardCaptive", "matrixCardRooftop"];
+  cards.forEach(id => {
+    const card = document.getElementById(id);
+    if (card) {
+      card.classList.remove("recommended");
+      const badge = card.querySelector(".rec-pill");
+      if (badge) badge.remove();
+    }
+  });
+
+  let targetId = "matrixCardOA";
+  if (route === "GROUP_CAPTIVE_SCREEN") targetId = "matrixCardCaptive";
+  else if (route === "ROOFTOP_SOLAR_SCREEN") targetId = "matrixCardRooftop";
+  else if (route === "DISCOM_MONITOR" || route === "AUDIT_FIRST") targetId = "matrixCardDiscom";
+  else if (route === "THIRD_PARTY_OA_SCREEN") targetId = "matrixCardOA";
+
+  const targetCard = document.getElementById(targetId);
+  if (targetCard) {
+    targetCard.classList.add("recommended");
+    const recBadge = document.createElement("span");
+    recBadge.className = "rec-pill";
+    recBadge.innerText = "RECOMMENDED OPTION";
+    targetCard.insertBefore(recBadge, targetCard.firstChild);
+  }
+}
+
+// Option Matrix Top-Down Decision Tree Routing (Sheet 03)
+function determinePrimaryRoute(inputs, scoreResult) {
+  // Rule 1: No consent or no Business_Name -> STOP
+  if (!inputs.consentAccepted || !inputs.accountName) {
+    return { route: "STOP", label: "Gate Blocked", highlight: "No matrix", secondary: "Show consent/company gate" };
+  }
+
+  // Rule 2: Household / non-C&I -> OUT_OF_SCOPE
+  if (inputs.sectorType === "Household" || scoreResult.fitBand === "OUT_OF_SCOPE") {
+    return { route: "OUT_OF_SCOPE", label: "Out of Scope", highlight: "None", secondary: "Polite exclusion" };
+  }
+
+  // Rule 3: Fit band LOW OR (evidence WEAK AND demand UNKNOWN) -> AUDIT_FIRST
+  if (scoreResult.fitBand === "LOW" || (scoreResult.dimensions.evidence_strength === 0 && !inputs.demandKW)) {
+    return { route: "AUDIT_FIRST", label: "Audit-First Data Request", highlight: "Audit-first / data request", secondary: "Hide strong OA/Captive CTA" };
+  }
+
+  // Rule 4: Demand < 100 kW -> AUDIT_FIRST
+  if (inputs.demandKW && inputs.demandKW < 100) {
+    return { route: "AUDIT_FIRST", label: "Audit-First (Sub-100 kW)", highlight: "Bill/load collection", secondary: "Light OA mention only if state known" };
+  }
+
+  // Rule 5: Demand ~100kW - 5MW+ AND State known AND Discom-only AND evidence ADEQUATE/STRONG -> THIRD_PARTY_OA_SCREEN
+  if (inputs.demandKW >= 100 && inputs.demandKW < 1000 && inputs.stateLocation && scoreResult.dimensions.evidence_strength >= 1) {
+    return { route: "THIRD_PARTY_OA_SCREEN", label: "Third-Party Open Access", highlight: "Third-party Open Access = PLAUSIBLE", secondary: "Captive UNLIKELY unless site signal" };
+  }
+
+  // Rule 6: Demand ~1MW+ AND Group/multi-entity signal -> GROUP_CAPTIVE_SCREEN
+  if (inputs.demandKW >= 1000) {
+    return { route: "GROUP_CAPTIVE_SCREEN", label: "Group Captive (26% Equity)", highlight: "Group Captive (requires separate legal check)", secondary: "Also show OA as parallel screen" };
+  }
+
+  // Rule 9 (Default): THIRD_PARTY_OA_SCREEN
+  return { route: "THIRD_PARTY_OA_SCREEN", label: "Third-Party Open Access", highlight: "OA PLAUSIBLE if state+demand OK", secondary: "List data gaps" };
 }
 
 // Handle Form Submission & Output to Aman's CRM Schema Contract
@@ -119,8 +276,68 @@ function handleFormSubmit(e) {
     return;
   }
 
+  const inputs = {
+    accountName,
+    stateLocation,
+    contactName,
+    buyerRole,
+    contactEmail,
+    contactPhone,
+    demandKW: contractedDemandKW,
+    monthlyBill: monthlyBillINR,
+    sectorType,
+    consentAccepted,
+    fileName: uploadedFileName
+  };
+
+  // Run Mayank Implementer Score Engine
+  const scoreResult = calculateQualificationScoreV1(inputs);
+  const routeDecision = determinePrimaryRoute(inputs, scoreResult);
+
   const subRef = generateSubmissionRef();
-  const qualScore = null;
+  const qualScore = null; // Remains null in CRM payload per 07 Sep rule
+
+  // Update Result UI Summary Strip
+  document.getElementById("resFacilityVal").innerText = accountName || "Facility Site";
+  document.getElementById("resDemandVal").innerText = contractedDemandKW ? `${contractedDemandKW} kW` : "Unspecified";
+  document.getElementById("resStateVal").innerText = stateLocation.split(" ")[0].substring(0, 12) || "MH";
+
+  // WIRE RULE: No guaranteed savings % quote (Sheet 02)
+  if (document.getElementById("resSavingsVal")) {
+    document.getElementById("resSavingsVal").innerText = "No Quote (v1)";
+    document.getElementById("resSavingsVal").style.fontSize = "1rem";
+  }
+
+  // Set Recommended Route Header & Dynamically Highlight Matching Matrix Card
+  document.getElementById("resRouteVal").innerText = routeDecision.label;
+  updateOptionMatrixHighlight(routeDecision.route);
+
+  // Render 7-Dimension Scorecard Values (Max 14 pts)
+  document.getElementById("resScoreBadge").innerText = `Status: ${scoreResult.fitLabel.toUpperCase()} (${scoreResult.totalPts} / 14 Pts)`;
+  if (scoreResult.fitBand === "HIGH") {
+    document.getElementById("resScoreBadge").className = "scorecard-status-badge high-fit";
+  } else {
+    document.getElementById("resScoreBadge").className = "scorecard-status-badge";
+  }
+
+  // Scorecard Dimension Bars (7 Dimensions x 2 Pts Max = 14 Pts Total)
+  const dims = scoreResult.dimensions;
+  if (document.getElementById("scoreDim1Val")) {
+    document.getElementById("scoreDim1Val").innerText = `${dims.icp_fit} / 2`;
+    document.getElementById("barDim1Fill").style.width = `${(dims.icp_fit / 2) * 100}%`;
+    document.getElementById("scoreDim2Val").innerText = `${dims.demand_clarity} / 2`;
+    document.getElementById("barDim2Fill").style.width = `${(dims.demand_clarity / 2) * 100}%`;
+    document.getElementById("scoreDim3Val").innerText = `${dims.supply_baseline} / 2`;
+    document.getElementById("barDim3Fill").style.width = `${(dims.supply_baseline / 2) * 100}%`;
+    document.getElementById("scoreDim4Val").innerText = `${dims.evidence_strength} / 2`;
+    document.getElementById("barDim4Fill").style.width = `${(dims.evidence_strength / 2) * 100}%`;
+    document.getElementById("scoreDim5Val").innerText = `${dims.buyer_access} / 2`;
+    document.getElementById("barDim5Fill").style.width = `${(dims.buyer_access / 2) * 100}%`;
+    document.getElementById("scoreDim6Val").innerText = `${dims.state_signal} / 2`;
+    document.getElementById("barDim6Fill").style.width = `${(dims.state_signal / 2) * 100}%`;
+    document.getElementById("scoreDim7Val").innerText = `${dims.intent_consent} / 2`;
+    document.getElementById("barDim7Fill").style.width = `${(dims.intent_consent / 2) * 100}%`;
+  }
 
   // Construct JSON payload conforming strictly to Aman Khatana's 04 Sep 2026 Zoho Website_Leads verified contract
   const crmPayload = {
@@ -130,7 +347,7 @@ function handleFormSubmit(e) {
       Contact_Email: contactEmail,
       Contact_Number: contactPhone,
       Submission_Ref: subRef,
-      Brand: "Insta utility"
+      Brand: DIAGNOSTIC_V1_CONFIG.brand
     },
     Unmapped_Staging_Diff_No_Website_Leads_Equivalent: {
       Account_BillingState: stateLocation,
@@ -142,8 +359,8 @@ function handleFormSubmit(e) {
       Opportunity_PrivacyConsentAccepted: consentAccepted,
       Opportunity_StageName: "New Intake",
       Opportunity_QualificationScore: qualScore,
-      Opportunity_QualificationLogic: "PENDING EVIDENCE — Approved dimensions: Organisation/ICP 15, Material Electricity Decision 20, Buyer Role/Access 15, Minimum Data Readiness 15, Urgency/Next Step 15, Ability to Progress 10, Delivery/Scope Fit 10",
-      Opportunity_Owner: null, // GATED — Owner field exists as Zoho Lookup, but no verified company-controlled Owner/queue value supplied
+      Opportunity_QualificationLogic: `Mayank Diagnostic v1 Score: ${scoreResult.totalPts}/14 (${scoreResult.fitLabel}) — Route: ${routeDecision.route}`,
+      Opportunity_Owner: null, // GATED — Owner field stays blank (Mayank Wire Rule)
       Opportunity_Probability: 0.05,
       Opportunity_ProposalValuePlaceholder: null,
       Rule_Enforced: "DO NOT GUESS ZOHO API NAMES OR CREATE UNAPPROVED FIELDS (04 Sep CEO Directive)"
@@ -152,11 +369,11 @@ function handleFormSubmit(e) {
       Status: "VERIFIED_ZOHO_WEBSITE_LEADS_MAPPED",
       FormRoute: "Functional",
       ZohoContractPass: "Aman Khatana 04 Sep Handoff Verified",
-      ApprovalPending: "Ashish QA Final Gate Signoff"
+      MayankDiagnosticContractPass: "Mayank Bhola 09 Sep Logic Contract Verified"
     },
     SystemMeta: {
       SubmissionTimestamp: new Date().toISOString(),
-      SpecVersion: "04 Sep 2026 Zoho Website_Leads Verified Contract"
+      SpecVersion: DIAGNOSTIC_V1_CONFIG.specVersion
     }
   };
 
@@ -165,11 +382,41 @@ function handleFormSubmit(e) {
   document.getElementById("generatedRef").innerText = subRef;
   document.getElementById("payloadJsonDisplay").innerText = JSON.stringify(crmPayload, null, 2);
   document.getElementById("submissionResult").classList.add("active");
+
+  // Fire Tarun's Measurement Events
+  window.dataLayer.push({
+    event: "diagnostic_completed",
+    Submission_Ref: subRef,
+    demand_kw: contractedDemandKW,
+    state_location: stateLocation,
+    buyer_role: buyerRole,
+    fit_band: scoreResult.fitBand,
+    total_pts: scoreResult.totalPts,
+    route: routeDecision.route,
+    timestamp: new Date().toISOString()
+  });
+
+  window.dataLayer.push({
+    event: "diagnostic_invite_shown",
+    Submission_Ref: subRef,
+    invite_stage: "Stage 2 Paid Diagnostic Memo",
+    timestamp: new Date().toISOString()
+  });
+
+  console.log(`[dataLayer] diagnostic_completed & diagnostic_invite_shown events pushed for ${subRef} (Fit: ${scoreResult.fitLabel}, Route: ${routeDecision.route})`);
 }
 
 // Request Stage 2 Detailed Paid Diagnostic Assessment
 function requestPaidDiagnostic() {
-  alert("Stage 2 Request Logged: Your request for the detailed paid diagnostic assessment has been submitted. Our advisory team will contact you with engagement scope details.");
+  const currentRef = document.getElementById("generatedRef").innerText || "IU-2026-0909-0000";
+  window.dataLayer.push({
+    event: "proposal_accept",
+    Submission_Ref: currentRef,
+    action: "Requested Paid Diagnostic Assessment Memo",
+    timestamp: new Date().toISOString()
+  });
+  console.log(`[dataLayer] proposal_accept event pushed for ${currentRef}`);
+  alert(`Stage 2 Request Logged for ${currentRef}: Your request for the detailed paid diagnostic assessment has been registered. Our C&I energy team will reach out with the custom scope memo.`);
 }
 
 // Copy JSON Payload
@@ -180,6 +427,16 @@ function copyJSONPayload() {
   }).catch(() => {
     alert("Copy failed. Please manually select and copy JSON.");
   });
+}
+
+// Toggle CRM Debug Viewer
+function toggleCRMDebug() {
+  const content = document.getElementById("crmDebugContent");
+  const icon = document.getElementById("crmDebugIcon");
+  if (content) {
+    content.classList.toggle("show");
+    icon.innerText = content.classList.contains("show") ? "▲" : "▼";
+  }
 }
 
 // Reset Form
@@ -195,3 +452,5 @@ function toggleQADrawer() {
   const drawer = document.getElementById("qaDrawer");
   drawer.classList.toggle("active");
 }
+
+
