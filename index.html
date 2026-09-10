@@ -693,9 +693,14 @@
               and developer RFP specs.
             </p>
 
-            <div class="memo-actions">
+            <div class="memo-actions" style="display:flex; flex-wrap:wrap; gap:0.75rem; align-items:center;">
               <button class="btn btn-emerald" onclick="requestPaidDiagnostic()">
                 <span>Request Detailed Paid Diagnostic Assessment →</span>
+              </button>
+              <button class="btn btn-outline"
+                style="color:#ffffff; border-color:rgba(255,255,255,0.4); background:transparent;"
+                onclick="declineProposal()">
+                <span>Not now / Decline</span>
               </button>
               <button class="btn btn-outline"
                 style="color:#ffffff; border-color:rgba(255,255,255,0.3); background:transparent;"

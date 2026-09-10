@@ -419,6 +419,19 @@ function requestPaidDiagnostic() {
   alert(`Stage 2 Request Logged for ${currentRef}: Your request for the detailed paid diagnostic assessment has been registered. Our C&I energy team will reach out with the custom scope memo.`);
 }
 
+// Decline Stage 2 Assessment Action (Tarun v1.1 Measurement Spec)
+function declineProposal() {
+  const currentRef = document.getElementById("generatedRef").innerText || "IU-2026-0909-0000";
+  window.dataLayer.push({
+    event: "proposal_decline",
+    Submission_Ref: currentRef,
+    action: "Declined Stage 2 Assessment / Not Now",
+    timestamp: new Date().toISOString()
+  });
+  console.log(`[dataLayer] proposal_decline event pushed for ${currentRef}`);
+  alert(`Decline Action Logged for ${currentRef}: Your response ("Not now / Decline") has been recorded. You can return anytime to request your assessment.`);
+}
+
 // Copy JSON Payload
 function copyJSONPayload() {
   const jsonText = document.getElementById("payloadJsonDisplay").innerText;
