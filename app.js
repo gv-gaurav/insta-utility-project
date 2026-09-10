@@ -112,18 +112,31 @@ if (typeof window.gtag !== "function") {
   };
 }
 
-// Enable GA4 DebugView Mode for Staging-only Validation
-window.gtag("config", "GTM-W5MGDDCR", {
-  debug_mode: true,
-  send_page_view: true
-});
+// Staging GA4 Measurement ID Support (Optional override via window.STAGING_GA4_MEASUREMENT_ID)
+const GA4_MEASUREMENT_ID = window.STAGING_GA4_MEASUREMENT_ID || null;
+if (GA4_MEASUREMENT_ID) {
+  window.gtag("config", GA4_MEASUREMENT_ID, {
+    debug_mode: true,
+    send_page_view: true
+  });
+}
 
-// Unified Analytics Event Emitter (Fires to dataLayer + gtag with debug_mode: true)
+// Unified Analytics Event Emitter (Broadcasting debug_mode: true, ep.debug_mode: true, _dbg: 1 to dataLayer + gtag)
 function pushAnalyticsEvent(eventName, params) {
-  const payload = Object.assign({ event: eventName, debug_mode: true }, params);
+  const payload = Object.assign({
+    event: eventName,
+    debug_mode: true,
+    'ep.debug_mode': true,
+    _dbg: 1
+  }, params);
+
   window.dataLayer.push(payload);
+
   if (typeof window.gtag === "function") {
     window.gtag("event", eventName, payload);
+    if (GA4_MEASUREMENT_ID) {
+      window.gtag("event", eventName, Object.assign({ send_to: GA4_MEASUREMENT_ID, debug_mode: true }, params));
+    }
   }
   console.log(`[Analytics Engine] Fired ${eventName} (debug_mode: true)`, payload);
 }
