@@ -104,8 +104,29 @@ function generateSubmissionRef() {
   return `IU-${dateStr}-${randNum}`;
 }
 
-// Global dataLayer setup for Tarun's GTM / GA4 measurement harness
+// Global dataLayer & gtag setup for Tarun's GTM / GA4 measurement harness (Staging DebugView Enabled)
 window.dataLayer = window.dataLayer || [];
+if (typeof window.gtag !== "function") {
+  window.gtag = function () {
+    window.dataLayer.push(arguments);
+  };
+}
+
+// Enable GA4 DebugView Mode for Staging-only Validation
+window.gtag("config", "GTM-W5MGDDCR", {
+  debug_mode: true,
+  send_page_view: true
+});
+
+// Unified Analytics Event Emitter (Fires to dataLayer + gtag with debug_mode: true)
+function pushAnalyticsEvent(eventName, params) {
+  const payload = Object.assign({ event: eventName, debug_mode: true }, params);
+  window.dataLayer.push(payload);
+  if (typeof window.gtag === "function") {
+    window.gtag("event", eventName, payload);
+  }
+  console.log(`[Analytics Engine] Fired ${eventName} (debug_mode: true)`, payload);
+}
 
 // Track diagnostic start event
 document.addEventListener("DOMContentLoaded", function () {
@@ -115,12 +136,10 @@ document.addEventListener("DOMContentLoaded", function () {
     form.addEventListener("focusin", function () {
       if (!started) {
         started = true;
-        window.dataLayer.push({
-          event: "diagnostic_started",
+        pushAnalyticsEvent("diagnostic_started", {
           timestamp: new Date().toISOString(),
           journey_type: "C&I Renewable Power Diagnostic v1"
         });
-        console.log("[dataLayer] diagnostic_started event pushed");
       }
     });
   }
@@ -439,9 +458,8 @@ function handleFormSubmit(e) {
   document.getElementById("payloadJsonDisplay").innerText = JSON.stringify(crmPayload, null, 2);
   document.getElementById("submissionResult").classList.add("active");
 
-  // Fire Tarun's Measurement Events
-  window.dataLayer.push({
-    event: "diagnostic_completed",
+  // Fire Tarun's Measurement Events (Dual dataLayer + gtag emission with debug_mode: true)
+  pushAnalyticsEvent("diagnostic_completed", {
     Submission_Ref: subRef,
     demand_kw: contractedDemandKW,
     state_location: stateLocation,
@@ -452,39 +470,32 @@ function handleFormSubmit(e) {
     timestamp: new Date().toISOString()
   });
 
-  window.dataLayer.push({
-    event: "diagnostic_invite_shown",
+  pushAnalyticsEvent("diagnostic_invite_shown", {
     Submission_Ref: subRef,
     invite_stage: "Stage 2 Paid Diagnostic Memo",
     timestamp: new Date().toISOString()
   });
-
-  console.log(`[dataLayer] diagnostic_completed & diagnostic_invite_shown events pushed for ${subRef} (Fit: ${scoreResult.fitLabel}, Route: ${routeDecision.route})`);
 }
 
 // Request Stage 2 Detailed Paid Diagnostic Assessment
 function requestPaidDiagnostic() {
   const currentRef = document.getElementById("generatedRef").innerText || "IU-2026-0909-0000";
-  window.dataLayer.push({
-    event: "proposal_accept",
+  pushAnalyticsEvent("proposal_accept", {
     Submission_Ref: currentRef,
     action: "Requested Paid Diagnostic Assessment Memo",
     timestamp: new Date().toISOString()
   });
-  console.log(`[dataLayer] proposal_accept event pushed for ${currentRef}`);
   alert(`Stage 2 Request Logged for ${currentRef}: Your request for the detailed paid diagnostic assessment has been registered. Our C&I energy team will reach out with the custom scope memo.`);
 }
 
 // Decline Stage 2 Assessment Action (Tarun v1.1 Measurement Spec)
 function declineProposal() {
   const currentRef = document.getElementById("generatedRef").innerText || "IU-2026-0909-0000";
-  window.dataLayer.push({
-    event: "proposal_decline",
+  pushAnalyticsEvent("proposal_decline", {
     Submission_Ref: currentRef,
     action: "Declined Stage 2 Assessment / Not Now",
     timestamp: new Date().toISOString()
   });
-  console.log(`[dataLayer] proposal_decline event pushed for ${currentRef}`);
   alert(`Decline Action Logged for ${currentRef}: Your response ("Not now / Decline") has been recorded. You can return anytime to request your assessment.`);
 }
 
