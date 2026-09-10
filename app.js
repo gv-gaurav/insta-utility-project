@@ -99,9 +99,12 @@ const APPROVED_DISCLAIMERS = {
 
 // Generate Unique Submission_Ref (IU-YYYY-MMDD-XXXX)
 function generateSubmissionRef() {
-  const dateStr = "2026-0909";
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
   const randNum = Math.floor(1000 + Math.random() * 9000);
-  return `IU-${dateStr}-${randNum}`;
+  return `IU-${year}-${month}${day}-${randNum}`;
 }
 
 // Global dataLayer & gtag setup for Tarun's GTM / GA4 measurement harness (Staging DebugView Enabled)
@@ -162,10 +165,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Calculate 7-Dimension Scorecard (Max 14 points: STRONG=2, ADEQUATE=1, WEAK/UNKNOWN=0)
 function calculateQualificationScoreV1(inputs) {
-  // 1. ICP Fit
+  // 1. ICP Fit (Bug 3 Fix: Refined sector scoring)
   let icpScore = 2; // Default C&I load story
-  if (inputs.sectorType === "Household" || inputs.sectorType === "Non-C&I") icpScore = 0;
-  else if (inputs.sectorType === "Commercial Real Estate (CRE)") icpScore = 1;
+  const sec = (inputs.sectorType || "").toLowerCase();
+  if (sec.includes("household") || sec.includes("non-c&i") || sec.includes("residence") || sec.includes("retail")) {
+    icpScore = 0;
+  } else if (!sec || sec.includes("unspecified") || sec.includes("other") || sec.includes("commercial real estate") || sec.includes("cre")) {
+    icpScore = 1;
+  } else {
+    icpScore = 2; // Manufacturing & Industrial, Logistics & Warehousing
+  }
 
   // 2. Demand Clarity
   let demandScore = inputs.demandKW ? 2 : (inputs.monthlyBill ? 1 : 0);
@@ -177,8 +186,8 @@ function calculateQualificationScoreV1(inputs) {
   let evidenceScore = inputs.fileName ? 2 : (inputs.monthlyBill ? 1 : 0);
 
   // 5. Buyer Access
-  const role = inputs.buyerRole || "";
-  let buyerScore = (role.includes("CFO") || role.includes("Facilities") || role.includes("Plant") || role.includes("Procurement")) ? 2 : 1;
+  const role = (inputs.buyerRole || "").toLowerCase();
+  let buyerScore = (role.includes("cfo") || role.includes("facilities") || role.includes("plant") || role.includes("procurement") || role.includes("energy")) ? 2 : (role ? 1 : 0);
 
   // 6. State Signal
   let stateScore = inputs.stateLocation ? 2 : 0;
@@ -201,7 +210,7 @@ function calculateQualificationScoreV1(inputs) {
 
   // Hard Overrides
   if (!inputs.consentAccepted) fitBand = "STOP";
-  if (inputs.sectorType === "Household") fitBand = "OUT_OF_SCOPE";
+  if (sec.includes("household") || sec.includes("residence")) fitBand = "OUT_OF_SCOPE";
 
   return {
     totalPts,
@@ -258,9 +267,9 @@ const RECOMMENDATION_TEXT_BY_ROUTE = {
   DISCOM_MONITOR: "Remaining on your current discom supply while monitoring options is a valid path. A deeper review can wait until you have clearer evidence or intent."
 };
 
-// Option Matrix Top-Down Decision Tree Routing (Sheet 03 & 05)
+// Option Matrix Top-Down Decision Tree Routing (Sheet 03 & 05 - Ashish 10-Fixture Verified)
 function determinePrimaryRoute(inputs, scoreResult) {
-  // Rule 1: No consent or no Business_Name -> STOP
+  // Rule 1: No consent or no Business_Name -> STOP (Bug 5 Fix)
   if (!inputs.consentAccepted || !inputs.accountName) {
     return {
       route: "STOP",
@@ -271,8 +280,9 @@ function determinePrimaryRoute(inputs, scoreResult) {
     };
   }
 
-  // Rule 2: Household / non-C&I -> OUT_OF_SCOPE
-  if (inputs.sectorType === "Household" || scoreResult.fitBand === "OUT_OF_SCOPE") {
+  // Rule 2: Household / non-C&I -> OUT_OF_SCOPE (Bug 2 Fix)
+  const sec = (inputs.sectorType || "").toLowerCase();
+  if (sec.includes("household") || sec.includes("residence") || scoreResult.fitBand === "OUT_OF_SCOPE") {
     return {
       route: "OUT_OF_SCOPE",
       label: "Out of Scope",
@@ -282,8 +292,8 @@ function determinePrimaryRoute(inputs, scoreResult) {
     };
   }
 
-  // Rule 3: Fit band LOW OR (evidence WEAK AND demand UNKNOWN) -> AUDIT_FIRST
-  if (scoreResult.fitBand === "LOW" || (scoreResult.dimensions.evidence_strength === 0 && !inputs.demandKW)) {
+  // Rule 3: Blank demand OR no bill evidence OR fit band LOW -> AUDIT_FIRST (Bug 4 Fix)
+  if (!inputs.demandKW || scoreResult.dimensions.evidence_strength === 0 || scoreResult.fitBand === "LOW") {
     return {
       route: "AUDIT_FIRST",
       label: "Audit-First Data Request",
@@ -294,7 +304,7 @@ function determinePrimaryRoute(inputs, scoreResult) {
   }
 
   // Rule 4: Demand < 100 kW -> AUDIT_FIRST
-  if (inputs.demandKW && inputs.demandKW < 100) {
+  if (inputs.demandKW < 100) {
     return {
       route: "AUDIT_FIRST",
       label: "Audit-First (Sub-100 kW)",
@@ -304,25 +314,29 @@ function determinePrimaryRoute(inputs, scoreResult) {
     };
   }
 
-  // Rule 5: Demand ~100kW - 5MW+ AND State known AND Discom-only AND evidence ADEQUATE/STRONG -> THIRD_PARTY_OA_SCREEN
-  if (inputs.demandKW >= 100 && inputs.demandKW < 1000 && inputs.stateLocation && scoreResult.dimensions.evidence_strength >= 1) {
-    return {
-      route: "THIRD_PARTY_OA_SCREEN",
-      label: "Third-Party Open Access",
-      highlight: "Third-party Open Access = PLAUSIBLE",
-      secondary: "Captive UNLIKELY unless site signal",
-      recommendation_text: RECOMMENDATION_TEXT_BY_ROUTE.THIRD_PARTY_OA_SCREEN
-    };
-  }
+  // Rule 5: Explicit Group/Multi-entity signal -> GROUP_CAPTIVE_SCREEN (Bug 1 Fix: requires group signal, not raw demand)
+  const roleLower = (inputs.buyerRole || "").toLowerCase();
+  const nameLower = (inputs.accountName || "").toLowerCase();
+  const hasGroupSignal = roleLower.includes("group") || nameLower.includes("group");
 
-  // Rule 6: Demand ~1MW+ AND Group/multi-entity signal -> GROUP_CAPTIVE_SCREEN
-  if (inputs.demandKW >= 1000) {
+  if (inputs.demandKW >= 1000 && hasGroupSignal) {
     return {
       route: "GROUP_CAPTIVE_SCREEN",
       label: "Group Captive (26% Equity)",
       highlight: "Group Captive (requires separate legal check)",
       secondary: "Also show OA as parallel screen",
       recommendation_text: RECOMMENDATION_TEXT_BY_ROUTE.GROUP_CAPTIVE_SCREEN
+    };
+  }
+
+  // Rule 6: Third-Party Open Access (Demand >= 100 kW, State known, evidence >= 1)
+  if (inputs.demandKW >= 100 && inputs.stateLocation && scoreResult.dimensions.evidence_strength >= 1) {
+    return {
+      route: "THIRD_PARTY_OA_SCREEN",
+      label: "Third-Party Open Access",
+      highlight: "Third-party Open Access = PLAUSIBLE",
+      secondary: "Captive UNLIKELY unless site signal",
+      recommendation_text: RECOMMENDATION_TEXT_BY_ROUTE.THIRD_PARTY_OA_SCREEN
     };
   }
 
