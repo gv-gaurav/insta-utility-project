@@ -213,40 +213,93 @@ function updateOptionMatrixHighlight(route) {
   }
 }
 
-// Option Matrix Top-Down Decision Tree Routing (Sheet 03)
+// Mayank Sheet 05 Exact Recommendation Snippets Matrix
+const RECOMMENDATION_TEXT_BY_ROUTE = {
+  THIRD_PARTY_OA_SCREEN: "Based on your load band and current discom-only profile, a structured Open Access feasibility review is a reasonable next step. This is not an approval or a savings quote.",
+  GROUP_CAPTIVE_SCREEN: "Your profile suggests a group or multi-entity structure may be worth a dedicated structure review alongside any Open Access screen. This tool does not confirm group-captive eligibility.",
+  ROOFTOP_SOLAR_SCREEN: "A behind-the-meter / rooftop screening may be relevant given your inputs. Site and interconnection checks are required separately.",
+  AUDIT_FIRST: "We do not yet have enough demand or bill evidence to rank pathways. Please upload recent bills and confirm contracted load so we can complete the screen.",
+  OUT_OF_SCOPE: "This diagnostic is designed for commercial and industrial electricity procurement. We cannot provide a pathway ranking for this profile.",
+  STOP: "We cannot produce an assessment without consent to process the submitted commercial information.",
+  DISCOM_MONITOR: "Remaining on your current discom supply while monitoring options is a valid path. A deeper review can wait until you have clearer evidence or intent."
+};
+
+// Option Matrix Top-Down Decision Tree Routing (Sheet 03 & 05)
 function determinePrimaryRoute(inputs, scoreResult) {
   // Rule 1: No consent or no Business_Name -> STOP
   if (!inputs.consentAccepted || !inputs.accountName) {
-    return { route: "STOP", label: "Gate Blocked", highlight: "No matrix", secondary: "Show consent/company gate" };
+    return {
+      route: "STOP",
+      label: "Gate Blocked",
+      highlight: "No matrix",
+      secondary: "Show consent/company gate",
+      recommendation_text: RECOMMENDATION_TEXT_BY_ROUTE.STOP
+    };
   }
 
   // Rule 2: Household / non-C&I -> OUT_OF_SCOPE
   if (inputs.sectorType === "Household" || scoreResult.fitBand === "OUT_OF_SCOPE") {
-    return { route: "OUT_OF_SCOPE", label: "Out of Scope", highlight: "None", secondary: "Polite exclusion" };
+    return {
+      route: "OUT_OF_SCOPE",
+      label: "Out of Scope",
+      highlight: "None",
+      secondary: "Polite exclusion",
+      recommendation_text: RECOMMENDATION_TEXT_BY_ROUTE.OUT_OF_SCOPE
+    };
   }
 
   // Rule 3: Fit band LOW OR (evidence WEAK AND demand UNKNOWN) -> AUDIT_FIRST
   if (scoreResult.fitBand === "LOW" || (scoreResult.dimensions.evidence_strength === 0 && !inputs.demandKW)) {
-    return { route: "AUDIT_FIRST", label: "Audit-First Data Request", highlight: "Audit-first / data request", secondary: "Hide strong OA/Captive CTA" };
+    return {
+      route: "AUDIT_FIRST",
+      label: "Audit-First Data Request",
+      highlight: "Audit-first / data request",
+      secondary: "Hide strong OA/Captive CTA",
+      recommendation_text: RECOMMENDATION_TEXT_BY_ROUTE.AUDIT_FIRST
+    };
   }
 
   // Rule 4: Demand < 100 kW -> AUDIT_FIRST
   if (inputs.demandKW && inputs.demandKW < 100) {
-    return { route: "AUDIT_FIRST", label: "Audit-First (Sub-100 kW)", highlight: "Bill/load collection", secondary: "Light OA mention only if state known" };
+    return {
+      route: "AUDIT_FIRST",
+      label: "Audit-First (Sub-100 kW)",
+      highlight: "Bill/load collection",
+      secondary: "Light OA mention only if state known",
+      recommendation_text: RECOMMENDATION_TEXT_BY_ROUTE.AUDIT_FIRST
+    };
   }
 
   // Rule 5: Demand ~100kW - 5MW+ AND State known AND Discom-only AND evidence ADEQUATE/STRONG -> THIRD_PARTY_OA_SCREEN
   if (inputs.demandKW >= 100 && inputs.demandKW < 1000 && inputs.stateLocation && scoreResult.dimensions.evidence_strength >= 1) {
-    return { route: "THIRD_PARTY_OA_SCREEN", label: "Third-Party Open Access", highlight: "Third-party Open Access = PLAUSIBLE", secondary: "Captive UNLIKELY unless site signal" };
+    return {
+      route: "THIRD_PARTY_OA_SCREEN",
+      label: "Third-Party Open Access",
+      highlight: "Third-party Open Access = PLAUSIBLE",
+      secondary: "Captive UNLIKELY unless site signal",
+      recommendation_text: RECOMMENDATION_TEXT_BY_ROUTE.THIRD_PARTY_OA_SCREEN
+    };
   }
 
   // Rule 6: Demand ~1MW+ AND Group/multi-entity signal -> GROUP_CAPTIVE_SCREEN
   if (inputs.demandKW >= 1000) {
-    return { route: "GROUP_CAPTIVE_SCREEN", label: "Group Captive (26% Equity)", highlight: "Group Captive (requires separate legal check)", secondary: "Also show OA as parallel screen" };
+    return {
+      route: "GROUP_CAPTIVE_SCREEN",
+      label: "Group Captive (26% Equity)",
+      highlight: "Group Captive (requires separate legal check)",
+      secondary: "Also show OA as parallel screen",
+      recommendation_text: RECOMMENDATION_TEXT_BY_ROUTE.GROUP_CAPTIVE_SCREEN
+    };
   }
 
   // Rule 9 (Default): THIRD_PARTY_OA_SCREEN
-  return { route: "THIRD_PARTY_OA_SCREEN", label: "Third-Party Open Access", highlight: "OA PLAUSIBLE if state+demand OK", secondary: "List data gaps" };
+  return {
+    route: "THIRD_PARTY_OA_SCREEN",
+    label: "Third-Party Open Access",
+    highlight: "OA PLAUSIBLE if state+demand OK",
+    secondary: "List data gaps",
+    recommendation_text: RECOMMENDATION_TEXT_BY_ROUTE.THIRD_PARTY_OA_SCREEN
+  };
 }
 
 // Handle Form Submission & Output to Aman's CRM Schema Contract
@@ -310,6 +363,9 @@ function handleFormSubmit(e) {
 
   // Set Recommended Route Header & Dynamically Highlight Matching Matrix Card
   document.getElementById("resRouteVal").innerText = routeDecision.label;
+  if (document.getElementById("resMemoDescText") && routeDecision.recommendation_text) {
+    document.getElementById("resMemoDescText").innerText = routeDecision.recommendation_text;
+  }
   updateOptionMatrixHighlight(routeDecision.route);
 
   // Render 7-Dimension Scorecard Values (Max 14 pts)

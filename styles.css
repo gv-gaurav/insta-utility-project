@@ -1451,8 +1451,15 @@ footer {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Header Banner */
@@ -1815,4 +1822,67 @@ footer {
 
 .crm-debug-content.show {
   display: block;
+}
+
+/* ==========================================================================
+   PRINTABLE ASSESSMENT SUMMARY STYLES (@media print)
+   ========================================================================== */
+@media print {
+  /* Hide non-assessment UI elements during printing */
+  .top-announcement-bar,
+  header,
+  .hero,
+  section:not(.form-section),
+  .form-minimal-header,
+  #diagnosticForm,
+  .micro-trust-row,
+  .crm-debug-toggle,
+  .crm-debug-content,
+  .memo-actions,
+  footer,
+  .drawer-overlay {
+    display: none !important;
+  }
+
+  body, html {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    font-size: 11pt !important;
+  }
+
+  .form-section {
+    padding: 0 !important;
+    background: #ffffff !important;
+    border: none !important;
+  }
+
+  .form-card-container {
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    max-width: 100% !important;
+  }
+
+  .diagnostic-result-container {
+    display: block !important;
+    box-shadow: none !important;
+    border: 1px solid #cbd5e1 !important;
+    padding: 1.5rem !important;
+    margin: 0 !important;
+  }
+
+  .output-memo-card {
+    background: #1e293b !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .scorecard-status-badge,
+  .matrix-card.recommended,
+  .rec-pill,
+  .badge-num,
+  .exec-kpi-card.highlight {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
 }

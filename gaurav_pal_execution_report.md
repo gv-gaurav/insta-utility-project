@@ -124,5 +124,43 @@ In strict compliance with the **VOLTOS CEO Confirmed Execution Workflow (07 Sep 
    - Strictly enforced 6 verified Zoho `Website_Leads` mappings. `Opportunity_Owner` remains `null`.
 
 ---
-*Report updated & submitted by Gaurav Pal — VoltOS Greenfield Venture Execution Lead (09 Sep 2026).*
+
+## 8. 10 Sep 2026 Cycle Execution & Deliverable Submission — Insta Utility v1.1 Staging & UtilityFix Governance
+
+**Execution Date:** 10 September 2026  
+**Contributor Name:** Gaurav Pal  
+**Role:** VoltOS Greenfield Venture Build — Insta Utility Staging & CRM Mapping Lead  
+**Assigned Capacity:** 6h Serious Execution Allocation (2h UtilityFix Continuity + 4h Insta v1.1 Build)  
+**Deliverable Status:** `PASS — Insta Utility v1.1 RELEASED & PUSHED TO MAIN (Commit 358ba5c); UtilityFix ON HOLD (Named Blocker Logged)`  
+**GitHub Repository:** [https://github.com/gv-gaurav/insta-utility-project](https://github.com/gv-gaurav/insta-utility-project)  
+
+---
+
+### Key Accomplishments (10 Sep 2026 Cycle):
+
+1. **Insta Utility Staging Release v1.1 ([index.html](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/index.html), [app.js](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/app.js), [styles.css](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/styles.css)) — PASS**:
+   - **Visible Decline Action**: Integrated a visible **"Not now / Decline"** action button in the output memo card (`.memo-actions` container).
+   - **`proposal_decline` Event Handler**: Created `declineProposal()` function in `app.js` pushing `proposal_decline` event to `window.dataLayer` with full `Submission_Ref` continuity.
+   - **GTM/GA4 Measurement Tracking**: Installed authorized staging-only GTM container (`GTM-W5MGDDCR`) in high `<head>` and `<body>` noscript locations as specified by Tarun.
+   - **Full 5-Event Staging Measurement Contract**: Guaranteed firing of all 5 contract events (`diagnostic_started`, `diagnostic_completed`, `diagnostic_invite_shown`, `proposal_accept`, `proposal_decline`).
+   - **Printable Assessment Summary**: Authored dedicated `@media print` CSS block in `styles.css`. Clicking *"Print / Download Summary PDF"* cleanly isolates the Assessment Summary memo for PDF export without page clutter.
+   - **v1 Baseline Preservation**: Strictly preserved 14-point 7-dimension scoring engine, 7 approved disclaimers, 6-field CRM guardrail (`Opportunity_Owner: null`), and zero savings quote policy (`savings_pct: null`).
+   - **Commit Integrity & Rollback**: Commits `3575677` and `358ba5c` pushed to `main`. Retained commit `3575677` as the explicit rollback baseline.
+
+2. **UtilityFix Codebase & `Submission_Ref` Continuity Task — HOLD / BLOCKED**:
+   - **Governance Compliance**: Per CEO plan fallback rule (*"If codebase unavailable, return exact owner/location of missing access; no recreated substitute"*), task is logged as `HOLD / BLOCKED`.
+   - **Named External Blocker**: Codebase access unavailable due to Aman Khatana's absence on 10 Sep 2026. Zero synthetic fallback modules created.
+
+---
+
+### 10 Sep 2026 Task Reconciliation & Gate Status:
+
+| Track / Task | Owner(s) | Allocated Time | Priority | Hard Done Gate Target | Execution Status | Evidence / Commit SHA |
+| :--- | :--- | :---: | :---: | :--- | :---: | :--- |
+| **UtilityFix Continuity** | Gaurav + Aman | 2h | P0 | One deterministic `Submission_Ref` path proven before CRM write. | `HOLD / BLOCKED` | **Named Blocker Logged** (Aman absent & repo access unavailable) |
+| **Insta Utility v1.1 Build** | Gaurav + Tarun | 4h | P1 | Staging v1.1 with decline path, 5-event contract, printable summary, and same `Submission_Ref`. | `PASS` | **Commits `3575677` & `358ba5c` (`main`)** |
+
+---
+
+*Report updated & submitted by Gaurav Pal — VoltOS Greenfield Venture Execution Lead (10 Sep 2026).*
 
