@@ -112,8 +112,10 @@ if (typeof window.gtag !== "function") {
   };
 }
 
-// Staging GA4 Measurement ID Support (Optional override via window.STAGING_GA4_MEASUREMENT_ID)
-const GA4_MEASUREMENT_ID = window.STAGING_GA4_MEASUREMENT_ID || null;
+// Staging GA4 Measurement ID (Tarun Staging Spec: G-CX448B8NZM)
+window.STAGING_GA4_MEASUREMENT_ID = window.STAGING_GA4_MEASUREMENT_ID || "G-CX448B8NZM";
+const GA4_MEASUREMENT_ID = window.STAGING_GA4_MEASUREMENT_ID;
+
 if (GA4_MEASUREMENT_ID) {
   window.gtag("config", GA4_MEASUREMENT_ID, {
     debug_mode: true,
