@@ -211,3 +211,88 @@ All assigned responsibilities for the **10 September 2026 Execution Cycle** unde
 
 *Report updated & submitted by Gaurav Pal — VoltOS Greenfield Venture Execution Lead (10 Sep 2026).*
 
+---
+
+## 9. 11 Sep 2026 Cycle Execution & Deliverable Submission — Insta Utility v1.2 Release Candidate (Track C)
+
+**Execution Date:** 11 September 2026  
+**Contributor Name:** Gaurav Pal  
+**Role:** VoltOS Greenfield Venture Build — Insta Utility Staging & CRM Mapping Lead  
+**CEO Plan Priority:** P1 (Track C: Insta Utility v1.2 Release Candidate — 6h Capacity Allocation)  
+**Deliverable Status:** `PASS — 100% COMPLETE & INDEPENDENTLY QA CERTIFIED (Ashish Gill Release QA Pass on Commit 6ec478c)`  
+**Staging URL:** [https://gv-gaurav.github.io/insta-utility-project/](https://gv-gaurav.github.io/insta-utility-project/)  
+**GitHub Repository:** [https://github.com/gv-gaurav/insta-utility-project](https://github.com/gv-gaurav/insta-utility-project)  
+
+---
+
+### Executive Summary (11 Sep 2026 Cycle):
+
+In strict compliance with the **VoltOS CEO Next Serious Execution Plan (11 Sep 2026 | Track C)**, I have built, hardened, verified, and delivered the **Insta Utility v1.2 Release Candidate**. All code updates have been committed and pushed to `main` (`commit 6ec478c`), verified against the 10/10 master fixture suite, and certified by Ashish Gill with **ZERO open defects**.
+
+---
+
+### Independent Release QA Verdict — Ashish Gill (04:30 PM):
+* **QA Verdict:** `PASS — Complete Release Matrix Certification (Direct Browser Verified)`
+* **Verified Items:**
+  1. **Claims Safety:** Hero, announcement bar, form, option matrix, footer, and GC card confirmed clean of 30%–40% savings guarantees and static ₹/kWh bands. Matches Mayank's Sheet 01 replacements exactly. No Quote (v1) policy and Sheet-05 disclaimers preserved. ✅
+  2. **fitLabel / OUT_OF_SCOPE:** Badge explicitly shows `Out of Scope` with correct red styling (`out-of-scope-fit`). Mismatch from 10 Sep resolved. ✅
+  3. **Routing & Scoring:** Spot-checked against 10/10 fixture baseline with 0 regression. ✅
+  4. **File Upload UX:** 15 MB limit, extension validation (`.pdf`, `.zip`, etc.), drag-and-drop feedback, and clear (✕) handler working as expected. ✅
+  5. **A4 Print / PDF Engine:** Confirmed 2-page A4 PDF layout (KPIs/Scorecard on Page 1; Matrix/Next Step/Disclaimers on Page 2) with zero split titles or broken cards. ✅
+  6. **Mobile Viewport:** Emulation verified; layout holds and CTAs render cleanly. ✅
+  7. **GA4 Staging Events:** All 5 events (`diagnostic_started`, `completed`, `invite_shown`, `proposal_accept`, `proposal_decline`) firing once each (`debug_mode: true`), no duplicates. ✅
+
+---
+
+### Detailed Key Accomplishments:
+
+1. **Core Logic & Scorecard Hardening ([app.js](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/app.js))**:
+   - **Fixed `OUT_OF_SCOPE` fitLabel Mismatch**: Updated `calculateQualificationScoreV1` to explicitly output `fitLabel: "Out of Scope"` and assign `.out-of-scope-fit` badge styling whenever `fitBand === "OUT_OF_SCOPE"`.
+   - **Supply Baseline Scoring Refinement**: Updated `baselineScore` to evaluate `(inputs.demandKW || inputs.monthlyBill) ? 2 : 0`, resolving FIX-03 (`LOW_WEAK_ICP`) score normalization.
+
+2. **File Upload Validation & UX ([app.js](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/app.js))**:
+   - Authored `validateAndSetFile()` helper enforcing 15 MB file size limit, extension validation (`.pdf`, `.zip`, `.png`, `.jpg`, `.jpeg`, `.csv`, `.xlsx`), visual drag-and-drop feedback, and clear file button handler.
+
+3. **Mayank Bhola Claim-Safe Copy Pack Integration ([index.html](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/index.html))**:
+   - Removed all 30%–40% savings guarantees and static ₹/kWh tariff bands across Hero H1, top announcement bar, form headers, CTA buttons, matrix cards, and footer blurb.
+   - Updated CTAs to `Free Eligibility Screen` and `Request Detailed Paid Diagnostic Proposal →`.
+   - Replaced static matrix rates with qualitative DISCOM baseline status text.
+
+4. **Printable PDF Summary Engine ([styles.css](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/styles.css))**:
+   - Configured `@page { size: A4 portrait; margin: 10mm 12mm; }` and assigned `break-inside: avoid !important;` across all cards and sections.
+   - Enforced clean 2-page pagination via `page-break-before: always;` on `.option-matrix-section` (Page 1: Header/KPIs/Scorecard; Page 2: Option Matrix/Memo/Risk Disclaimers).
+   - Added `class="disclaimers-card"` to prevent disclaimer headers from splitting from bullet list.
+
+5. **Client-Facing Sales & Delivery Pack ([paid_diagnostic_v1_sales_delivery_pack.md](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/paid_diagnostic_v1_sales_delivery_pack.md))**:
+   - Created client-facing sales and delivery asset containing product scope (~100 kW–5 MW demand C&I decision-makers), required evidence checklist, deliverables, explicit exclusions, commercial terms, and client proposal output shell.
+
+---
+
+### Executable Fixture Master Test Matrix (10/10 PASS):
+
+| Fixture ID | Case Name | Business Name | Score | Fit Band | Primary Route | Result |
+|---|---|---|:---:|:---:|:---:|:---:|
+| **FIX-01** | `HIGH_OA_ACCEPT` | Alpha Components Pvt Ltd | 14 / 14 | `HIGH` | `THIRD_PARTY_OA_SCREEN` | ✅ **PASS** |
+| **FIX-02** | `MEDIUM_PARTIAL_BILL` | Beta Textiles Ltd | 13 / 14 | `HIGH` | `THIRD_PARTY_OA_SCREEN` | ✅ **PASS** |
+| **FIX-03** | `LOW_WEAK_ICP` | Gamma Retail Shop | 4 / 14 | `LOW` | `AUDIT_FIRST` | ✅ **PASS** |
+| **FIX-04** | `OA_ROUTE_CORE` | Delta Processors LLP | 14 / 14 | `HIGH` | `THIRD_PARTY_OA_SCREEN` | ✅ **PASS** |
+| **FIX-05** | `GROUP_CAPTIVE_SIGNAL` | Epsilon Group Holdings | 14 / 14 | `HIGH` | `GROUP_CAPTIVE_SCREEN` | ✅ **PASS** |
+| **FIX-06** | `AUDIT_FIRST_NO_DEMAND` | Zeta Foods Pvt Ltd | 7 / 14 | `MEDIUM` | `AUDIT_FIRST` | ✅ **PASS** |
+| **FIX-07** | `OUT_OF_SCOPE_HOUSEHOLD` | Personal Residence - Mr Sharma UP | 10 / 14 | `OUT_OF_SCOPE` | `OUT_OF_SCOPE` | ✅ **PASS** |
+| **FIX-08** | `MISSING_CONSENT_STOP` | Theta Metals Ltd | 12 / 14 | `STOP` | `STOP` | ✅ **PASS** |
+| **FIX-09** | `ACCEPT_PATH` | Iota Chemicals Ltd | 14 / 14 | `HIGH` | `THIRD_PARTY_OA_SCREEN` | ✅ **PASS** |
+| **FIX-10** | `DECLINE_PATH` | Kappa Packaging Ltd | 14 / 14 | `HIGH` | `THIRD_PARTY_OA_SCREEN` | ✅ **PASS** |
+
+---
+
+### 11 Sep 2026 Task Reconciliation & Gate Status:
+
+| Track / Task | Owner | Priority | Capacity | Hard Done Gate Target | Status | Evidence / Commit |
+| :--- | :--- | :---: | :---: | :--- | :---: | :--- |
+| **Insta v1.2 Release Candidate** | Gaurav | P1 | 6h | New commit(s) + live staging v1.2 + no 30%-40% guarantee/static bands + OUT_OF_SCOPE label consistent + upload/printable summary working. Ready for Ashish certification. | `PASS` | **Commit `6ec478c` (`main`) — Ashish QA Certified** |
+
+---
+
+*Report authored & submitted by Gaurav Pal — VoltOS Greenfield Venture Execution Lead (11 Sep 2026).*
+
+
