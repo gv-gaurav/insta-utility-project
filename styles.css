@@ -1598,6 +1598,12 @@ footer {
   border: 1px solid #86efac;
 }
 
+.scorecard-status-badge.out-of-scope-fit {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+
 .scorecard-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -1825,8 +1831,13 @@ footer {
 }
 
 /* ==========================================================================
-   PRINTABLE ASSESSMENT SUMMARY STYLES (@media print)
+   PRINTABLE ASSESSMENT SUMMARY STYLES (@media print & PDF EXPORT)
    ========================================================================== */
+@page {
+  size: A4 portrait;
+  margin: 10mm 12mm;
+}
+
 @media print {
   /* Hide non-assessment UI elements during printing */
   .top-announcement-bar,
@@ -1840,20 +1851,32 @@ footer {
   .crm-debug-content,
   .memo-actions,
   footer,
-  .drawer-overlay {
+  .drawer-overlay,
+  #submissionResult > div:last-child {
     display: none !important;
   }
 
   body, html {
     background: #ffffff !important;
     color: #0f172a !important;
-    font-size: 11pt !important;
+    font-size: 9.5pt !important;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .container {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
   .form-section {
     padding: 0 !important;
     background: #ffffff !important;
     border: none !important;
+    margin: 0 !important;
   }
 
   .form-card-container {
@@ -1866,22 +1889,227 @@ footer {
   .diagnostic-result-container {
     display: block !important;
     box-shadow: none !important;
-    border: 1px solid #cbd5e1 !important;
-    padding: 1.5rem !important;
+    border: none !important;
+    padding: 0 !important;
     margin: 0 !important;
   }
 
+  /* Prevent page cuts inside containers */
+  .diag-header,
+  .exec-summary-strip,
+  .scorecard-section,
+  .scorecard-grid,
+  .dimension-item,
+  .option-matrix-section,
+  .option-matrix-grid,
+  .matrix-card,
+  .output-memo-card,
+  .disclaimers-card,
+  .scorecard-status-badge {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  .diag-header {
+    padding-bottom: 0.5rem !important;
+    margin-bottom: 0.75rem !important;
+    border-bottom: 1.5px solid #e2e8f0 !important;
+  }
+
+  .diag-title-area h3 {
+    font-size: 1.15rem !important;
+  }
+
+  .diag-title-area p {
+    font-size: 0.8rem !important;
+  }
+
+  .diag-ref-group {
+    padding: 0.4rem 0.85rem !important;
+  }
+
+  .diag-ref-val {
+    font-size: 0.95rem !important;
+  }
+
+  /* PAGE 1: 4 KPI cards on 1 row */
+  .exec-summary-strip {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 0.5rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .exec-kpi-card {
+    padding: 0.5rem 0.65rem !important;
+  }
+
+  .exec-kpi-label {
+    font-size: 0.65rem !important;
+  }
+
+  .exec-kpi-val {
+    font-size: 1.05rem !important;
+    margin-top: 0.15rem !important;
+  }
+
+  .exec-kpi-sub {
+    font-size: 0.65rem !important;
+  }
+
+  /* PAGE 1: Scorecard Section */
+  .scorecard-section {
+    padding: 0.85rem !important;
+    margin-bottom: 1rem !important;
+    background: #f8fafc !important;
+    border: 1px solid #cbd5e1 !important;
+  }
+
+  .scorecard-header {
+    margin-bottom: 0.65rem !important;
+  }
+
+  .scorecard-header h4 {
+    font-size: 0.95rem !important;
+  }
+
+  .scorecard-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.4rem !important;
+  }
+
+  .dimension-item {
+    padding: 0.4rem 0.65rem !important;
+  }
+
+  .dim-top {
+    font-size: 0.775rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  .dim-bar-bg {
+    height: 6px !important;
+  }
+
+  /* PAGE 2: Force Clean Page Break for Option Matrix & Disclaimers */
+  .option-matrix-section {
+    break-before: page !important;
+    page-break-before: always !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .section-sub-title {
+    font-size: 1rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  .option-matrix-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 0.45rem !important;
+    margin-top: 0.5rem !important;
+  }
+
+  .matrix-card {
+    padding: 0.65rem !important;
+    font-size: 0.725rem !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 6px !important;
+  }
+
+  .rec-pill {
+    top: -9px !important;
+    font-size: 0.6rem !important;
+    padding: 0.1rem 0.45rem !important;
+  }
+
+  .matrix-card h5 {
+    font-size: 0.825rem !important;
+  }
+
+  .matrix-tariff {
+    font-size: 0.95rem !important;
+    margin: 0.25rem 0 !important;
+  }
+
+  .matrix-features {
+    font-size: 0.675rem !important;
+    margin: 0.35rem 0 !important;
+  }
+
+  .matrix-features li {
+    padding: 0.15rem 0 !important;
+  }
+
+  .matrix-feasibility-tag {
+    font-size: 0.65rem !important;
+    padding: 0.1rem 0.4rem !important;
+  }
+
+  /* PAGE 2: Output Memo Card */
   .output-memo-card {
     background: #1e293b !important;
+    color: #ffffff !important;
+    padding: 0.85rem 1.15rem !important;
+    margin-bottom: 0.85rem !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
 
+  .output-memo-card h4 {
+    font-size: 1.05rem !important;
+    margin-bottom: 0.4rem !important;
+  }
+
+  .output-memo-card p {
+    font-size: 0.775rem !important;
+    line-height: 1.4 !important;
+    margin-bottom: 0.4rem !important;
+  }
+
+  .memo-tag {
+    font-size: 0.65rem !important;
+    padding: 0.1rem 0.45rem !important;
+    margin-bottom: 0.4rem !important;
+  }
+
+  /* PAGE 2: Approved Risk Disclaimers Card */
+  .disclaimers-card {
+    background: #f1f5f9 !important;
+    border: 1px solid #cbd5e1 !important;
+    padding: 0.75rem 1rem !important;
+    margin-bottom: 0.5rem !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .disclaimers-card strong {
+    font-size: 0.8rem !important;
+    margin-bottom: 0.35rem !important;
+  }
+
+  .disclaimers-card ul {
+    font-size: 0.725rem !important;
+    line-height: 1.4 !important;
+    padding-left: 1rem !important;
+    margin-top: 0.35rem !important;
+  }
+
+  .disclaimers-card li {
+    margin-bottom: 0.2rem !important;
+  }
+
+  /* Color Preservation */
   .scorecard-status-badge,
   .matrix-card.recommended,
   .rec-pill,
   .badge-num,
-  .exec-kpi-card.highlight {
+  .exec-kpi-card.highlight,
+  .feasibility-high,
+  .feasibility-med,
+  .feasibility-low,
+  .dim-bar-fill {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }

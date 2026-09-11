@@ -14,7 +14,7 @@ function triggerFileInput() {
 function handleFileSelect(e) {
   const file = e.target.files[0];
   if (file) {
-    setUploadedFile(file);
+    validateAndSetFile(file);
   }
 }
 
@@ -42,13 +42,32 @@ function handleFileDrop(e) {
     const file = e.dataTransfer.files[0];
     const fileInput = document.getElementById("utility_bill_file");
     if (fileInput) {
-      // Transfer files to input element
       const dataTransfer = new DataTransfer();
       dataTransfer.items.add(file);
       fileInput.files = dataTransfer.files;
     }
-    setUploadedFile(file);
+    validateAndSetFile(file);
   }
+}
+
+function validateAndSetFile(file) {
+  const maxSizeBytes = 15 * 1024 * 1024; // 15 MB Max limit
+  const allowedExtensions = [".pdf", ".zip", ".png", ".jpg", ".jpeg", ".csv", ".xlsx"];
+  const ext = "." + file.name.split(".").pop().toLowerCase();
+
+  if (!allowedExtensions.includes(ext)) {
+    alert(`Invalid file format (${ext}). Allowed formats: ${allowedExtensions.join(", ")}`);
+    clearUploadedFile();
+    return;
+  }
+
+  if (file.size > maxSizeBytes) {
+    alert(`File is too large (${(file.size / (1024 * 1024)).toFixed(1)} MB). Maximum allowed size is 15 MB.`);
+    clearUploadedFile();
+    return;
+  }
+
+  setUploadedFile(file);
 }
 
 function setUploadedFile(file) {
@@ -180,7 +199,7 @@ function calculateQualificationScoreV1(inputs) {
   let demandScore = inputs.demandKW ? 2 : (inputs.monthlyBill ? 1 : 0);
 
   // 3. Current Supply Baseline
-  let baselineScore = 2; // Discom HT known
+  let baselineScore = (inputs.demandKW || inputs.monthlyBill) ? 2 : 0; // Discom HT known if demand or bill provided
 
   // 4. Evidence Strength
   let evidenceScore = inputs.fileName ? 2 : (inputs.monthlyBill ? 1 : 0);
@@ -209,8 +228,14 @@ function calculateQualificationScoreV1(inputs) {
   }
 
   // Hard Overrides
-  if (!inputs.consentAccepted) fitBand = "STOP";
-  if (sec.includes("household") || sec.includes("residence")) fitBand = "OUT_OF_SCOPE";
+  if (!inputs.consentAccepted) {
+    fitBand = "STOP";
+    fitLabel = "Gate Blocked";
+  }
+  if (sec.includes("household") || sec.includes("residence")) {
+    fitBand = "OUT_OF_SCOPE";
+    fitLabel = "Out of Scope";
+  }
 
   return {
     totalPts,
@@ -420,6 +445,8 @@ function handleFormSubmit(e) {
   document.getElementById("resScoreBadge").innerText = `Status: ${scoreResult.fitLabel.toUpperCase()} (${scoreResult.totalPts} / 14 Pts)`;
   if (scoreResult.fitBand === "HIGH") {
     document.getElementById("resScoreBadge").className = "scorecard-status-badge high-fit";
+  } else if (scoreResult.fitBand === "OUT_OF_SCOPE" || scoreResult.fitBand === "STOP") {
+    document.getElementById("resScoreBadge").className = "scorecard-status-badge out-of-scope-fit";
   } else {
     document.getElementById("resScoreBadge").className = "scorecard-status-badge";
   }
@@ -514,7 +541,7 @@ function requestPaidDiagnostic() {
     action: "Requested Paid Diagnostic Assessment Memo",
     timestamp: new Date().toISOString()
   });
-  alert(`Stage 2 Request Logged for ${currentRef}: Your request for the detailed paid diagnostic assessment has been registered. Our C&I energy team will reach out with the custom scope memo.`);
+  alert(`Stage 2 Proposal Request Logged for ${currentRef}: Request a detailed Paid Diagnostic proposal — our team will confirm scope, evidence checklist, timeline, and fee before work starts.`);
 }
 
 // Decline Stage 2 Assessment Action (Tarun v1.1 Measurement Spec)
@@ -525,7 +552,7 @@ function declineProposal() {
     action: "Declined Stage 2 Assessment / Not Now",
     timestamp: new Date().toISOString()
   });
-  alert(`Decline Action Logged for ${currentRef}: Your response ("Not now / Decline") has been recorded. You can return anytime to request your assessment.`);
+  alert(`Decline Action Logged for ${currentRef}: Not now / Decline — Submission_Ref retained; no further commercial action until client returns.`);
 }
 
 // Copy JSON Payload

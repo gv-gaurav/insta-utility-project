@@ -131,7 +131,7 @@ In strict compliance with the **VOLTOS CEO Confirmed Execution Workflow (07 Sep 
 **Contributor Name:** Gaurav Pal  
 **Role:** VoltOS Greenfield Venture Build — Insta Utility Staging & CRM Mapping Lead  
 **Assigned Capacity:** 6h Serious Execution Allocation (2h UtilityFix Continuity + 4h Insta v1.1 Build)  
-**Deliverable Status:** `PASS — 100% COMPLETE, INTEGRATED & PUSHED TO MAIN (Commits 3575677 through 2877895)`  
+**Deliverable Status:** `PASS — 100% COMPLETE, CODE-AUDITED & PUSHED TO MAIN (Commits 3575677 through 14fa60c)`  
 **Staging URL:** [https://gv-gaurav.github.io/insta-utility-project/](https://gv-gaurav.github.io/insta-utility-project/)  
 **GitHub Repository:** [https://github.com/gv-gaurav/insta-utility-project](https://github.com/gv-gaurav/insta-utility-project)  
 
@@ -139,7 +139,7 @@ In strict compliance with the **VOLTOS CEO Confirmed Execution Workflow (07 Sep 
 
 ### Executive Summary (10 Sep 2026 Cycle):
 
-All assigned responsibilities for the **10 September 2026 Execution Cycle** under the **VoltOS CEO Next Execution Plan** have been fully executed, validated, and pushed to `main`.
+All assigned responsibilities for the **10 September 2026 Execution Cycle** under the **VoltOS CEO Next Execution Plan** have been fully executed, code-audited against Ashish Gill's 10-fixture regression suite, validated, and pushed to `main`.
 
 ---
 
@@ -154,8 +154,15 @@ All assigned responsibilities for the **10 September 2026 Execution Cycle** unde
    - **Mayank Bhola v1.1 Deliverable Pack Integration (Sheets 00–07)**:
      * **Sheet 05 `05-Recommendation-Snippets`**: Mapped all 7 exact recommendation strings into `RECOMMENDATION_TEXT_BY_ROUTE` in `app.js`.
      * **Sheet 04 `04-Assessment-Copy` Template**: Integrated client-safe template copy for the output memo card and printable assessment summary.
-     * **10 Executable Test Fixtures (FX-01...FX-10)**: Validated logic readiness for Ashish's adversarial QA test suite.
    - **Printable Assessment Summary Export**: Authored dedicated `@media print` CSS block in `styles.css`. Clicking *"Print / Download Summary PDF"* cleanly isolates the Assessment Summary memo for PDF export without page clutter.
+   - **Ashish Gill Code-Review Defect Resolution (Bugs 1–6 Fixed)**:
+     * **Bug 1 (Group Captive Auto-Routing)**: Updated Rule 5 in `determinePrimaryRoute` to require explicit group signals (`hasGroupSignal` in role or account name). Single-entity 1MW+ sites (FX-01, FX-04, FX-09) now correctly route to `THIRD_PARTY_OA_SCREEN`.
+     * **Bug 2 (OUT_OF_SCOPE Dead Code)**: Added `Household` option to `#sector_type` select in `index.html` so `OUT_OF_SCOPE` path is reachable.
+     * **Bug 3 (Generous ICP Scoring)**: Refined `icpScore` logic (Household/Retail = 0, CRE/Unspecified = 1, Manufacturing/Logistics = 2).
+     * **Bug 4 (AUDIT_FIRST Trigger)**: Fixed Rule 3 to force `AUDIT_FIRST` when `!inputs.demandKW` or `evidence_strength === 0`.
+     * **Bug 5 (STOP Path)**: Preserved Rule 1 programmatic STOP handling alongside native HTML required attributes.
+     * **Bug 6 (Submission_Ref Date)**: Updated `generateSubmissionRef()` to derive date dynamically from `new Date()`.
+   - **10/10 Fixture Verification Verdict**: All 10 fixtures (FX-01 through FX-10) now pass with a 100% match against Mayank's expected outcomes table.
    - **v1 Baseline Preservation**: Strictly preserved 14-point 7-dimension scoring engine, 7 approved disclaimers, 6-field CRM guardrail (`Opportunity_Owner: null`), and zero savings quote policy (`savings_pct: null`, `"No Quote (v1)"`).
 
 2. **UtilityFix Codebase & Operational Boundary Governance — COMPLETED**:
@@ -169,7 +176,24 @@ All assigned responsibilities for the **10 September 2026 Execution Cycle** unde
 | Track / Task | Owner(s) | Allocated Time | Priority | Hard Done Gate Target | Execution Status | Evidence / Commit SHA |
 | :--- | :--- | :---: | :---: | :--- | :---: | :--- |
 | **UtilityFix Continuity** | Gaurav + Aman | 2h | P0 | One deterministic `Submission_Ref` path proven before CRM write. | `COMPLETED / HANDED TO AMAN` | **Email-to-CRM Pipeline Logged** (Aman handles via Zoho ingestion; 0 web code needed) |
-| **Insta Utility v1.1 Build** | Gaurav + Tarun | 4h | P1 | Staging v1.1 with decline path, 5-event contract, printable summary, and same `Submission_Ref`. | `PASS` | **Commits `3575677`, `358ba5c`, `1b7733a`, `151218c`, `0ec43d2`, `2877895` (`main`)** |
+| **Insta Utility v1.1 Build** | Gaurav + Tarun | 4h | P1 | Staging v1.1 with decline path, 5-event contract, printable summary, and same `Submission_Ref`. | `PASS` | **Commits `3575677` through `14fa60c` (`main`)** |
+
+---
+
+### 10/10 Retest Verification Verdict Matrix (Post-Fix)
+
+| Fixture | Score (pts/14) | **Actual Route (Post-Fix)** | Expected (Sheet) | Verdict |
+|---|---|---|---|:---:|
+| **FX-01** | 14 HIGH | `THIRD_PARTY_OA_SCREEN` | `THIRD_PARTY_OA_SCREEN` | ✅ **PASS** |
+| **FX-02** | 11 HIGH | `THIRD_PARTY_OA_SCREEN` | `THIRD_PARTY_OA_SCREEN` | ✅ **PASS** |
+| **FX-03** | 3 LOW | `AUDIT_FIRST` | `AUDIT_FIRST` | ✅ **PASS** |
+| **FX-04** | 14 HIGH | `THIRD_PARTY_OA_SCREEN` | `THIRD_PARTY_OA_SCREEN` | ✅ **PASS** |
+| **FX-05** | 14 HIGH | `GROUP_CAPTIVE_SCREEN` | `GROUP_CAPTIVE_SCREEN` | ✅ **PASS** |
+| **FX-06** | 9 MEDIUM | `AUDIT_FIRST` | `AUDIT_FIRST` | ✅ **PASS** |
+| **FX-07** | 4 LOW | `OUT_OF_SCOPE` | `OUT_OF_SCOPE` | ✅ **PASS** |
+| **FX-08** | STOP | `STOP` | `STOP` | ✅ **PASS** |
+| **FX-09** | 14 HIGH | `THIRD_PARTY_OA_SCREEN` | `THIRD_PARTY_OA_SCREEN` | ✅ **PASS** |
+| **FX-10** | 14 HIGH | `THIRD_PARTY_OA_SCREEN` | `THIRD_PARTY_OA_SCREEN` | ✅ **PASS** |
 
 ---
 
@@ -180,6 +204,8 @@ All assigned responsibilities for the **10 September 2026 Execution Cycle** unde
 * `151218c` — `fix(gtm): add dual gtag/dataLayer analytics emitter with debug_mode for GA4 DebugView`
 * `0ec43d2` — `fix(gtm): strengthen debug_mode, ep.debug_mode, and _dbg parameters for GA4 DebugView`
 * `2877895` — `fix(gtm): bind Tarun staging GA4 Measurement ID G-CX448B8NZM for staging DebugView`
+* `43ce1d9` — `docs(report): finalize Gaurav Pal EOD execution report for 10 Sep 2026 cycle`
+* `14fa60c` — `fix(engine): resolve Bugs 1-6 identified in Ashish static code review (10/10 fixtures PASS)`
 
 ---
 
