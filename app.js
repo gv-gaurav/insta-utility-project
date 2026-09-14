@@ -583,10 +583,25 @@ function resetForm() {
   clearUploadedFile();
 }
 
-// Toggle QA Inspector Drawer
-function toggleQADrawer() {
-  const drawer = document.getElementById("qaDrawer");
-  drawer.classList.toggle("active");
+// Off-Canvas Mobile Navigation Drawer Controller
+function openMobileDrawer() {
+  const panel = document.getElementById("mobileDrawerPanel");
+  const overlay = document.getElementById("mobileDrawerOverlay");
+  if (panel && overlay) {
+    panel.classList.add("active");
+    overlay.classList.add("active");
+    document.body.style.overflow = "hidden";
+  }
+}
+
+function closeMobileDrawer() {
+  const panel = document.getElementById("mobileDrawerPanel");
+  const overlay = document.getElementById("mobileDrawerOverlay");
+  if (panel && overlay) {
+    panel.classList.remove("active");
+    overlay.classList.remove("active");
+    document.body.style.overflow = "";
+  }
 }
 
 

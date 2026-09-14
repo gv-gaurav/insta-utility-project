@@ -52,20 +52,53 @@
   <!-- HEADER NAVIGATION -->
   <header>
     <div class="container header-content">
-      <a href="#" class="brand-logo">
+      <a href="index.html" class="brand-logo">
         <img src="https://www.instautility.com/assets/img/logo/insta-utility-logo.png"
           alt="Insta Utility - Greener Tomorrow" class="header-logo-img">
       </a>
-      <nav class="header-nav-links">
-        <a href="#buyer-persona" class="nav-link">For Decision-Makers</a>
-        <a href="#how-it-works" class="nav-link">How It Works</a>
-        <a href="#services" class="nav-link">Advisory Services</a>
-      </nav>
-      <div class="header-actions">
-        <a href="#intake-form" class="btn btn-emerald btn-sm header-btn">Get Free Check</a>
+      <button class="mobile-menu-toggle" id="mobileMenuBtn" aria-label="Open Mobile Menu" onclick="openMobileDrawer()">
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+      </button>
+      <div class="header-nav-container" id="headerNavContainer">
+        <nav class="header-nav-links">
+          <a href="index.html" class="nav-link active">Home</a>
+          <a href="open-access-eligibility-screening.html" class="nav-link">Open Access</a>
+          <a href="group-captive-screening-for-ci.html" class="nav-link">Group Captive</a>
+          <a href="paid-renewable-power-diagnostic.html" class="nav-link">Paid Diagnostic</a>
+        </nav>
+        <div class="header-actions">
+          <a href="#intake-form" class="btn btn-emerald btn-sm header-btn">Get Free Check</a>
+        </div>
       </div>
     </div>
   </header>
+
+  <!-- OFF-CANVAS MOBILE NAVIGATION DRAWER -->
+  <div class="mobile-drawer-overlay" id="mobileDrawerOverlay" onclick="closeMobileDrawer()"></div>
+  <div class="mobile-drawer-panel" id="mobileDrawerPanel">
+    <div class="mobile-drawer-header">
+      <a href="index.html" class="brand-logo" onclick="closeMobileDrawer()">
+        <img src="https://www.instautility.com/assets/img/logo/insta-utility-logo.png" alt="Insta Utility Logo" class="header-logo-img">
+      </a>
+      <button class="mobile-drawer-close" aria-label="Close Menu" onclick="closeMobileDrawer()">✕</button>
+    </div>
+    <div class="mobile-drawer-body">
+      <nav class="mobile-drawer-nav">
+        <a href="index.html" class="mobile-nav-link active" onclick="closeMobileDrawer()">Home Overview</a>
+        <a href="open-access-eligibility-screening.html" class="mobile-nav-link" onclick="closeMobileDrawer()">Open Access Eligibility &rarr;</a>
+        <a href="group-captive-screening-for-ci.html" class="mobile-nav-link" onclick="closeMobileDrawer()">Group Captive Screening &rarr;</a>
+        <a href="paid-renewable-power-diagnostic.html" class="mobile-nav-link" onclick="closeMobileDrawer()">Paid Diagnostic Memo &rarr;</a>
+      </nav>
+      <div class="mobile-drawer-cta">
+        <a href="#intake-form" class="btn btn-emerald" style="width:100%; text-align:center;" onclick="closeMobileDrawer()">Get Free Check &rarr;</a>
+      </div>
+      <div class="mobile-drawer-footer">
+        <p style="font-size:0.775rem; color:var(--text-muted);">C&amp;I Renewable Power Procurement Advisory</p>
+      </div>
+    </div>
+  </div>
 
   <!-- HERO SECTION -->
   <section class="hero">
@@ -855,12 +888,12 @@
 
         <!-- Col 2: Advisory Capabilities -->
         <div class="footer-col">
-          <h4 class="footer-heading">Advisory Services</h4>
+          <h4 class="footer-heading">Advisory Surfaces</h4>
           <ul class="footer-links">
-            <li><a href="#services">Open Access & Group Captive Solar</a></li>
-            <li><a href="#services">Corporate PPA Structuring</a></li>
-            <li><a href="#services">Energy Audits & Load Profiling</a></li>
-            <li><a href="#services">DISCOM Tariff & Billing Optimization</a></li>
+            <li><a href="open-access-eligibility-screening.html">Open Access Eligibility Screening</a></li>
+            <li><a href="group-captive-screening-for-ci.html">Group Captive Screening</a></li>
+            <li><a href="paid-renewable-power-diagnostic.html">Paid Renewable Power Diagnostic</a></li>
+            <li><a href="#intake-form">Free Diagnostic Intake Form</a></li>
           </ul>
         </div>
 
