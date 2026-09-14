@@ -145,7 +145,7 @@ if (GA4_MEASUREMENT_ID) {
   });
 }
 
-// Unified Analytics Event Emitter (Broadcasting debug_mode: true, ep.debug_mode: true, _dbg: 1 to dataLayer + gtag)
+// Unified Analytics Event Emitter (Single emission to prevent 3x multi-trigger duplicates in GA4/GTM)
 function pushAnalyticsEvent(eventName, params) {
   const payload = Object.assign({
     event: eventName,
@@ -154,15 +154,10 @@ function pushAnalyticsEvent(eventName, params) {
     _dbg: 1
   }, params);
 
+  // Single dataLayer push — GTM and GA4 parse this event exactly ONCE
   window.dataLayer.push(payload);
 
-  if (typeof window.gtag === "function") {
-    window.gtag("event", eventName, payload);
-    if (GA4_MEASUREMENT_ID) {
-      window.gtag("event", eventName, Object.assign({ send_to: GA4_MEASUREMENT_ID, debug_mode: true }, params));
-    }
-  }
-  console.log(`[Analytics Engine] Fired ${eventName} (debug_mode: true)`, payload);
+  console.log(`[Analytics Engine] Single Event Fired: ${eventName} (debug_mode: true)`, payload);
 }
 
 // Track diagnostic start event
