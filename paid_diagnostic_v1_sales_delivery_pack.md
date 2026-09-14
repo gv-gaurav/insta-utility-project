@@ -51,7 +51,7 @@ Indian C&I decision-makers (Facilities / Plant / CFO / Procurement) at sites rou
 
 # PROPOSAL / ASSESSMENT OUTPUT SHELL (Client-Safe)
 
-| Block | Text |
+| Block | Text
 |---|---|
 | **Subject Line** | Proposal: Paid Renewable Power Diagnostic v1 — {{Business_Name}} |
 | **Opening** | Thank you for completing the Insta Utility eligibility screen (Ref: {{Submission_Ref}}). Based on your profile, a Stage 2 Paid Diagnostic can deepen the review using your bills and demand data. This is not a savings guarantee. |
