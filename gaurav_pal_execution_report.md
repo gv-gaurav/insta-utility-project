@@ -329,11 +329,12 @@ In strict compliance with the **VoltOS CEO Next Execution Workflow (15 Sep 2026)
 * **Interactive Staging QA Simulator**: Built an inline Staging QA Simulator bar (`#crmStagingSimulator`) in staging results, allowing instantaneous testing and preview of all 4 states.
 * **CRM Schema & Field Discipline**: Enforced strict 6-field allow-list (`Business_Name`, `Name`, `Contact_Email`, `Contact_Number`, `Submission_Ref`, `Brand`). `Owner` remains `null`.
 
-#### 3. Tarun GA4 / GTM Named-UTM Attribution Fix ([app.js](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/app.js)) — PASS & RESOLVED
+#### 3. Tarun GA4 / GTM Named-UTM Attribution & DebugView Transmission Fix ([app.js](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/app.js)) — PASS & RESOLVED
 * **UTM Capture & Persistence Engine**: Resolved Tarun's staging data layer breakpoint by implementing `getCapturedUTMParams()` in [`app.js`](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/app.js).
 * **Initial Page Load & SessionStorage**: Automatically extracts `utm_source`, `utm_medium`, `utm_campaign`, `utm_term`, `utm_content` from active URL on load, persists them to `sessionStorage`, and pushes `utm_captured_on_load` + `gtag('set', ...)` immediately to `window.dataLayer`.
 * **5-Event Contract Binding**: Bound `activeUTMs` directly into `pushAnalyticsEvent()`, guaranteeing that all 5 contract events (`diagnostic_started`, `diagnostic_completed`, `diagnostic_invite_shown`, `proposal_accept`, `proposal_decline`) automatically carry URL attribution parameters.
-* **Commit Pushed:** `f1c60c9` (`main` branch).
+* **GA4 DebugView Transmission Fix**: Dynamically injected `https://www.googletagmanager.com/gtag/js?id=G-CX448B8NZM` script tag into `<head>` and bound direct `window.gtag("event", eventName, payload)` calls alongside `window.dataLayer.push()` so events trigger direct `/g/collect` HTTP requests and register instantly in GA4 DebugView (`debug_mode: true`).
+* **Commits Pushed:** `f1c60c9` & `c25aacf` (`main` branch).
 
 ---
 
@@ -343,13 +344,13 @@ In strict compliance with the **VoltOS CEO Next Execution Workflow (15 Sep 2026)
 | :--- | :---: | :---: | :--- | :---: | :--- |
 | **Insta CRM-Connected Staging** | 5h | P1 | Staging journey visibly handles success / duplicate / fail-closed outcomes; no silent failure; no new CRM schema; rollback commit exists. | `PASS` | **Commits `49cdad9` / `e50c7ca` ([app.js](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/app.js), [index.html](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/index.html))** |
 | **Release Package Preparation** | 1h | P1 | One deployable release package; no production publish. | `PASS` | **[`production_deployment_manifest_15sep2026.md`](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/production_deployment_manifest_15sep2026.md)** |
-| **Tarun UTM Attribution Fix** | Ext. Support | P1 | Capture named UTMs on load, persist in sessionStorage, and attach to 5 GA4 contract events without changing 5-event schema. | `PASS` | **Commit `f1c60c9` ([app.js](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/app.js))** |
+| **Tarun UTM Attribution Fix** | Ext. Support | P1 | Capture named UTMs on load, persist in sessionStorage, attach to 5 GA4 events, and ensure GA4 DebugView HTTP transmission. | `PASS` | **Commits `f1c60c9` / `c25aacf` ([app.js](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/app.js))** |
 
 ---
 
 ### GitHub Remote Push Verification:
 * **Target Branch:** `origin/main` ([`https://github.com/gv-gaurav/insta-utility-project`](https://github.com/gv-gaurav/insta-utility-project))
-* **Pushed Commit Range:** `49cdad9..f1c60c9`
+* **Pushed Commit Range:** `49cdad9..c25aacf`
 * **Status:** `UP TO DATE WITH ORIGIN/MAIN — WORKING TREE CLEAN`
 
 ---
