@@ -217,6 +217,7 @@ function pushAnalyticsEvent(eventName, params) {
   
   // Custom event parameters (mapped for both GTM dataLayer and native GA4 campaign parameters)
   const eventParams = Object.assign({
+    send_to: GA4_MEASUREMENT_ID,
     debug_mode: true,
     'ep.debug_mode': true,
     _dbg: 1,

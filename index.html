@@ -13,6 +13,16 @@
     })(window, document, 'script', 'dataLayer', 'GTM-W5MGDDCR');</script>
   <!-- End Google Tag Manager -->
 
+  <!-- Google Tag (gtag.js) - GA4 Staging Direct DebugView Emitter (G-CX448B8NZM) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-CX448B8NZM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', 'G-CX448B8NZM', { 'debug_mode': true });
+  </script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
@@ -542,13 +552,18 @@
           <div class="crm-staging-simulator" id="crmStagingSimulator">
             <div class="crm-sim-header">
               <span>🧪 Staging QA Simulator — Aman's CRM Outcome Preview</span>
-              <span style="font-size:0.7rem; color:#64748b; text-transform:none; font-weight:normal;">6-Field Schema: Business_Name, Name, Contact_Email, Contact_Number, Submission_Ref, Brand</span>
+              <span style="font-size:0.7rem; color:#64748b; text-transform:none; font-weight:normal;">6-Field Schema:
+                Business_Name, Name, Contact_Email, Contact_Number, Submission_Ref, Brand</span>
             </div>
             <div class="crm-sim-btns">
-              <button class="crm-sim-btn active-sim" onclick="setStagingCRMMode('SUCCESS')">✓ 1. Success (CRM_RECORD_CREATED)</button>
-              <button class="crm-sim-btn" onclick="setStagingCRMMode('DUPLICATE')">⚠️ 2. Duplicate (REJECT_DUPLICATE)</button>
-              <button class="crm-sim-btn" onclick="setStagingCRMMode('FAIL_CLOSED')">🛑 3. Fail-Closed (VALIDATION_FAILED)</button>
-              <button class="crm-sim-btn" onclick="setStagingCRMMode('ERROR')">🔄 4. Error (CRM_TRANSPORT_ERROR)</button>
+              <button class="crm-sim-btn active-sim" onclick="setStagingCRMMode('SUCCESS')">✓ 1. Success
+                (CRM_RECORD_CREATED)</button>
+              <button class="crm-sim-btn" onclick="setStagingCRMMode('DUPLICATE')">⚠️ 2. Duplicate
+                (REJECT_DUPLICATE)</button>
+              <button class="crm-sim-btn" onclick="setStagingCRMMode('FAIL_CLOSED')">🛑 3. Fail-Closed
+                (VALIDATION_FAILED)</button>
+              <button class="crm-sim-btn" onclick="setStagingCRMMode('ERROR')">🔄 4. Error
+                (CRM_TRANSPORT_ERROR)</button>
             </div>
           </div>
 
