@@ -126,6 +126,46 @@ function generateSubmissionRef() {
   return `IU-${year}-${month}${day}-${randNum}`;
 }
 
+// ==========================================================================
+// TARUN STAGING GA4 / GTM NAMED-UTM ATTRIBUTION CAPTURE & PERSISTENCE ENGINE
+// ==========================================================================
+function getCapturedUTMParams() {
+  const utmKeys = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
+  const params = {};
+
+  // 1. Capture from active URL search parameters
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    let foundInUrl = false;
+    utmKeys.forEach(key => {
+      const val = urlParams.get(key);
+      if (val) {
+        params[key] = val;
+        foundInUrl = true;
+      }
+    });
+
+    if (foundInUrl) {
+      sessionStorage.setItem("captured_utm_params", JSON.stringify(params));
+      return params;
+    }
+  } catch (e) {
+    console.warn("[UTM Engine] URL Search Params Parse Warning:", e);
+  }
+
+  // 2. Fallback to persisted sessionStorage parameters for multi-step journey continuity
+  try {
+    const stored = sessionStorage.getItem("captured_utm_params");
+    if (stored) {
+      return JSON.parse(stored);
+    }
+  } catch (e) {
+    console.warn("[UTM Engine] SessionStorage Parse Warning:", e);
+  }
+
+  return params;
+}
+
 // Global dataLayer & gtag setup for Tarun's GTM / GA4 measurement harness (Staging DebugView Enabled)
 window.dataLayer = window.dataLayer || [];
 if (typeof window.gtag !== "function") {
@@ -134,25 +174,43 @@ if (typeof window.gtag !== "function") {
   };
 }
 
+// Initial UTM Capture & Window Loaded DataLayer Push
+const capturedUTMs = getCapturedUTMParams();
+
 // Staging GA4 Measurement ID (Tarun Staging Spec: G-CX448B8NZM)
 window.STAGING_GA4_MEASUREMENT_ID = window.STAGING_GA4_MEASUREMENT_ID || "G-CX448B8NZM";
 const GA4_MEASUREMENT_ID = window.STAGING_GA4_MEASUREMENT_ID;
 
 if (GA4_MEASUREMENT_ID) {
-  window.gtag("config", GA4_MEASUREMENT_ID, {
+  const ga4ConfigPayload = Object.assign({
     debug_mode: true,
     send_page_view: true
-  });
+  }, capturedUTMs);
+
+  if (Object.keys(capturedUTMs).length > 0) {
+    window.gtag("set", capturedUTMs);
+  }
+
+  window.gtag("config", GA4_MEASUREMENT_ID, ga4ConfigPayload);
+}
+
+// Immediately push captured UTM parameters to window.dataLayer on load for GTM Preview / Window Loaded event
+if (Object.keys(capturedUTMs).length > 0) {
+  window.dataLayer.push(Object.assign({
+    event: "utm_captured_on_load",
+    debug_mode: true
+  }, capturedUTMs));
 }
 
 // Unified Analytics Event Emitter (Single emission to prevent 3x multi-trigger duplicates in GA4/GTM)
 function pushAnalyticsEvent(eventName, params) {
+  const activeUTMs = getCapturedUTMParams();
   const payload = Object.assign({
     event: eventName,
     debug_mode: true,
     'ep.debug_mode': true,
     _dbg: 1
-  }, params);
+  }, activeUTMs, params);
 
   // Single dataLayer push — GTM and GA4 parse this event exactly ONCE
   window.dataLayer.push(payload);
