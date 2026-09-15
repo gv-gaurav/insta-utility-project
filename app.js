@@ -214,30 +214,40 @@ if (Object.keys(capturedUTMs).length > 0) {
 // Unified Analytics Event Emitter (Dual dataLayer + direct gtag emission for GA4 DebugView transmission)
 function pushAnalyticsEvent(eventName, params) {
   const activeUTMs = getCapturedUTMParams();
-  const payload = Object.assign({
-    event: eventName,
+  
+  // Custom event parameters (mapped for both GTM dataLayer and native GA4 campaign parameters)
+  const eventParams = Object.assign({
     debug_mode: true,
     'ep.debug_mode': true,
-    _dbg: 1
+    _dbg: 1,
+    campaign_source: activeUTMs.utm_source || undefined,
+    campaign_medium: activeUTMs.utm_medium || undefined,
+    campaign_name: activeUTMs.utm_campaign || undefined,
+    campaign_term: activeUTMs.utm_term || undefined,
+    campaign_content: activeUTMs.utm_content || undefined
   }, activeUTMs, params);
 
-  // 1. DataLayer push for GTM Preview & triggers
-  window.dataLayer.push(payload);
+  // Clean undefined properties
+  Object.keys(eventParams).forEach(key => eventParams[key] === undefined && delete eventParams[key]);
+
+  // 1. DataLayer push for GTM Preview & triggers (requires 'event' property)
+  const dataLayerPayload = Object.assign({ event: eventName }, eventParams);
+  window.dataLayer.push(dataLayerPayload);
 
   // 2. Direct gtag event dispatch for live GA4 DebugView HTTP transmission (/g/collect)
   if (typeof window.gtag === "function") {
-    window.gtag("event", eventName, payload);
+    window.gtag("event", eventName, eventParams);
   }
 
-  console.log(`[Analytics Engine] Event Transmitted: ${eventName} (GA4 DebugView & dataLayer)`, payload);
+  console.log(`[Analytics Engine] Event Transmitted: ${eventName} (GA4 DebugView & dataLayer)`, eventParams);
 }
 
-// Track diagnostic start event
+// Track diagnostic start event (Guaranteed trigger on focus, click, or change inside intake form)
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("diagnosticForm");
   if (form) {
     let started = false;
-    form.addEventListener("focusin", function () {
+    const startHandler = function () {
       if (!started) {
         started = true;
         pushAnalyticsEvent("diagnostic_started", {
@@ -245,7 +255,11 @@ document.addEventListener("DOMContentLoaded", function () {
           journey_type: "C&I Renewable Power Diagnostic v1"
         });
       }
-    });
+    };
+
+    form.addEventListener("focusin", startHandler);
+    form.addEventListener("click", startHandler);
+    form.addEventListener("change", startHandler);
   }
 });
 
