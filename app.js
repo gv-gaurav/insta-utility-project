@@ -503,6 +503,10 @@ function handleFormSubmit(e) {
     }
   };
 
+  // Process Aman's CRM Transport Boundary Outcome (Deterministic 4-State UX Handling)
+  const crmOutcome = processCRMTransportResponse(crmPayload, currentStagingCRMMode);
+  renderCRMOutcomeBanner(crmOutcome);
+
   // Hide form & render result box
   document.getElementById("diagnosticForm").style.display = "none";
   document.getElementById("generatedRef").innerText = subRef;
@@ -526,6 +530,128 @@ function handleFormSubmit(e) {
     invite_stage: "Stage 2 Paid Diagnostic Memo",
     timestamp: new Date().toISOString()
   });
+}
+
+// ==========================================================================
+// AMAN KHATANA 15 SEP ZOHO CRM WEBSITE_LEADS TRANSPORT BOUNDARY CONTRACT LOGIC
+// ==========================================================================
+let currentStagingCRMMode = "SUCCESS"; // Options: 'SUCCESS', 'DUPLICATE', 'FAIL_CLOSED', 'ERROR'
+let lastSubmittedCRMPayload = null;
+
+function setStagingCRMMode(mode) {
+  currentStagingCRMMode = mode;
+  const btns = document.querySelectorAll(".crm-sim-btn");
+  btns.forEach(btn => {
+    btn.classList.remove("active-sim");
+    if (btn.getAttribute("onclick").includes(mode)) {
+      btn.classList.add("active-sim");
+    }
+  });
+
+  if (lastSubmittedCRMPayload) {
+    const outcome = processCRMTransportResponse(lastSubmittedCRMPayload, mode);
+    renderCRMOutcomeBanner(outcome);
+  }
+}
+
+function processCRMTransportResponse(crmPayload, mode = currentStagingCRMMode) {
+  const subRef = crmPayload.Zoho_Website_Leads_Verified_Payload.Submission_Ref;
+  lastSubmittedCRMPayload = crmPayload;
+
+  switch (mode) {
+    case "SUCCESS":
+      return {
+        status: "SUCCESS",
+        code: "CRM_RECORD_CREATED",
+        submission_ref: subRef,
+        record_id: "zcrm_" + Math.random().toString(36).substring(2, 10),
+        retryable: false,
+        title: "✓ CRM Record Created Successfully",
+        message: `Submission reference ${subRef} has been recorded in Zoho Website_Leads transport under the approved 6-field contract.`,
+        cssClass: "success"
+      };
+
+    case "DUPLICATE":
+      return {
+        status: "DUPLICATE",
+        code: "REJECT_DUPLICATE",
+        submission_ref: subRef,
+        retryable: false,
+        title: "⚠️ Duplicate Submission Reference Detected",
+        message: `Submission reference ${subRef} has already been received in CRM. Duplicate replay rejected cleanly without creating a second lead record.`,
+        cssClass: "duplicate"
+      };
+
+    case "FAIL_CLOSED":
+      return {
+        status: "FAIL_CLOSED",
+        code: "VALIDATION_FAILED",
+        errors: ["Missing mandatory field or unapproved CRM schema addition."],
+        retryable: false,
+        title: "🛑 Fail-Closed: CRM Validation Constraint Enforced",
+        message: `Validation failed for ${subRef}. Only 6 approved fields permitted (Business_Name, Name, Contact_Email, Contact_Number, Submission_Ref, Brand). Contact support@instautility.com if needed.`,
+        cssClass: "fail-closed"
+      };
+
+    case "ERROR":
+    default:
+      return {
+        status: "ERROR",
+        code: "CRM_TRANSPORT_ERROR",
+        message: `Network timeout attempting to reach Zoho Website_Leads transport boundary for ${subRef}.`,
+        retryable: true,
+        title: "🔄 CRM Transport Error (Retry Available)",
+        messageText: `CRM transport failed to connect. Submission ref ${subRef} was NOT recorded in CRM. Please retry or contact support@instautility.com.`,
+        cssClass: "error"
+      };
+  }
+}
+
+function renderCRMOutcomeBanner(outcome) {
+  const container = document.getElementById("crmOutcomeBanner");
+  if (!container) return;
+
+  let actionHtml = "";
+  if (outcome.retryable) {
+    actionHtml = `
+      <div style="margin-top:0.5rem;">
+        <button class="btn btn-emerald btn-sm" onclick="retryCRMSubmission()">
+          🔄 Retry CRM Submission Now
+        </button>
+      </div>`;
+  }
+
+  const errorsList = outcome.errors ? `<div style="font-size:0.8rem; margin-top:0.25rem; font-weight:600;">Reasons: ${outcome.errors.join(", ")}</div>` : "";
+  const recordIdDisplay = outcome.record_id ? `<span>Record ID: <strong>${outcome.record_id}</strong></span>` : "";
+
+  container.innerHTML = `
+    <div class="crm-outcome-alert ${outcome.cssClass}">
+      <div class="crm-outcome-alert-top">
+        <div class="crm-outcome-title">
+          ${outcome.title}
+        </div>
+        <span class="crm-outcome-badge">${outcome.code}</span>
+      </div>
+      <div class="crm-outcome-desc">
+        ${outcome.message || outcome.messageText}
+        ${errorsList}
+      </div>
+      <div class="crm-outcome-meta">
+        <span>Status: <strong>${outcome.status}</strong></span>
+        <span>Ref: <strong>${outcome.submission_ref}</strong></span>
+        ${recordIdDisplay}
+        <span>Retryable: <strong>${outcome.retryable}</strong></span>
+      </div>
+      ${actionHtml}
+    </div>
+  `;
+}
+
+function retryCRMSubmission() {
+  if (lastSubmittedCRMPayload) {
+    alert(`Retrying CRM Transport for ${lastSubmittedCRMPayload.Zoho_Website_Leads_Verified_Payload.Submission_Ref}...`);
+    setStagingCRMMode("SUCCESS");
+  }
 }
 
 // Request Stage 2 Detailed Paid Diagnostic Assessment

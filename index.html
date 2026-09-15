@@ -80,19 +80,24 @@
   <div class="mobile-drawer-panel" id="mobileDrawerPanel">
     <div class="mobile-drawer-header">
       <a href="index.html" class="brand-logo" onclick="closeMobileDrawer()">
-        <img src="https://www.instautility.com/assets/img/logo/insta-utility-logo.png" alt="Insta Utility Logo" class="header-logo-img">
+        <img src="https://www.instautility.com/assets/img/logo/insta-utility-logo.png" alt="Insta Utility Logo"
+          class="header-logo-img">
       </a>
       <button class="mobile-drawer-close" aria-label="Close Menu" onclick="closeMobileDrawer()">✕</button>
     </div>
     <div class="mobile-drawer-body">
       <nav class="mobile-drawer-nav">
         <a href="index.html" class="mobile-nav-link active" onclick="closeMobileDrawer()">Home Overview</a>
-        <a href="open-access-eligibility-screening.html" class="mobile-nav-link" onclick="closeMobileDrawer()">Open Access Eligibility &rarr;</a>
-        <a href="group-captive-screening-for-ci.html" class="mobile-nav-link" onclick="closeMobileDrawer()">Group Captive Screening &rarr;</a>
-        <a href="paid-renewable-power-diagnostic.html" class="mobile-nav-link" onclick="closeMobileDrawer()">Paid Diagnostic Memo &rarr;</a>
+        <a href="open-access-eligibility-screening.html" class="mobile-nav-link" onclick="closeMobileDrawer()">Open
+          Access Eligibility &rarr;</a>
+        <a href="group-captive-screening-for-ci.html" class="mobile-nav-link" onclick="closeMobileDrawer()">Group
+          Captive Screening &rarr;</a>
+        <a href="paid-renewable-power-diagnostic.html" class="mobile-nav-link" onclick="closeMobileDrawer()">Paid
+          Diagnostic Memo &rarr;</a>
       </nav>
       <div class="mobile-drawer-cta">
-        <a href="#intake-form" class="btn btn-emerald" style="width:100%; text-align:center;" onclick="closeMobileDrawer()">Get Free Check &rarr;</a>
+        <a href="#intake-form" class="btn btn-emerald" style="width:100%; text-align:center;"
+          onclick="closeMobileDrawer()">Get Free Check &rarr;</a>
       </div>
       <div class="mobile-drawer-footer">
         <p style="font-size:0.775rem; color:var(--text-muted);">C&amp;I Renewable Power Procurement Advisory</p>
@@ -525,6 +530,25 @@
             <div class="diag-ref-group">
               <div class="diag-ref-label">Submission Reference</div>
               <div class="diag-ref-val" id="generatedRef">IU-2026-0909-8941</div>
+            </div>
+          </div>
+
+          <!-- AMAN ZOHO CRM WEBSITE_LEADS STAGING TRANSPORT OUTCOME BANNER -->
+          <div id="crmOutcomeBanner">
+            <!-- Dynamically populated by app.js renderCRMOutcome() -->
+          </div>
+
+          <!-- STAGING QA TRANSPORT SIMULATOR BAR (Gaurav Staging Integration) -->
+          <div class="crm-staging-simulator" id="crmStagingSimulator">
+            <div class="crm-sim-header">
+              <span>🧪 Staging QA Simulator — Aman's CRM Outcome Preview</span>
+              <span style="font-size:0.7rem; color:#64748b; text-transform:none; font-weight:normal;">6-Field Schema: Business_Name, Name, Contact_Email, Contact_Number, Submission_Ref, Brand</span>
+            </div>
+            <div class="crm-sim-btns">
+              <button class="crm-sim-btn active-sim" onclick="setStagingCRMMode('SUCCESS')">✓ 1. Success (CRM_RECORD_CREATED)</button>
+              <button class="crm-sim-btn" onclick="setStagingCRMMode('DUPLICATE')">⚠️ 2. Duplicate (REJECT_DUPLICATE)</button>
+              <button class="crm-sim-btn" onclick="setStagingCRMMode('FAIL_CLOSED')">🛑 3. Fail-Closed (VALIDATION_FAILED)</button>
+              <button class="crm-sim-btn" onclick="setStagingCRMMode('ERROR')">🔄 4. Error (CRM_TRANSPORT_ERROR)</button>
             </div>
           </div>
 

@@ -1,10 +1,3 @@
-/* ==========================================================================
-   INSTA UTILITY - C&I RENEWABLE POWER PROCUREMENT ADVISORY
-   STAGING CONVERSION JOURNEY - EXECUTIVE LIGHT THEME SYSTEM
-   Target Persona: Facilities / Plant / Finance Decision-Makers (~100 kW - 5 MW)
-   Aligned to Mayank Bhola 1 Sep 2026 Handoff Specification
-   ========================================================================== */
-
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
@@ -378,7 +371,7 @@ header {
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   flex: 1;
   overflow-y: auto;
 }
@@ -2053,6 +2046,7 @@ footer {
 }
 
 @media print {
+
   /* Hide non-assessment UI elements during printing */
   .top-announcement-bar,
   header,
@@ -2066,11 +2060,12 @@ footer {
   .memo-actions,
   footer,
   .drawer-overlay,
-  #submissionResult > div:last-child {
+  #submissionResult>div:last-child {
     display: none !important;
   }
 
-  body, html {
+  body,
+  html {
     background: #ffffff !important;
     color: #0f172a !important;
     font-size: 9.5pt !important;
@@ -2888,4 +2883,160 @@ footer {
     padding: 0.7rem 1rem;
     font-size: 0.9rem;
   }
+}
+
+/* ==========================================================================
+   AMAN ZOHO CRM WEBSITE_LEADS TRANSPORT STAGING OUTCOME BANNERS & SIMULATOR
+   ========================================================================== */
+.crm-outcome-alert {
+  border-radius: var(--radius-md);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border: 1px solid transparent;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.crm-outcome-alert-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.crm-outcome-title {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.crm-outcome-badge {
+  font-size: 0.725rem;
+  font-family: monospace;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.crm-outcome-desc {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.crm-outcome-meta {
+  font-size: 0.8rem;
+  font-family: monospace;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-top: 0.5rem;
+  border-top: 1px dashed rgba(0, 0, 0, 0.12);
+}
+
+/* State 1: SUCCESS */
+.crm-outcome-alert.success {
+  background: #f0fdf4;
+  border-color: #86efac;
+  color: #166534;
+}
+.crm-outcome-alert.success .crm-outcome-badge {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #86efac;
+}
+
+/* State 2: DUPLICATE */
+.crm-outcome-alert.duplicate {
+  background: #fffbe6;
+  border-color: #fde047;
+  color: #854d0e;
+}
+.crm-outcome-alert.duplicate .crm-outcome-badge {
+  background: #fef9c3;
+  color: #a16207;
+  border: 1px solid #fde047;
+}
+
+/* State 3: FAIL_CLOSED */
+.crm-outcome-alert.fail-closed {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #991b1b;
+}
+.crm-outcome-alert.fail-closed .crm-outcome-badge {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+}
+
+/* State 4: CRM_TRANSPORT_ERROR */
+.crm-outcome-alert.error {
+  background: #fff1f2;
+  border-color: #fda4af;
+  color: #9f1239;
+}
+.crm-outcome-alert.error .crm-outcome-badge {
+  background: #ffe4e6;
+  color: #be123c;
+  border: 1px solid #fda4af;
+}
+
+/* Staging QA Transport Simulator Toolbar */
+.crm-staging-simulator {
+  background: #0f172a;
+  color: #f8fafc;
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border: 1px solid #334155;
+}
+
+.crm-sim-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.crm-sim-btns {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.crm-sim-btn {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid #475569;
+  background: #1e293b;
+  color: #e2e8f0;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.crm-sim-btn:hover {
+  background: #334155;
+  color: #ffffff;
+}
+
+.crm-sim-btn.active-sim {
+  border-color: #34d399;
+  background: rgba(52, 211, 153, 0.15);
+  color: #34d399;
 }
