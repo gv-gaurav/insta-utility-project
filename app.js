@@ -181,6 +181,15 @@ const capturedUTMs = getCapturedUTMParams();
 window.STAGING_GA4_MEASUREMENT_ID = window.STAGING_GA4_MEASUREMENT_ID || "G-CX448B8NZM";
 const GA4_MEASUREMENT_ID = window.STAGING_GA4_MEASUREMENT_ID;
 
+// Ensure GA4 gtag.js library is dynamically loaded for direct GA4 DebugView HTTP transmission
+if (GA4_MEASUREMENT_ID && !document.getElementById("ga4-gtag-loader")) {
+  const ga4Script = document.createElement("script");
+  ga4Script.id = "ga4-gtag-loader";
+  ga4Script.async = true;
+  ga4Script.src = `https://www.googletagmanager.com/gtag/js?id=${GA4_MEASUREMENT_ID}`;
+  document.head.appendChild(ga4Script);
+}
+
 if (GA4_MEASUREMENT_ID) {
   const ga4ConfigPayload = Object.assign({
     debug_mode: true,
@@ -202,7 +211,7 @@ if (Object.keys(capturedUTMs).length > 0) {
   }, capturedUTMs));
 }
 
-// Unified Analytics Event Emitter (Single emission to prevent 3x multi-trigger duplicates in GA4/GTM)
+// Unified Analytics Event Emitter (Dual dataLayer + direct gtag emission for GA4 DebugView transmission)
 function pushAnalyticsEvent(eventName, params) {
   const activeUTMs = getCapturedUTMParams();
   const payload = Object.assign({
@@ -212,10 +221,15 @@ function pushAnalyticsEvent(eventName, params) {
     _dbg: 1
   }, activeUTMs, params);
 
-  // Single dataLayer push — GTM and GA4 parse this event exactly ONCE
+  // 1. DataLayer push for GTM Preview & triggers
   window.dataLayer.push(payload);
 
-  console.log(`[Analytics Engine] Single Event Fired: ${eventName} (debug_mode: true)`, payload);
+  // 2. Direct gtag event dispatch for live GA4 DebugView HTTP transmission (/g/collect)
+  if (typeof window.gtag === "function") {
+    window.gtag("event", eventName, payload);
+  }
+
+  console.log(`[Analytics Engine] Event Transmitted: ${eventName} (GA4 DebugView & dataLayer)`, payload);
 }
 
 // Track diagnostic start event
