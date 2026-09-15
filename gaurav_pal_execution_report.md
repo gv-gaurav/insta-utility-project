@@ -333,8 +333,8 @@ In strict compliance with the **VoltOS CEO Next Execution Workflow (15 Sep 2026)
 * **UTM Capture & Persistence Engine**: Resolved Tarun's staging data layer breakpoint by implementing `getCapturedUTMParams()` in [`app.js`](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/app.js).
 * **Initial Page Load & SessionStorage**: Automatically extracts `utm_source`, `utm_medium`, `utm_campaign`, `utm_term`, `utm_content` from active URL on load, persists them to `sessionStorage`, and pushes `utm_captured_on_load` + `gtag('set', ...)` immediately to `window.dataLayer`.
 * **5-Event Contract Binding**: Bound `activeUTMs` directly into `pushAnalyticsEvent()`, guaranteeing that all 5 contract events (`diagnostic_started`, `diagnostic_completed`, `diagnostic_invite_shown`, `proposal_accept`, `proposal_decline`) automatically carry URL attribution parameters.
-* **GA4 DebugView Campaign Parameter & Multi-Trigger Hardening**: Mapped standard GA4 campaign parameters (`campaign_source`, `campaign_medium`, `campaign_name`) alongside `utm_*` keys, cleaned payload objects of redundant `event` parameter overrides for `gtag()`, and expanded `diagnostic_started` triggers across `focusin`, `click`, and `change` listeners on the intake form.
-* **Commits Pushed:** `f1c60c9`, `c25aacf`, and `6bbab6d` (`main` branch).
+* **Direct GA4 `gtag.js` Tag Installation & Explicit `send_to` Routing**: Installed official `gtag.js` script (`https://www.googletagmanager.com/gtag/js?id=G-CX448B8NZM`) directly into `<head>` of all 4 HTML staging pages ([`index.html`](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/index.html), [`open-access-eligibility-screening.html`](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/open-access-eligibility-screening.html), [`group-captive-screening-for-ci.html`](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/group-captive-screening-for-ci.html), [`paid-renewable-power-diagnostic.html`](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/paid-renewable-power-diagnostic.html)) and added explicit `send_to: "G-CX448B8NZM"` parameter to `gtag("event", ...)` calls. This bypasses GTM container event dependency and guarantees custom events like `diagnostic_started` stream live into GA4 DebugView over HTTP (`/g/collect`).
+* **Commits Pushed:** `f1c60c9`, `c25aacf`, `6bbab6d`, and `bf637c8` (`main` branch).
 
 ---
 
@@ -344,13 +344,13 @@ In strict compliance with the **VoltOS CEO Next Execution Workflow (15 Sep 2026)
 | :--- | :---: | :---: | :--- | :---: | :--- |
 | **Insta CRM-Connected Staging** | 5h | P1 | Staging journey visibly handles success / duplicate / fail-closed outcomes; no silent failure; no new CRM schema; rollback commit exists. | `PASS` | **Commits `49cdad9` / `e50c7ca` ([app.js](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/app.js), [index.html](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/index.html))** |
 | **Release Package Preparation** | 1h | P1 | One deployable release package; no production publish. | `PASS` | **[`production_deployment_manifest_15sep2026.md`](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/production_deployment_manifest_15sep2026.md)** |
-| **Tarun UTM Attribution Fix** | Ext. Support | P1 | Capture named UTMs on load, persist in sessionStorage, attach to 5 GA4 events, and ensure GA4 DebugView HTTP transmission. | `PASS` | **Commits `f1c60c9` / `c25aacf` / `6bbab6d` ([app.js](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/app.js))** |
+| **Tarun UTM Attribution Fix** | Ext. Support | P1 | Capture named UTMs on load, persist in sessionStorage, attach to 5 GA4 events, and ensure GA4 DebugView HTTP transmission. | `PASS` | **Commits `f1c60c9` / `c25aacf` / `6bbab6d` / `bf637c8` ([app.js](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/app.js))** |
 
 ---
 
 ### GitHub Remote Push Verification:
 * **Target Branch:** `origin/main` ([`https://github.com/gv-gaurav/insta-utility-project`](https://github.com/gv-gaurav/insta-utility-project))
-* **Pushed Commit Range:** `49cdad9..6bbab6d`
+* **Pushed Commit Range:** `49cdad9..bf637c8`
 * **Status:** `UP TO DATE WITH ORIGIN/MAIN — WORKING TREE CLEAN`
 
 ---
