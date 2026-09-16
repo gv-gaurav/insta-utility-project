@@ -174,7 +174,7 @@ if (typeof window.gtag !== "function") {
   };
 }
 
-// Initial UTM Capture & Window Loaded DataLayer Push
+// Initial UTM Capture & Window Loaded DataLayer Push Harness
 const capturedUTMs = getCapturedUTMParams();
 
 // Staging GA4 Measurement ID (Tarun Staging Spec: G-CX448B8NZM)
@@ -203,13 +203,30 @@ if (GA4_MEASUREMENT_ID) {
   window.gtag("config", GA4_MEASUREMENT_ID, ga4ConfigPayload);
 }
 
-// Immediately push captured UTM parameters to window.dataLayer on load for GTM Preview / Window Loaded event
-if (Object.keys(capturedUTMs).length > 0) {
-  window.dataLayer.push(Object.assign({
-    event: "utm_captured_on_load",
-    debug_mode: true
-  }, capturedUTMs));
+// Function to emit utm_captured_on_load to dataLayer
+function emitUTMCapturedOnLoad() {
+  const utms = getCapturedUTMParams();
+  if (Object.keys(utms).length > 0) {
+    window.dataLayer.push(Object.assign({
+      event: "utm_captured_on_load",
+      debug_mode: true,
+      campaign_source: utms.utm_source || undefined,
+      campaign_medium: utms.utm_medium || undefined,
+      campaign_name: utms.utm_campaign || undefined,
+      campaign_term: utms.utm_term || undefined,
+      campaign_content: utms.utm_content || undefined
+    }, utms));
+  }
 }
+
+// Immediately push captured UTM parameters on script execution
+emitUTMCapturedOnLoad();
+
+// Re-emit on DOMContentLoaded & window load to guarantee GTM Window Loaded trigger capture
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", emitUTMCapturedOnLoad);
+}
+window.addEventListener("load", emitUTMCapturedOnLoad);
 
 // Unified Analytics Event Emitter (Dual dataLayer + direct gtag emission for GA4 DebugView transmission)
 function pushAnalyticsEvent(eventName, params) {
@@ -642,8 +659,26 @@ function setStagingCRMMode(mode) {
 }
 
 function processCRMTransportResponse(crmPayload, mode = currentStagingCRMMode) {
-  const subRef = crmPayload.Zoho_Website_Leads_Verified_Payload.Submission_Ref;
+  const verifiedPayload = (crmPayload && crmPayload.Zoho_Website_Leads_Verified_Payload) || {};
+  const subRef = verifiedPayload.Submission_Ref || "IU-UNKNOWN";
   lastSubmittedCRMPayload = crmPayload;
+
+  // Real Staging Contract Validation: Ensure all 6 required fields are non-empty strings
+  const requiredFields = ["Business_Name", "Name", "Contact_Email", "Contact_Number", "Submission_Ref", "Brand"];
+  const missingFields = requiredFields.filter(f => !verifiedPayload[f] || String(verifiedPayload[f]).trim() === "");
+
+  if (missingFields.length > 0 && mode !== "ERROR") {
+    return {
+      status: "FAIL_CLOSED",
+      code: "VALIDATION_FAILED",
+      submission_ref: subRef,
+      errors: missingFields.map(f => `Missing required Website_Leads field: ${f}`),
+      retryable: false,
+      title: "🛑 Fail-Closed: CRM Validation Constraint Enforced",
+      message: `Validation failed for ${subRef}. Mandatory fields missing: ${missingFields.join(", ")}. Only 6 approved fields permitted (Business_Name, Name, Contact_Email, Contact_Number, Submission_Ref, Brand).`,
+      cssClass: "fail-closed"
+    };
+  }
 
   switch (mode) {
     case "SUCCESS":
@@ -673,6 +708,7 @@ function processCRMTransportResponse(crmPayload, mode = currentStagingCRMMode) {
       return {
         status: "FAIL_CLOSED",
         code: "VALIDATION_FAILED",
+        submission_ref: subRef,
         errors: ["Missing mandatory field or unapproved CRM schema addition."],
         retryable: false,
         title: "🛑 Fail-Closed: CRM Validation Constraint Enforced",
@@ -685,6 +721,7 @@ function processCRMTransportResponse(crmPayload, mode = currentStagingCRMMode) {
       return {
         status: "ERROR",
         code: "CRM_TRANSPORT_ERROR",
+        submission_ref: subRef,
         message: `Network timeout attempting to reach Zoho Website_Leads transport boundary for ${subRef}.`,
         retryable: true,
         title: "🔄 CRM Transport Error (Retry Available)",
