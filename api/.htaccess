@@ -1,0 +1,12 @@
+# Protect config.php and cache files from direct web access
+<FilesMatch "^(config\.php|zoho_token_cache\.json)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Enable CORS Headers
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+</IfModule>

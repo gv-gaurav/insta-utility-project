@@ -1,0 +1,11 @@
+# Ignore secret environment files
+.env
+
+# Ignore PHP token cache
+api/zoho_token_cache.json
+
+# Ignore temporary scratch and log files
+*.log
+.DS_Store
+Thumbs.db
+.vscode/

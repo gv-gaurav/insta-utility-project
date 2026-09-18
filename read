@@ -1,0 +1,62 @@
+Sure — let's start from zero. I'll break this into two parts: first getting your account foundation ready, then building the actual campaign we've already planned. Do these in order.
+
+Part 1: Account Setup (do this once, before anything else)
+1
+Create a Facebook Business Page
+Go to facebook.com/pages/create if you don't already have one for BaseBison. This is required — Meta ads can only run through a Facebook Page, even if your ad shows on Instagram. Add your logo, description, and website link.
+2
+Create a Meta Business Manager account
+Go to business.facebook.com and create a Business Manager account (free). This is your control center — it holds your Page, Ad Account, Pixel, and payment methods all in one place, and keeps your personal profile separate from business assets.
+3
+Create your Ad Account
+Inside Business Manager, go to Business Settings → Accounts → Ad Accounts → Create a new ad account. Set currency to INR and timezone to India. This is the account that will actually run your campaigns.
+4
+Add a payment method
+Go to Business Settings → Payment Methods, add your debit/credit card or UPI. Meta will auto-charge either per threshold spend or every 30 days, whichever comes first — but your daily budget cap (₹350-400) means you're never charged more than that per day.
+5
+Install the Meta Pixel on basebison.com
+Go to Events Manager → Connect Data Sources → Web → create a Pixel, name it 'BaseBison Pixel'. If your site is on WordPress/Shopify/custom code, you (or your developer) paste a small tracking code snippet into your site's header. This lets Meta see when someone visits and submits your form.
+6
+Set up Conversions API (CAPI)
+In the same Pixel setup flow, also set up Conversions API (server-side tracking). This sends the same lead data directly from your server to Meta, which is more reliable than Pixel alone (Pixel can be blocked by ad-blockers or browser privacy settings, CAPI can't).
+7
+Connect WhatsApp instant lead notifications
+Set up your Zapier/webhook flow (that we discussed earlier) to trigger a WhatsApp message to your number the moment someone submits your website form. Test it once with a dummy submission to confirm it works before your ads go live.
+8
+Create your 'Lead' conversion event
+In Events Manager, go to Custom Conversions → create one for 'Form Submission' or 'Lead' based on your thank-you page URL or form-complete event. This becomes the specific goal you'll select when building your campaign in Part 2.
+Part 2: Build the Campaign (do this after Part 1 is fully set up)
+1
+Create the campaign
+In Ads Manager, click Create. Choose 'Leads' as the objective, name it 'BaseBison - Leads - India'. Under conversion location, select 'Website' (not Instant Forms) and pick the 'Lead' conversion event you created in Part 1.
+2
+Set your budget
+Turn on Campaign Budget Optimization (CBO). Set your daily budget to ₹350-400. This budget is set once at the campaign level and applies for the whole campaign.
+3
+Create one ad set
+Name it 'India - Advantage+ - Teardown Offer'. Keep it to just this one ad set — don't create more, it splits your budget too thin to get good results.
+4
+Set targeting
+Location: India (or narrow to Delhi NCR, Mumbai, Bangalore, Pune, Hyderabad if you only want metro clients). Age: 25-55. Language: leave as 'All' so both your English and Hinglish ads can show.
+5
+Confirm Advantage+ Audience is on
+Leave Advantage+ Audience turned on (it's default). If you have any list of past leads or clients, upload it under Audiences → Custom Audience, then let Meta build a lookalike suggestion from it — this helps it find similar people faster.
+6
+Set placements to Automatic
+Select 'Advantage+ Placements' so your ads run across Feed, Reels, Stories, and Audience Network automatically — don't hand-pick placements at this budget.
+7
+Build your 4 ads with copy and creative
+Upload your 4 creatives (3 English + 1 Hinglish) as separate ads within this one ad set. Add the copy we wrote for each, set the destination URL to your landing page with UTM tags, and make sure the CTA button says 'Learn More' or 'Get Offer'.
+8
+Final check, then publish
+Double-check the Pixel is firing (use Meta Pixel Helper Chrome extension to test), CAPI is connected, and your WhatsApp alert triggers on a test submission. Once all three are confirmed, hit Publish — then leave it alone for 5-7 days without editing anything.
+
+That's the complete path from zero to a live campaign — Part 1 is one-time setup, Part 2 is what you'll actually repeat/adjust for future campaigns.
+
+A couple of practical notes:
+
+If you don't have a developer handy to install the Pixel code, most website builders (WordPress plugins, Shopify apps) let you just paste your Pixel ID into a settings field — no manual coding needed. Since your site sounds custom-built, you (or whoever built it) will need to add the snippet directly into the site's header code.
+Meta usually takes a few hours to a day to review and approve a new ad the first time — don't panic if it says "In Review" right after publishing.
+Keep Ads Manager app on your phone too — it'll show you daily spend and leads without needing a laptop.
+
+Once this is live and running for a few days, come back and share your numbers (spend, leads, cost per lead) and I'll help you read what's working and what to adjust for week 2.

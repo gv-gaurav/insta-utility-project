@@ -231,7 +231,7 @@ window.addEventListener("load", emitUTMCapturedOnLoad);
 // Unified Analytics Event Emitter (Dual dataLayer + direct gtag emission for GA4 DebugView transmission)
 function pushAnalyticsEvent(eventName, params) {
   const activeUTMs = getCapturedUTMParams();
-  
+
   // Custom event parameters (mapped for both GTM dataLayer and native GA4 campaign parameters)
   const eventParams = Object.assign({
     send_to: GA4_MEASUREMENT_ID,
@@ -607,6 +607,38 @@ function handleFormSubmit(e) {
     }
   };
 
+  // API Endpoint URL (Supports PHP backend api/submit.php or custom base URL)
+  const submitEndpoint = window.STAGING_API_BASE_URL 
+    ? `${window.STAGING_API_BASE_URL}/api/submit.php` 
+    : "api/submit.php";
+
+  // Transmit payload to PHP / Server Backend API
+  fetch(submitEndpoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      account_name: accountName,
+      contact_name: contactName,
+      contact_email: contactEmail,
+      contact_phone: contactPhone,
+      submission_ref: subRef,
+      brand: DIAGNOSTIC_V1_CONFIG.brand
+    })
+  })
+  .then(res => res.json())
+  .then(apiResult => {
+    console.log("[PHP Backend Integration] Response from PHP API:", apiResult);
+    if (apiResult && apiResult.status === "SUCCESS") {
+      setStagingCRMMode("SUCCESS");
+    } else {
+      setStagingCRMMode("FAIL_CLOSED");
+    }
+  })
+  .catch(err => {
+    console.warn("[PHP Backend Integration] Connection warning calling PHP API:", err);
+    setStagingCRMMode("FAIL_CLOSED");
+  });
+
   // Process Aman's CRM Transport Boundary Outcome (Deterministic 4-State UX Handling)
   const crmOutcome = processCRMTransportResponse(crmPayload, currentStagingCRMMode);
   renderCRMOutcomeBanner(crmOutcome);
@@ -639,7 +671,7 @@ function handleFormSubmit(e) {
 // ==========================================================================
 // AMAN KHATANA 15 SEP ZOHO CRM WEBSITE_LEADS TRANSPORT BOUNDARY CONTRACT LOGIC
 // ==========================================================================
-let currentStagingCRMMode = "SUCCESS"; // Options: 'SUCCESS', 'DUPLICATE', 'FAIL_CLOSED', 'ERROR'
+let currentStagingCRMMode = "FAIL_CLOSED"; // Options: 'SUCCESS', 'DUPLICATE', 'FAIL_CLOSED', 'ERROR'
 let lastSubmittedCRMPayload = null;
 
 function setStagingCRMMode(mode) {
@@ -772,10 +804,37 @@ function renderCRMOutcomeBanner(outcome) {
 }
 
 function retryCRMSubmission() {
-  if (lastSubmittedCRMPayload) {
-    alert(`Retrying CRM Transport for ${lastSubmittedCRMPayload.Zoho_Website_Leads_Verified_Payload.Submission_Ref}...`);
+  if (!lastSubmittedCRMPayload) return;
+  
+  const verifiedPayload = lastSubmittedCRMPayload.Zoho_Website_Leads_Verified_Payload || {};
+  const subRef = verifiedPayload.Submission_Ref;
+  const submitEndpoint = window.STAGING_API_BASE_URL 
+    ? `${window.STAGING_API_BASE_URL}/api/submit.php` 
+    : "api/submit.php";
+
+  console.log(`[CRM Retry] Retrying submission for Ref: ${subRef} to ${submitEndpoint}`);
+
+  fetch(submitEndpoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      account_name: verifiedPayload.Business_Name,
+      contact_name: verifiedPayload.Name,
+      contact_email: verifiedPayload.Contact_Email,
+      contact_phone: verifiedPayload.Contact_Number,
+      submission_ref: subRef, // Retains exact Submission_Ref
+      brand: verifiedPayload.Brand || DIAGNOSTIC_V1_CONFIG.brand
+    })
+  })
+  .then(res => res.json())
+  .then(apiResult => {
+    console.log("[CRM Retry Outcome] Response from API:", apiResult);
     setStagingCRMMode("SUCCESS");
-  }
+  })
+  .catch(err => {
+    console.warn("[CRM Retry Outcome] Error during retry:", err);
+    setStagingCRMMode("ERROR");
+  });
 }
 
 // Request Stage 2 Detailed Paid Diagnostic Assessment
