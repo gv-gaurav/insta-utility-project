@@ -17,7 +17,7 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-CX448B8NZM"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag() { dataLayer.push(arguments); }
     window.gtag = gtag;
     gtag('js', new Date());
     gtag('config', 'G-CX448B8NZM', { 'debug_mode': true });
@@ -52,7 +52,8 @@
   <!-- TOP ANNOUNCEMENT BAR -->
   <div class="top-announcement-bar">
     <div class="container announcement-content">
-      <span><img src="assets/lighting.png" alt="⚡" class="announcement-icon-img"><strong>Contact Insta Utility:</strong> Single Point of Contact for All Advisory Enquiries.</span>
+      <span><img src="assets/lighting.png" alt="⚡" class="announcement-icon-img"><strong>Contact Insta Utility:</strong>
+        Single Point of Contact for All Advisory Enquiries.</span>
       <a href="#intake-form" class="announcement-link">Send Enquiry &rarr;</a>
     </div>
   </div>
@@ -97,9 +98,12 @@
     <div class="mobile-drawer-body">
       <nav class="mobile-drawer-nav">
         <a href="index.html" class="mobile-nav-link" onclick="closeMobileDrawer()">Home Overview</a>
-        <a href="renewable-energy-advisory.html" class="mobile-nav-link" onclick="closeMobileDrawer()">Renewable Energy Advisory &rarr;</a>
-        <a href="carbon-markets-ccts.html" class="mobile-nav-link" onclick="closeMobileDrawer()">Carbon Markets / CCTS &rarr;</a>
-        <a href="ghg-mrv-decarbonisation.html" class="mobile-nav-link" onclick="closeMobileDrawer()">GHG / MRV &amp; Decarbonisation &rarr;</a>
+        <a href="renewable-energy-advisory.html" class="mobile-nav-link" onclick="closeMobileDrawer()">Renewable Energy
+          Advisory &rarr;</a>
+        <a href="carbon-markets-ccts.html" class="mobile-nav-link" onclick="closeMobileDrawer()">Carbon Markets / CCTS
+          &rarr;</a>
+        <a href="ghg-mrv-decarbonisation.html" class="mobile-nav-link" onclick="closeMobileDrawer()">GHG / MRV &amp;
+          Decarbonisation &rarr;</a>
         <a href="contact.html" class="mobile-nav-link active" onclick="closeMobileDrawer()">Contact &rarr;</a>
       </nav>
       <div class="mobile-drawer-cta">
@@ -120,12 +124,9 @@
       </div>
       <h1>Get in Touch</h1>
       <p class="hero-lead">
-        Single point of contact for all advisory enquiries — Renewable Energy Advisory, Carbon Markets/CCTS Advisory, GHG/MRV &amp; Decarbonisation Advisory, or general questions.
+        Single point of contact for all advisory enquiries — Renewable Energy Advisory, Carbon Markets/CCTS Advisory,
+        GHG/MRV &amp; Decarbonisation Advisory, or general questions.
       </p>
-
-      <div style="margin-bottom:1.5rem; padding:0.85rem 1.15rem; background:rgba(217, 119, 6, 0.15); border-left:4px solid #f59e0b; border-radius:var(--radius-sm); font-size:0.825rem; color:#fef3c7; line-height:1.5;">
-        <strong>Note:</strong> All figures, examples, accreditations and regulator references on this page are placeholders or subject to independent verification before publication. No brokerage, verification, certification, or credit-issuance role is claimed by Insta Utility.
-      </div>
     </div>
   </section>
 
@@ -135,13 +136,15 @@
       <div class="section-header">
         <span class="pill-badge">Target Reader / Problem</span>
         <h2 class="section-title">Ready to Start a Conversation?</h2>
-        <p class="section-subtitle">For prospective clients or partners seeking clear next steps, introductory calls, or proposals.</p>
+        <p class="section-subtitle">For prospective clients or partners seeking clear next steps, introductory calls, or
+          proposals.</p>
       </div>
 
       <div class="info-card" style="max-width:920px; margin:0 auto;">
         <h3>📬 How We Can Support You</h3>
         <p>
-          A single point of contact for all enquiries — Renewable Energy Advisory, Carbon Markets/CCTS Advisory, GHG/MRV &amp; Decarbonisation Advisory, or general questions.
+          A single point of contact for all enquiries — Renewable Energy Advisory, Carbon Markets/CCTS Advisory, GHG/MRV
+          &amp; Decarbonisation Advisory, or general questions.
         </p>
       </div>
     </div>
@@ -173,19 +176,7 @@
     </div>
   </section>
 
-  <!-- EXCLUSIONS & LIMITATIONS -->
-  <section style="background:var(--bg-surface); border-top:1px solid var(--border-subtle); border-bottom:1px solid var(--border-subtle);">
-    <div class="container">
-      <div class="exclusion-box">
-        <h4>⚠️ Contact Terms &amp; Advisory Limitations</h4>
-        <ul>
-          <li>Submitting an enquiry does not constitute an engagement or advisory relationship until formally confirmed.</li>
-          <li>Response times are indicative and may vary.</li>
-          <li>This page does not provide advisory content directly.</li>
-        </ul>
-      </div>
-    </div>
-  </section>
+
 
   <!-- EVIDENCE / SOURCE PLACEHOLDERS -->
   <section>
@@ -224,7 +215,8 @@
   </section>
 
   <!-- FREQUENTLY ASKED QUESTIONS -->
-  <section style="background:var(--bg-surface); border-top:1px solid var(--border-subtle); border-bottom:1px solid var(--border-subtle);">
+  <section
+    style="background:var(--bg-surface); border-top:1px solid var(--border-subtle); border-bottom:1px solid var(--border-subtle);">
     <div class="container">
       <div class="section-header">
         <span class="pill-badge">FAQ</span>
@@ -278,74 +270,142 @@
         <form id="diagnosticForm" onsubmit="handleFormSubmit(event)">
           <div class="form-grid">
 
+            <!-- Field 1: Business Name -->
             <div class="form-group">
               <div class="label-wrapper">
-                <label class="form-label" for="contact_name"><span>Name</span> <span class="req">*</span></label>
-              </div>
-              <input type="text" id="contact_name" class="form-control" placeholder="e.g. Gaurav Pal" required>
-            </div>
-
-            <div class="form-group">
-              <div class="label-wrapper">
-                <label class="form-label" for="account_name"><span>Company / Organisation</span> <span class="req">*</span></label>
+                <label class="form-label" for="account_name">
+                  <span>Business / Organisation Name</span> <span class="req">*</span>
+                </label>
               </div>
               <input type="text" id="account_name" class="form-control" placeholder="e.g. Apex Energy Solutions" required>
             </div>
 
+            <!-- Field 2: Contact Name -->
             <div class="form-group">
               <div class="label-wrapper">
-                <label class="form-label" for="buyer_role"><span>Designation</span> <span class="req">*</span></label>
+                <label class="form-label" for="contact_name">
+                  <span>Contact Name</span> <span class="req">*</span>
+                </label>
               </div>
-              <input type="text" id="buyer_role" class="form-control" placeholder="e.g. Facilities Head / CFO / ESG Manager" required>
+              <input type="text" id="contact_name" class="form-control" placeholder="e.g. Gaurav Pal" required>
             </div>
 
+            <!-- Field 3: Contact Email -->
             <div class="form-group">
               <div class="label-wrapper">
-                <label class="form-label" for="service_interest"><span>Nature of Enquiry</span> <span class="req">*</span></label>
+                <label class="form-label" for="contact_email">
+                  <span>Contact Email</span> <span class="req">*</span>
+                </label>
               </div>
-              <select id="service_interest" class="form-control" required>
-                <option value="">-- Select Service Area --</option>
-                <option value="Renewable Energy Advisory">Renewable Energy Advisory</option>
-                <option value="Carbon Markets / CCTS Advisory">Carbon Markets / CCTS Advisory</option>
-                <option value="GHG / MRV & Decarbonisation Advisory">GHG / MRV &amp; Decarbonisation Advisory</option>
-                <option value="Multiple Advisory Services">Multiple Advisory Services</option>
-                <option value="General Enquiry">General Enquiry</option>
-              </select>
+              <input type="email" id="contact_email" class="form-control" placeholder="gaurav@company.com" required>
             </div>
 
+            <!-- Field 4: Contact Number -->
             <div class="form-group">
               <div class="label-wrapper">
-                <label class="form-label" for="contact_email"><span>Corporate Email Address</span> <span class="req">*</span></label>
-              </div>
-              <input type="email" id="contact_email" class="form-control" placeholder="g.pal@company.com" required>
-            </div>
-
-            <div class="form-group">
-              <div class="label-wrapper">
-                <label class="form-label" for="contact_phone"><span>Phone Number</span> <span class="req">*</span></label>
+                <label class="form-label" for="contact_phone">
+                  <span>Contact Number</span> <span class="req">*</span>
+                </label>
               </div>
               <input type="tel" id="contact_phone" class="form-control" placeholder="+91 98765 43210" required>
             </div>
 
+            <!-- Field 5: Service Interest -->
             <div class="form-group">
               <div class="label-wrapper">
-                <label class="form-label" for="state_location"><span>State / Location</span></label>
+                <label class="form-label" for="service_interest">
+                  <span>Service Interest</span> <span class="req">*</span>
+                </label>
+              </div>
+              <select id="service_interest" class="form-control" required>
+                <option value="Renewable Energy Advisory">Renewable Energy Advisory</option>
+                <option value="Carbon Markets / CCTS">Carbon Markets / CCTS</option>
+                <option value="GHG / MRV & Decarbonisation">GHG / MRV &amp; Decarbonisation</option>
+              </select>
+            </div>
+
+            <!-- Field 6: Sector -->
+            <div class="form-group">
+              <div class="label-wrapper">
+                <label class="form-label" for="sector_type">
+                  <span>Sector</span>
+                </label>
+              </div>
+              <select id="sector_type" class="form-control">
+                <option value="">-- Select Sector --</option>
+                <option value="Commercial">Commercial</option>
+                <option value="Industrial">Industrial</option>
+                <option value="Public Sector">Public Sector</option>
+                <option value="Education">Education</option>
+                <option value="Healthcare">Healthcare</option>
+                <option value="Hospitality">Hospitality</option>
+                <option value="Retail">Retail</option>
+                <option value="Manufacturing">Manufacturing</option>
+                <option value="Property / Real Estate">Property / Real Estate</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <!-- Field 7: Geography -->
+            <div class="form-group">
+              <div class="label-wrapper">
+                <label class="form-label" for="state_location">
+                  <span>Geography / Location</span>
+                </label>
               </div>
               <input type="text" id="state_location" class="form-control" placeholder="e.g. Maharashtra / Delhi NCR">
             </div>
 
+            <!-- Field 8: Postcode -->
             <div class="form-group">
               <div class="label-wrapper">
-                <label class="form-label" for="sector_type"><span>Sector</span></label>
+                <label class="form-label" for="postcode">
+                  <span>Postcode / PIN Code</span>
+                </label>
               </div>
-              <input type="text" id="sector_type" class="form-control" placeholder="e.g. Manufacturing / Real Estate / Logistics">
+              <input type="text" id="postcode" class="form-control" placeholder="e.g. 110001">
             </div>
 
+            <!-- Field 9: Preferred Contact Route -->
+            <div class="form-group">
+              <div class="label-wrapper">
+                <label class="form-label" for="preferred_contact_route">
+                  <span>Preferred Contact Route</span>
+                </label>
+              </div>
+              <select id="preferred_contact_route" class="form-control">
+                <option value="Email">Email</option>
+                <option value="Phone">Phone</option>
+                <option value="WhatsApp">WhatsApp</option>
+              </select>
+            </div>
+
+            <!-- Field 10: Designation / Role -->
+            <div class="form-group">
+              <div class="label-wrapper">
+                <label class="form-label" for="buyer_role">
+                  <span>Designation / Role</span>
+                </label>
+              </div>
+              <input type="text" id="buyer_role" class="form-control" placeholder="e.g. Facilities Head / CFO / ESG Manager">
+            </div>
+
+            <!-- Field 11: Enquiry Context -->
+            <div class="form-group full-width">
+              <div class="label-wrapper">
+                <label class="form-label" for="enquiry_context">
+                  <span>Enquiry Context / Requirement Notes</span>
+                </label>
+              </div>
+              <textarea id="enquiry_context" class="form-control" rows="3" placeholder="Briefly describe your enquiry or advisory requirements..."></textarea>
+            </div>
+
+            <!-- Field 12: Privacy Consent -->
             <div class="form-group full-width">
               <div class="checkbox-group">
                 <input type="checkbox" id="privacy_consent" required>
                 <label for="privacy_consent">
-                  <strong>Consent:</strong> I agree to submit this enquiry to Insta Utility for scheduling an introductory call or scoping proposal.
+                  <strong>Consent &amp; Privacy Confirmation:</strong> I agree to submit this enquiry to Insta Utility for scheduling an introductory call or scoping proposal. Information remains confidential.
                 </label>
               </div>
             </div>
@@ -356,6 +416,11 @@
             <button type="submit" class="btn btn-emerald btn-lg-submit">
               <span>Send Enquiry / Book Call &rarr;</span>
             </button>
+            <div class="micro-trust-row">
+              <div class="micro-trust-item"><span>Confidential Enquiry</span></div>
+              <div class="micro-trust-item"><span>No Financial Commitments</span></div>
+              <div class="micro-trust-item"><span>Independent Position</span></div>
+            </div>
           </div>
         </form>
 

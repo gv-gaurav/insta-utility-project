@@ -91,15 +91,30 @@ function getZohoAccessToken() {
 $rawInput = file_get_contents('php://input');
 $body = json_decode($rawInput, true) ?: [];
 
-// Extract frontend fields with fallbacks
+// Extract frontend fields according to Aman Khatana's CRM-101 specification
 $accountName = trim($body['account_name'] ?? $body['Business_Name'] ?? '');
 $contactName = trim($body['contact_name'] ?? $body['Name'] ?? '');
 $contactEmail = trim($body['contact_email'] ?? $body['Contact_Email'] ?? '');
 $contactPhone = trim($body['contact_phone'] ?? $body['Contact_Number'] ?? '');
+$postcode = trim($body['postcode'] ?? $body['Postcode'] ?? '');
 $submissionRef = trim($body['submission_ref'] ?? $body['Submission_Ref'] ?? ('IU-2026-' . time()));
-$brand = trim($body['brand'] ?? $body['Brand'] ?? 'Insta utility');
+$brand = 'Insta utility'; // Enforce exact Brand value per CRM-101
 
-// Validation: Ensure mandatory 6-contract fields exist
+// Marketing / Attribution fields
+$utmSource = trim($body['utm_source'] ?? $body['UTM_Source'] ?? '');
+$utmMedium = trim($body['utm_medium'] ?? $body['UTM_Medium'] ?? '');
+$utmCampaign = trim($body['utm_campaign'] ?? $body['UTM_Campaign'] ?? '');
+$gclid = trim($body['gclid'] ?? $body['GCLID'] ?? '');
+$landingPage = trim($body['landing_page'] ?? $body['Landing_Page'] ?? '');
+
+// New Insta Utility CRM-101 fields
+$sector = trim($body['sector'] ?? $body['Sector'] ?? $body['sector_type'] ?? '');
+$geography = trim($body['geography'] ?? $body['Geography'] ?? $body['state_location'] ?? '');
+$serviceInterest = trim($body['service_interest'] ?? $body['Service_Interest'] ?? '');
+$preferredContactRoute = trim($body['preferred_contact_route'] ?? $body['Preferred_Contact_Route'] ?? '');
+$enquiryContext = trim($body['enquiry_context'] ?? $body['Enquiry_Context'] ?? '');
+
+// Validation: Ensure mandatory contact fields exist
 $missingFields = [];
 if (empty($accountName)) $missingFields[] = 'account_name';
 if (empty($contactName)) $missingFields[] = 'contact_name';
@@ -116,15 +131,26 @@ if (!empty($missingFields)) {
     exit;
 }
 
-// Build 6-Field Zoho Record Payload
-$zohoRecord = [
+// Build Full Zoho Website_Leads Record Payload matching Aman Khatana's CRM-101 contract
+$zohoRecord = array_filter([
     'Business_Name' => $accountName,
     'Name' => $contactName,
     'Contact_Email' => $contactEmail,
     'Contact_Number' => $contactPhone,
+    'Postcode' => $postcode ?: null,
     'Submission_Ref' => $submissionRef,
-    'Brand' => $brand
-];
+    'Brand' => $brand,
+    'UTM_Source' => $utmSource ?: null,
+    'UTM_Medium' => $utmMedium ?: null,
+    'UTM_Campaign' => $utmCampaign ?: null,
+    'GCLID' => $gclid ?: null,
+    'Landing_Page' => $landingPage ?: null,
+    'Sector' => $sector ?: null,
+    'Geography' => $geography ?: null,
+    'Service_Interest' => $serviceInterest ?: null,
+    'Preferred_Contact_Route' => $preferredContactRoute ?: null,
+    'Enquiry_Context' => $enquiryContext ?: null
+], function($val) { return $val !== null; });
 
 // If LIVE_WRITE_ENABLED is false (Shadow / Dry-run Mode), return controlled success
 if (!LIVE_WRITE_ENABLED) {

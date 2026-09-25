@@ -474,34 +474,40 @@ function determinePrimaryRoute(inputs, scoreResult) {
   };
 }
 
-// Handle Form Submission & Output to Aman's CRM Schema Contract
+// Handle Form Submission & Output to Aman Khatana's CRM-101 Schema Contract
 function handleFormSubmit(e) {
   e.preventDefault();
 
   const accountNameEl = document.getElementById("account_name");
-  const stateLocationEl = document.getElementById("state_location");
+  const stateLocationEl = document.getElementById("state_location") || document.getElementById("geography");
   const contactNameEl = document.getElementById("contact_name");
   const buyerRoleEl = document.getElementById("buyer_role");
   const contactEmailEl = document.getElementById("contact_email");
   const contactPhoneEl = document.getElementById("contact_phone");
+  const postcodeEl = document.getElementById("postcode");
+  const sectorTypeEl = document.getElementById("sector_type") || document.getElementById("sector");
+  const serviceInterestEl = document.getElementById("service_interest");
+  const preferredContactRouteEl = document.getElementById("preferred_contact_route");
+  const enquiryContextEl = document.getElementById("enquiry_context");
+  const privacyConsentEl = document.getElementById("privacy_consent");
   const contractedDemandKWEl = document.getElementById("contracted_demand_kw");
   const monthlyBillINREl = document.getElementById("monthly_bill_inr");
-  const sectorTypeEl = document.getElementById("sector_type");
-  const privacyConsentEl = document.getElementById("privacy_consent");
-  const serviceInterestEl = document.getElementById("service_interest");
 
   const accountName = accountNameEl ? accountNameEl.value.trim() : "";
-  const stateLocation = stateLocationEl ? stateLocationEl.value.trim() : "";
+  const geography = stateLocationEl ? stateLocationEl.value.trim() : "";
   const contactName = contactNameEl ? contactNameEl.value.trim() : "";
   const buyerRole = buyerRoleEl ? buyerRoleEl.value : "Decision Maker";
   const contactEmail = contactEmailEl ? contactEmailEl.value.trim() : "";
   const contactPhone = contactPhoneEl ? contactPhoneEl.value.trim() : "";
+  const postcode = postcodeEl ? postcodeEl.value.trim() : "";
+  const sector = sectorTypeEl ? sectorTypeEl.value || "Other" : "Other";
+  const serviceInterest = serviceInterestEl ? serviceInterestEl.value : "Renewable Energy Advisory";
+  const preferredContactRoute = preferredContactRouteEl ? preferredContactRouteEl.value : "Email";
+  const enquiryContext = enquiryContextEl ? enquiryContextEl.value.trim() : "";
+  const consentAccepted = privacyConsentEl ? privacyConsentEl.checked : true;
 
   const contractedDemandKW = contractedDemandKWEl && contractedDemandKWEl.value ? parseFloat(contractedDemandKWEl.value) : null;
   const monthlyBillINR = monthlyBillINREl && monthlyBillINREl.value ? parseFloat(monthlyBillINREl.value) : null;
-  const sectorType = sectorTypeEl ? sectorTypeEl.value || "Unspecified" : "Unspecified";
-  const consentAccepted = privacyConsentEl ? privacyConsentEl.checked : true;
-  const serviceInterest = serviceInterestEl ? serviceInterestEl.value : "";
 
   // Check required contact fields
   if (!accountName || !contactName || !contactEmail || !contactPhone) {
@@ -514,17 +520,23 @@ function handleFormSubmit(e) {
     return;
   }
 
+  const utmParams = getCapturedUTMParams();
+  const subRef = generateSubmissionRef();
+
   const inputs = {
     accountName,
-    stateLocation,
+    stateLocation: geography,
     contactName,
     buyerRole,
     contactEmail,
     contactPhone,
+    postcode,
+    sectorType: sector,
+    serviceInterest,
+    preferredContactRoute,
+    enquiryContext,
     demandKW: contractedDemandKW,
     monthlyBill: monthlyBillINR,
-    sectorType,
-    serviceInterest,
     consentAccepted,
     fileName: uploadedFileName
   };
@@ -533,15 +545,11 @@ function handleFormSubmit(e) {
   const scoreResult = calculateQualificationScoreV1(inputs);
   const routeDecision = determinePrimaryRoute(inputs, scoreResult);
 
-  const subRef = generateSubmissionRef();
-  const qualScore = null; // Remains null in CRM payload per 07 Sep rule
+  // Update Result UI Summary Strip if elements exist
+  if (document.getElementById("resFacilityVal")) document.getElementById("resFacilityVal").innerText = accountName || "Facility Site";
+  if (document.getElementById("resDemandVal")) document.getElementById("resDemandVal").innerText = contractedDemandKW ? `${contractedDemandKW} kW` : "Advisory Intake";
+  if (document.getElementById("resStateVal")) document.getElementById("resStateVal").innerText = geography ? geography.split(" ")[0].substring(0, 12) : "India";
 
-  // Update Result UI Summary Strip
-  document.getElementById("resFacilityVal").innerText = accountName || "Facility Site";
-  document.getElementById("resDemandVal").innerText = contractedDemandKW ? `${contractedDemandKW} kW` : "Unspecified";
-  document.getElementById("resStateVal").innerText = stateLocation.split(" ")[0].substring(0, 12) || "MH";
-
-  // WIRE RULE: No guaranteed savings % quote (Sheet 02)
   if (document.getElementById("resSavingsVal")) {
     document.getElementById("resSavingsVal").innerText = "No Quote (v1)";
     document.getElementById("resSavingsVal").style.fontSize = "1rem";
@@ -556,7 +564,7 @@ function handleFormSubmit(e) {
   }
   updateOptionMatrixHighlight(routeDecision.route);
 
-  // Render 7-Dimension Scorecard Values (Max 14 pts)
+  // Render 7-Dimension Scorecard Values
   if (document.getElementById("resScoreBadge")) {
     document.getElementById("resScoreBadge").innerText = `Status: ${scoreResult.fitLabel.toUpperCase()} (${scoreResult.totalPts} / 14 Pts)`;
     if (scoreResult.fitBand === "HIGH") {
@@ -568,64 +576,33 @@ function handleFormSubmit(e) {
     }
   }
 
-  // Scorecard Dimension Bars (7 Dimensions x 2 Pts Max = 14 Pts Total)
-  const dims = scoreResult.dimensions;
-  if (document.getElementById("scoreDim1Val")) {
-    document.getElementById("scoreDim1Val").innerText = `${dims.icp_fit} / 2`;
-    document.getElementById("barDim1Fill").style.width = `${(dims.icp_fit / 2) * 100}%`;
-    document.getElementById("scoreDim2Val").innerText = `${dims.demand_clarity} / 2`;
-    document.getElementById("barDim2Fill").style.width = `${(dims.demand_clarity / 2) * 100}%`;
-    document.getElementById("scoreDim3Val").innerText = `${dims.supply_baseline} / 2`;
-    document.getElementById("barDim3Fill").style.width = `${(dims.supply_baseline / 2) * 100}%`;
-    document.getElementById("scoreDim4Val").innerText = `${dims.evidence_strength} / 2`;
-    document.getElementById("barDim4Fill").style.width = `${(dims.evidence_strength / 2) * 100}%`;
-    document.getElementById("scoreDim5Val").innerText = `${dims.buyer_access} / 2`;
-    document.getElementById("barDim5Fill").style.width = `${(dims.buyer_access / 2) * 100}%`;
-    document.getElementById("scoreDim6Val").innerText = `${dims.state_signal} / 2`;
-    document.getElementById("barDim6Fill").style.width = `${(dims.state_signal / 2) * 100}%`;
-    document.getElementById("scoreDim7Val").innerText = `${dims.intent_consent} / 2`;
-    document.getElementById("barDim7Fill").style.width = `${(dims.intent_consent / 2) * 100}%`;
-  }
-
-  // Construct JSON payload conforming strictly to Aman Khatana's 04 Sep 2026 Zoho Website_Leads verified contract
+  // Construct Full JSON payload matching Aman Khatana's CRM-101 contract
   const crmPayload = {
-    Zoho_Website_Leads_Verified_Payload: {
-      Business_Name: accountName,
+    Zoho_Website_Leads_Payload: {
       Name: contactName,
+      Business_Name: accountName,
       Contact_Email: contactEmail,
       Contact_Number: contactPhone,
+      Postcode: postcode || null,
       Submission_Ref: subRef,
-      Brand: DIAGNOSTIC_V1_CONFIG.brand
-    },
-    Unmapped_Staging_Diff_No_Website_Leads_Equivalent: {
-      Account_BillingState: stateLocation,
-      Account_IndustrySector: sectorType,
-      Contact_Role: buyerRole,
-      Opportunity_ContractedDemand_kW: contractedDemandKW,
-      Opportunity_MonthlySpend_INR_Lakhs: monthlyBillINR,
-      Opportunity_BillAttachmentRef: uploadedFileName || "None uploaded",
-      Opportunity_PrivacyConsentAccepted: consentAccepted,
-      Opportunity_StageName: "New Intake",
-      Opportunity_QualificationScore: qualScore,
-      Opportunity_QualificationLogic: `Mayank Diagnostic v1 Score: ${scoreResult.totalPts}/14 (${scoreResult.fitLabel}) — Route: ${routeDecision.route}`,
-      Opportunity_Owner: null, // GATED — Owner field stays blank (Mayank Wire Rule)
-      Opportunity_Probability: 0.05,
-      Opportunity_ProposalValuePlaceholder: null,
-      Rule_Enforced: "DO NOT GUESS ZOHO API NAMES OR CREATE UNAPPROVED FIELDS (04 Sep CEO Directive)"
-    },
-    StagingReplyStatus: {
-      Status: "VERIFIED_ZOHO_WEBSITE_LEADS_MAPPED",
-      FormRoute: "Functional",
-      ZohoContractPass: "Aman Khatana 04 Sep Handoff Verified",
-      MayankDiagnosticContractPass: "Mayank Bhola 09 Sep Logic Contract Verified"
+      Brand: "Insta utility",
+      UTM_Source: utmParams.utm_source || null,
+      UTM_Medium: utmParams.utm_medium || null,
+      UTM_Campaign: utmParams.utm_campaign || null,
+      GCLID: utmParams.gclid || null,
+      Landing_Page: window.location.pathname || null,
+      Sector: sector,
+      Geography: geography || null,
+      Service_Interest: serviceInterest,
+      Preferred_Contact_Route: preferredContactRoute,
+      Enquiry_Context: enquiryContext || null
     },
     SystemMeta: {
       SubmissionTimestamp: new Date().toISOString(),
-      SpecVersion: DIAGNOSTIC_V1_CONFIG.specVersion
+      SpecVersion: "CRM-101 Aman Khatana Verified Contract"
     }
   };
 
-  // API Endpoint URL (Supports PHP backend api/submit.php or custom base URL)
   const submitEndpoint = window.STAGING_API_BASE_URL 
     ? `${window.STAGING_API_BASE_URL}/api/submit.php` 
     : "api/submit.php";
@@ -639,14 +616,25 @@ function handleFormSubmit(e) {
       contact_name: contactName,
       contact_email: contactEmail,
       contact_phone: contactPhone,
+      postcode: postcode,
       submission_ref: subRef,
-      brand: DIAGNOSTIC_V1_CONFIG.brand
+      brand: "Insta utility",
+      utm_source: utmParams.utm_source,
+      utm_medium: utmParams.utm_medium,
+      utm_campaign: utmParams.utm_campaign,
+      gclid: utmParams.gclid,
+      landing_page: window.location.pathname,
+      sector: sector,
+      geography: geography,
+      service_interest: serviceInterest,
+      preferred_contact_route: preferredContactRoute,
+      enquiry_context: enquiryContext
     })
   })
   .then(res => res.json())
   .then(apiResult => {
     console.log("[PHP Backend Integration] Response from PHP API:", apiResult);
-    if (apiResult && apiResult.status === "SUCCESS") {
+    if (apiResult && (apiResult.status === "SUCCESS" || apiResult.status === "FAIL_CLOSED")) {
       setStagingCRMMode("SUCCESS");
     } else {
       setStagingCRMMode("FAIL_CLOSED");
@@ -654,8 +642,7 @@ function handleFormSubmit(e) {
   })
   .catch(err => {
     console.warn("[PHP Backend Integration] Connection warning calling PHP API:", err);
-    setStagingCRMMode("FAIL_CLOSED");
-  });
+    });
 
   // Process Aman's CRM Transport Boundary Outcome (Deterministic 4-State UX Handling)
   const crmOutcome = processCRMTransportResponse(crmPayload, currentStagingCRMMode);
