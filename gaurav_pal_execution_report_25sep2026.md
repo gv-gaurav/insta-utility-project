@@ -1,61 +1,99 @@
-# GAURAV PAL — WEB-102 EXECUTION & STAGING HANDOFF REPORT
+# EXECUTION REPORT — INSTA UTILITY WEBSITE STAGING & CRM-101 INTEGRATION
 
-**Execution Date:** 25 September 2026  
-**Cycle:** 25 September 2026 Staging Delivery / WEB-102  
-**Author:** Gaurav Pal (Web Designer)  
-**Repository:** `https://github.com/gv-gaurav/insta-utility-project`  
-**Staging Status:** PASS — 5 Staging Pages Deployed & Verified against Ashish WEB-101 Copy Pack
-
----
-
-## 1. Executive Summary & Deliverables Overview
-
-In accordance with the **VoltOS CEO Corrected Website Execution Workflow (25 September 2026)**, I have completed the construction of the approved **5-Page Website Architecture (WEB-102)** in staging.
-
-All page layouts, responsive viewports, reusable components, headers/footers, forms, and claim-safety disclaimers strictly reflect the approved source-of-truth copy provided by Ashish (**WEB-101**).
-
-### 📄 Deployed Staging URLs / Pages:
-1. **Home (`index.html`):** [index.html](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/index.html) — *Insta Utility — Renewable Energy, Carbon Markets & Decarbonisation Advisory*
-2. **Renewable Energy Advisory (`renewable-energy-advisory.html`):** [renewable-energy-advisory.html](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/renewable-energy-advisory.html) — *Renewable Energy Advisory*
-3. **Carbon Markets / CCTS Advisory (`carbon-markets-ccts.html`):** [carbon-markets-ccts.html](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/carbon-markets-ccts.html) — *Carbon Markets & CCTS Advisory*
-4. **GHG / MRV & Decarbonisation Advisory (`ghg-mrv-decarbonisation.html`):** [ghg-mrv-decarbonisation.html](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/ghg-mrv-decarbonisation.html) — *GHG Inventory, MRV & Decarbonisation Advisory*
-5. **Contact (`contact.html`):** [contact.html](file:///c:/Users/Admin.KRIPA/Desktop/insta-utility-project/contact.html) — *Get in Touch*
+**Owner:** Gaurav Pal (Web Designer & Staging Construction Lead — WEB-102)  
+**Date:** 25 September 2026  
+**Target Repository:** `https://github.com/gv-gaurav/insta-utility-project.git`  
+**Branch:** `main`  
+**Staging Status:** Complete & Verified (`5/5 PASS`)
 
 ---
 
-## 2. Claim Integrity, Controls & Compliance Verification
+## 🎯 Executive Summary
 
-| Check Item | Staging Implementation Status | Evidence / Verification Notes |
-| :--- | :--- | :--- |
-| **Source Copy Alignment** | **PASS** | Exact WEB-101 text used for all titles, problem statements, scopes, inputs, processes (1-25), deliverables, and FAQs across all 5 pages. |
-| **Noindex Staging Controls** | **PASS** | `<meta name="robots" content="noindex, nofollow">` verified on all 5 staging HTML files. |
-| **CCTS / Green Credit / REC Separation** | **PASS** | CCTS explicitly designated as India's compliance framework and kept distinct from Green Credit Programme and RECs on all pages (especially `carbon-markets-ccts.html`). |
-| **No Unapproved Proofs/Logos** | **PASS** | Placeholder tags (`[Insert ...]`) preserved for registration numbers, affiliations, regulatory links, and testimonials. No invented claims or logos. |
-| **No Brokerage / Verification Claims** | **PASS** | Explicit disclaimer banners included on every page: *No brokerage, verification, certification, or credit-issuance role is claimed by Insta Utility.* |
-| **Forms & CRM Boundary** | **PASS** | Form inputs wired through `app.js` and `api/submit.php` enforcing the verified 6-field Zoho contract (`Business_Name`, `Name`, `Contact_Email`, `Contact_Number`, `Submission_Ref`, `Brand`). |
-| **Responsive & Accessibility** | **PASS** | Desktop, tablet, and mobile off-canvas drawer navigation (`mobileDrawerPanel`) tested with keyboard accessibility and semantic HTML5 layout. |
+Today, **Gaurav Pal** successfully completed the end-to-end staging build of the **Insta Utility 5-page website architecture** (WEB-102) and fully aligned all website enquiry forms with **Aman Khatana's CRM-101 lead capture contract**. 
+
+All work has been validated via automated build scripts, committed, and pushed to the primary Git repository.
 
 ---
 
-## 3. Team Handoff Sequence Status
+## 💻 Key Tasks Completed Today
 
-```mermaid
-graph TD
-    A[Ashish WEB-101 Approved Copy] -->|Done| B[Gaurav WEB-102 Staging Build]
-    B -->|Current Handoff| C[Ashish WEB-104 Claim/Content QA]
-    C --> D[Mayank WEB-103 On-Page SEO QA]
-    B -->|Parallel| E[Aman CRM-101 Form Capture]
-    D --> F[Tarun ADS-007 Paid Search Mapping]
-    F --> G[Management Production Launch Gate - NO-GO]
-```
+### 1. Web Staging Construction (WEB-102 — 5-Page Architecture)
+- **Home Page (`index.html`):** 3-Pillar Advisory overview, target reader problems, interactive scoping form, cross-navigation.
+- **Renewable Energy Advisory (`renewable-energy-advisory.html`):** C&I solar, open access, group captive advisory scope, 5-step process, and disclaimer controls.
+- **Carbon Markets / CCTS Advisory (`carbon-markets-ccts.html`):** PAT transition, CCTS compliance readiness roadmap. *Strict claim isolation:* CCTS is kept completely separate from Green Credits and RECs. No credit trading/brokerage role claimed.
+- **GHG Inventory & MRV Advisory (`ghg-mrv-decarbonisation.html`):** Scope 1 & Scope 2 inventory build-out, MRV data flow setup, and decarbonisation roadmaps.
+- **Contact Us (`contact.html`):** Introductory call booking form, office placeholders, and contact workflow.
+- **Staging Robots Control:** `<meta name="robots" content="noindex, nofollow">` verified across 100% of pages.
 
-- **Ashish (WEB-104):** Staging URLs are ready for page-by-page Approved/Fix review against WEB-101.
-- **Mayank (WEB-103):** Pending WEB-104 signoff to apply metadata and on-page SEO QA.
-- **Aman (CRM-101):** Form endpoint `api/submit.php` active in shadow mode with 0 live writes.
-- **Tarun (ADS-007):** GA4/GTM named-UTM engine active in `app.js`; paid search launch remains **NO-GO**.
+### 2. CRM-101 Lead Integration (Target Module: `Website_Leads`)
+- Wired all 5 enquiry forms to capture and format the exact **17 CRM fields** specified by Aman Khatana.
+- **Static Brand Assignment:** Enforced `Brand = "Insta utility"`.
+- **Owner Assignment:** Omitted `Owner` field from website payload (CRM manages default owner assignment).
+- **Submission Identifier:** Implemented auto-generating unique `Submission_Ref` in format `IU-YYYY-MMDD-XXXX`.
+- **Marketing Attribution Engine (`app.js`):** Auto-captures `UTM_Source`, `UTM_Medium`, `UTM_Campaign`, `GCLID`, and `Landing_Page` from URL parameters.
+- **Sector Picklist Alignment:** Restricted to `Commercial`, `Industrial`, `Public Sector`, `Education`, `Healthcare`, `Hospitality`, `Retail`, `Manufacturing`, `Property / Real Estate`, `Other`.
+- **Service Interest Picklist Alignment:** Mapped to `Renewable Energy Advisory`, `Carbon Markets / CCTS`, `GHG / MRV & Decarbonisation`.
+- **Preferred Contact Route Dropdown:** Updated to `Email` and `Phone` (`WhatsApp` option removed per UI request).
+- **PHP Backend Endpoint (`api/submit.php`):** Configured in **Shadow Mode** (`LIVE_WRITE_ENABLED = false`). Generates instant confirmation cards for visitors while logging CRM payloads for Aman Khatana's webhook integration.
+
+### 3. UI/UX Consistency & Footer Unification
+- Standardized the 4-column footer component (`brand-col`, `Advisory Services`, `Navigation`, `Claim Safety Notice`) across all 5 pages.
+- Refined form inputs, button styling, hover states, and mobile responsive drawer navigation.
 
 ---
 
-**Report Prepared By:**  
-**Gaurav Pal**  
-Web Designer — VoltOS Execution Team
+## 📊 CRM-101 Field Mapping Matrix
+
+| Web Form Field | Frontend DOM ID | CRM API Field Name | Mapped Value / Format |
+| :--- | :--- | :--- | :--- |
+| **Business Name** | `account_name` | `Business_Name` | Text (Mandatory) |
+| **Contact Name** | `contact_name` | `Name` | Text (Mandatory) |
+| **Contact Email** | `contact_email` | `Contact_Email` | Email (Mandatory) |
+| **Contact Number** | `contact_phone` | `Contact_Number` | Phone (Mandatory) |
+| **Postcode** | `postcode` | `Postcode` | PIN Code / Postcode |
+| **Submission Ref** | `submission_ref` | `Submission_Ref` | Auto ID (`IU-2026-0925-XXXX`) |
+| **Brand** | `brand` | `Brand` | `Insta utility` |
+| **UTM Source** | `utm_source` | `UTM_Source` | URL Parameter |
+| **UTM Medium** | `utm_medium` | `UTM_Medium` | URL Parameter |
+| **UTM Campaign** | `utm_campaign` | `UTM_Campaign` | URL Parameter |
+| **GCLID** | `gclid` | `GCLID` | Google Click ID |
+| **Landing Page** | `landing_page` | `Landing_Page` | Full Canonical URL |
+| **Sector** | `sector_type` | `Sector` | Allowed CRM Picklist |
+| **Geography** | `state_location` | `Geography` | State / Region |
+| **Service Interest**| `service_interest` | `Service_Interest` | Advisory Pillar Picklist |
+| **Contact Route** | `preferred_contact_route` | `Preferred_Contact_Route` | `Email` / `Phone` |
+| **Enquiry Context** | `enquiry_context` | `Enquiry_Context` | Multi-line Notes |
+
+---
+
+## 🧪 Automated Verification Results
+
+- **Script:** `validate_pages.js`
+- **Results:**
+  - `index.html`: **PASS**
+  - `renewable-energy-advisory.html`: **PASS**
+  - `carbon-markets-ccts.html`: **PASS**
+  - `ghg-mrv-decarbonisation.html`: **PASS**
+  - `contact.html`: **PASS**
+
+---
+
+## 🚀 Git Commit History (25 Sep 2026)
+
+1. `cad1f9f` — `feat(staging): build 5-page Insta Utility website architecture with noindex & claim safety controls`
+2. `694a9fb` — `feat(crm-101): align all 5 website intake forms with Aman Khatana CRM-101 lead capture schema`
+3. `4780e51` — `fix(ui): unify footer grid component across all 5 website pages to match homepage standard`
+4. `9187fc9` — `fix(forms): remove WhatsApp option from Preferred Contact Route select dropdown across all pages`
+
+---
+
+## ➡️ Next Steps & Ownership Handoff
+
+1. **Ashish (WEB-104):** Perform content intent & claim safety review.
+2. **Mayank (WEB-103):** Run on-page SEO QA & meta tag check.
+3. **Aman Khatana (CRM-101):** Review JSON payload schema and provide Zoho CRM Webhook API credentials to enable live lead submission.
+4. **Tarun (Paid Search):** Map paid search landing URLs once QA passes.
+
+---
+*Report generated on 25 September 2026 for Gaurav Pal (Web Construction Lead — WEB-102).*
