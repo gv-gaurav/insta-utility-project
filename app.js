@@ -478,25 +478,38 @@ function determinePrimaryRoute(inputs, scoreResult) {
 function handleFormSubmit(e) {
   e.preventDefault();
 
-  const accountName = document.getElementById("account_name").value.trim();
-  const stateLocation = document.getElementById("state_location").value.trim();
-  const contactName = document.getElementById("contact_name").value.trim();
-  const buyerRole = document.getElementById("buyer_role").value;
-  const contactEmail = document.getElementById("contact_email").value.trim();
-  const contactPhone = document.getElementById("contact_phone").value.trim();
+  const accountNameEl = document.getElementById("account_name");
+  const stateLocationEl = document.getElementById("state_location");
+  const contactNameEl = document.getElementById("contact_name");
+  const buyerRoleEl = document.getElementById("buyer_role");
+  const contactEmailEl = document.getElementById("contact_email");
+  const contactPhoneEl = document.getElementById("contact_phone");
+  const contractedDemandKWEl = document.getElementById("contracted_demand_kw");
+  const monthlyBillINREl = document.getElementById("monthly_bill_inr");
+  const sectorTypeEl = document.getElementById("sector_type");
+  const privacyConsentEl = document.getElementById("privacy_consent");
+  const serviceInterestEl = document.getElementById("service_interest");
 
-  const contractedDemandKW = document.getElementById("contracted_demand_kw").value ? parseFloat(document.getElementById("contracted_demand_kw").value) : null;
-  const monthlyBillINR = document.getElementById("monthly_bill_inr").value ? parseFloat(document.getElementById("monthly_bill_inr").value) : null;
-  const sectorType = document.getElementById("sector_type").value || "Unspecified";
-  const consentAccepted = document.getElementById("privacy_consent").checked;
+  const accountName = accountNameEl ? accountNameEl.value.trim() : "";
+  const stateLocation = stateLocationEl ? stateLocationEl.value.trim() : "";
+  const contactName = contactNameEl ? contactNameEl.value.trim() : "";
+  const buyerRole = buyerRoleEl ? buyerRoleEl.value : "Decision Maker";
+  const contactEmail = contactEmailEl ? contactEmailEl.value.trim() : "";
+  const contactPhone = contactPhoneEl ? contactPhoneEl.value.trim() : "";
 
-  // Rule: Must provide either Monthly Bill OR File Upload
-  if (!monthlyBillINR && !uploadedFileName) {
-    alert("Please provide either your Approx Monthly Electricity Bill (₹ Lakhs) OR attach your 12-Month Bills.");
+  const contractedDemandKW = contractedDemandKWEl && contractedDemandKWEl.value ? parseFloat(contractedDemandKWEl.value) : null;
+  const monthlyBillINR = monthlyBillINREl && monthlyBillINREl.value ? parseFloat(monthlyBillINREl.value) : null;
+  const sectorType = sectorTypeEl ? sectorTypeEl.value || "Unspecified" : "Unspecified";
+  const consentAccepted = privacyConsentEl ? privacyConsentEl.checked : true;
+  const serviceInterest = serviceInterestEl ? serviceInterestEl.value : "";
+
+  // Check required contact fields
+  if (!accountName || !contactName || !contactEmail || !contactPhone) {
+    alert("Please complete all required fields: Company Name, Contact Name, Corporate Email, and Phone Number.");
     return;
   }
 
-  if (!consentAccepted) {
+  if (privacyConsentEl && !consentAccepted) {
     alert("Please accept the privacy consent checkbox to proceed.");
     return;
   }
@@ -511,6 +524,7 @@ function handleFormSubmit(e) {
     demandKW: contractedDemandKW,
     monthlyBill: monthlyBillINR,
     sectorType,
+    serviceInterest,
     consentAccepted,
     fileName: uploadedFileName
   };
@@ -534,20 +548,24 @@ function handleFormSubmit(e) {
   }
 
   // Set Recommended Route Header & Dynamically Highlight Matching Matrix Card
-  document.getElementById("resRouteVal").innerText = routeDecision.label;
+  if (document.getElementById("resRouteVal")) {
+    document.getElementById("resRouteVal").innerText = routeDecision.label;
+  }
   if (document.getElementById("resMemoDescText") && routeDecision.recommendation_text) {
     document.getElementById("resMemoDescText").innerText = routeDecision.recommendation_text;
   }
   updateOptionMatrixHighlight(routeDecision.route);
 
   // Render 7-Dimension Scorecard Values (Max 14 pts)
-  document.getElementById("resScoreBadge").innerText = `Status: ${scoreResult.fitLabel.toUpperCase()} (${scoreResult.totalPts} / 14 Pts)`;
-  if (scoreResult.fitBand === "HIGH") {
-    document.getElementById("resScoreBadge").className = "scorecard-status-badge high-fit";
-  } else if (scoreResult.fitBand === "OUT_OF_SCOPE" || scoreResult.fitBand === "STOP") {
-    document.getElementById("resScoreBadge").className = "scorecard-status-badge out-of-scope-fit";
-  } else {
-    document.getElementById("resScoreBadge").className = "scorecard-status-badge";
+  if (document.getElementById("resScoreBadge")) {
+    document.getElementById("resScoreBadge").innerText = `Status: ${scoreResult.fitLabel.toUpperCase()} (${scoreResult.totalPts} / 14 Pts)`;
+    if (scoreResult.fitBand === "HIGH") {
+      document.getElementById("resScoreBadge").className = "scorecard-status-badge high-fit";
+    } else if (scoreResult.fitBand === "OUT_OF_SCOPE" || scoreResult.fitBand === "STOP") {
+      document.getElementById("resScoreBadge").className = "scorecard-status-badge out-of-scope-fit";
+    } else {
+      document.getElementById("resScoreBadge").className = "scorecard-status-badge";
+    }
   }
 
   // Scorecard Dimension Bars (7 Dimensions x 2 Pts Max = 14 Pts Total)

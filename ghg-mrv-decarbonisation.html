@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Google Tag Manager -->
+  <script>(function (w, d, s, l, i) {
+      w[l] = w[l] || []; w[l].push({
+        'gtm.start':
+          new Date().getTime(), event: 'gtm.js'
+      }); var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+          'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', 'GTM-W5MGDDCR');</script>
+  <!-- End Google Tag Manager -->
+
+  <!-- Google Tag (gtag.js) - GA4 Staging Direct DebugView Emitter (G-CX448B8NZM) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-CX448B8NZM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', 'G-CX448B8NZM', { 'debug_mode': true });
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>GHG Inventory, MRV &amp; Decarbonisation Advisory | Insta Utility</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon.png">
+  <link rel="apple-touch-icon" href="assets/favicon.png">
+
+  <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W5MGDDCR" height="0" width="0"
+      style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+  <!-- TOP ANNOUNCEMENT BAR -->
+  <div class="top-announcement-bar">
+    <div class="container announcement-content">
+      <span><img src="assets/lighting.png" alt="⚡" class="announcement-icon-img"><strong>GHG &amp; MRV Advisory:</strong> Scope 1 &amp; 2 Inventory Build-out &amp; Decarbonisation Roadmaps.</span>
+      <a href="#intake-form" class="announcement-link">Request GHG Assessment &rarr;</a>
+    </div>
+  </div>
+
+  <!-- HEADER NAVIGATION -->
+  <header>
+    <div class="container header-content">
+      <a href="index.html" class="brand-logo">
+        <img src="https://www.instautility.com/assets/img/logo/insta-utility-logo.png"
+          alt="Insta Utility - Greener Tomorrow" class="header-logo-img">
+      </a>
+      <button class="mobile-menu-toggle" id="mobileMenuBtn" aria-label="Open Mobile Menu" onclick="openMobileDrawer()">
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+      </button>
+      <div class="header-nav-container" id="headerNavContainer">
+        <nav class="header-nav-links">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="renewable-energy-advisory.html" class="nav-link">Renewable Energy Advisory</a>
+          <a href="carbon-markets-ccts.html" class="nav-link">Carbon Markets / CCTS</a>
+          <a href="ghg-mrv-decarbonisation.html" class="nav-link active">GHG / MRV &amp; Decarbonisation</a>
+          <a href="contact.html" class="nav-link">Contact</a>
+        </nav>
+        <div class="header-actions">
+          <a href="#intake-form" class="btn btn-emerald btn-sm header-btn">Request GHG Assessment</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- OFF-CANVAS MOBILE NAVIGATION DRAWER -->
+  <div class="mobile-drawer-overlay" id="mobileDrawerOverlay" onclick="closeMobileDrawer()"></div>
+  <div class="mobile-drawer-panel" id="mobileDrawerPanel">
+    <div class="mobile-drawer-header">
+      <a href="index.html" class="brand-logo" onclick="closeMobileDrawer()">
+        <img src="https://www.instautility.com/assets/img/logo/insta-utility-logo.png" alt="Insta Utility Logo"
+          class="header-logo-img">
+      </a>
+      <button class="mobile-drawer-close" aria-label="Close Menu" onclick="closeMobileDrawer()">✕</button>
+    </div>
+    <div class="mobile-drawer-body">
+      <nav class="mobile-drawer-nav">
+        <a href="index.html" class="mobile-nav-link" onclick="closeMobileDrawer()">Home Overview</a>
+        <a href="renewable-energy-advisory.html" class="mobile-nav-link" onclick="closeMobileDrawer()">Renewable Energy Advisory &rarr;</a>
+        <a href="carbon-markets-ccts.html" class="mobile-nav-link" onclick="closeMobileDrawer()">Carbon Markets / CCTS &rarr;</a>
+        <a href="ghg-mrv-decarbonisation.html" class="mobile-nav-link active" onclick="closeMobileDrawer()">GHG / MRV &amp; Decarbonisation &rarr;</a>
+        <a href="contact.html" class="mobile-nav-link" onclick="closeMobileDrawer()">Contact &rarr;</a>
+      </nav>
+      <div class="mobile-drawer-cta">
+        <a href="#intake-form" class="btn btn-emerald" style="width:100%; text-align:center;"
+          onclick="closeMobileDrawer()">Request GHG Assessment &rarr;</a>
+      </div>
+      <div class="mobile-drawer-footer">
+        <p style="font-size:0.775rem; color:var(--text-muted);">Insta Utility — GHG / MRV &amp; Decarbonisation</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO SECTION -->
+  <section class="launch-hero">
+    <div class="container">
+      <div class="pill-badge">
+        <span>Service Line 03</span>
+      </div>
+      <h1>GHG Inventory, MRV &amp; Decarbonisation Advisory</h1>
+      <p class="hero-lead">
+        Supporting Scope 1 and Scope 2 inventory development, Measurement-Reporting-Verification (MRV) process setup, and structured decarbonisation roadmaps.
+      </p>
+
+      <div style="margin-bottom:1.5rem; padding:0.85rem 1.15rem; background:rgba(217, 119, 6, 0.15); border-left:4px solid #f59e0b; border-radius:var(--radius-sm); font-size:0.825rem; color:#fef3c7; line-height:1.5;">
+        <strong>Note:</strong> All figures, examples, accreditations and regulator references on this page are placeholders or subject to independent verification before publication. No brokerage, verification, certification, or credit-issuance role is claimed by Insta Utility.
+      </div>
+
+      <div class="launch-hero-meta">
+        <div><strong>Emissions Focus:</strong> Scope 1 &amp; Scope 2 (Scope 3 where feasible)</div>
+        <div><strong>Frameworks:</strong> GHG Protocol &amp; Recognized Methodologies</div>
+        <div><strong>Deliverable:</strong> Advisory GHG Summary, MRV Framework &amp; Roadmap</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TARGET READER / PROBLEM -->
+  <section style="background:var(--bg-surface); border-bottom:1px solid var(--border-subtle);">
+    <div class="container">
+      <div class="section-header">
+        <span class="pill-badge">Target Reader / Problem</span>
+        <h2 class="section-title">Who Needs GHG &amp; MRV Advisory?</h2>
+        <p class="section-subtitle">Companies measuring greenhouse gas emissions for internal management, stakeholder reporting, or compliance readiness.</p>
+      </div>
+
+      <div class="info-card" style="max-width:920px; margin:0 auto;">
+        <h3>🏭 The Emissions Accounting Challenge</h3>
+        <p>
+          Companies that need to measure and report their greenhouse gas (GHG) emissions — for internal management, stakeholder or investor requests, upcoming compliance requirements, or voluntary disclosure — but lack an internal GHG inventory, MRV (Measurement, Reporting, Verification) systems, or a structured decarbonisation plan.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT THIS SERVICE COVERS -->
+  <section>
+    <div class="container">
+      <div class="section-header">
+        <span class="pill-badge">Scope of Work</span>
+        <h2 class="section-title">What This Service Covers</h2>
+      </div>
+
+      <div class="info-card" style="max-width:920px; margin:0 auto;">
+        <ul>
+          <li>Support in building a GHG emissions inventory (Scope 1 and Scope 2, and Scope 3 where feasible) based on client-provided activity data and recognised public methodologies (e.g., GHG Protocol).</li>
+          <li>Advisory on setting up internal MRV processes and data systems.</li>
+          <li>Support in developing a decarbonisation roadmap outlining potential intervention areas (energy efficiency, fuel switching, renewable adoption, etc.) for client consideration.</li>
+        </ul>
+        <div style="margin-top:1rem; padding:0.75rem; background:var(--bg-surface-subtle); border-radius:var(--radius-sm); font-size:0.8rem; color:var(--text-muted);">
+          <em>Placeholder note: Specific standards/frameworks applied are confirmed per engagement.</em>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INPUTS NEEDED & DELIVERABLES -->
+  <section style="background:var(--bg-surface); border-top:1px solid var(--border-subtle); border-bottom:1px solid var(--border-subtle);">
+    <div class="container">
+      <div class="info-grid-2">
+        <div class="info-card">
+          <h3>📋 Inputs Needed From Client</h3>
+          <ul>
+            <li>Activity data (fuel consumption, electricity bills, process data, etc.) for the relevant boundary/period</li>
+            <li>Organisational boundary information (facilities, ownership structure)</li>
+            <li>Existing sustainability/ESG reporting, if any</li>
+            <li>Internal team availability for data validation</li>
+          </ul>
+        </div>
+
+        <div class="info-card">
+          <h3>📦 Deliverables Offered</h3>
+          <ul>
+            <li>GHG inventory summary (advisory-level, based on data provided by the client)</li>
+            <li>MRV framework / process document</li>
+            <li>Decarbonisation roadmap outlining potential focus areas for the client's consideration</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- PROCESS (STEPS 17 TO 21) -->
+      <div style="margin-top:3.5rem;">
+        <div class="section-header">
+          <span class="pill-badge">Process</span>
+          <h2 class="section-title">5-Step GHG &amp; Decarbonisation Workflow</h2>
+        </div>
+
+        <div class="steps-grid">
+          <div class="step-box">
+            <div class="step-num">17</div>
+            <h4>Boundary &amp; Scope Discussion</h4>
+            <p>Setting organizational boundaries, facility inclusions, and target emission scopes.</p>
+          </div>
+
+          <div class="step-box">
+            <div class="step-num">18</div>
+            <h4>Data Collection Template</h4>
+            <p>Sharing structured activity data collection templates for fuel, power, and operational inputs.</p>
+          </div>
+
+          <div class="step-box">
+            <div class="step-num">19</div>
+            <h4>Data Review &amp; Computation</h4>
+            <p>Advisory-level inventory calculation using recognized public methodology emission factors.</p>
+          </div>
+
+          <div class="step-box">
+            <div class="step-num">20</div>
+            <h4>Draft Inventory &amp; Roadmap</h4>
+            <p>Drafting GHG summary, MRV data flow processes, and potential intervention roadmap.</p>
+          </div>
+        </div>
+
+        <div style="max-width:320px; margin:1.25rem auto 0 auto;">
+          <div class="step-box" style="text-align:center;">
+            <div class="step-num" style="margin:0 auto 0.75rem auto;">21</div>
+            <h4>Review &amp; Finalisation</h4>
+            <p>Interactive review discussion with corporate ESG team and final deliverable handover.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXCLUSIONS & LIMITATIONS -->
+  <section>
+    <div class="container">
+      <div class="exclusion-box">
+        <h4>⚠️ Exclusions &amp; Verification Limitations</h4>
+        <ul>
+          <li>Does not independently verify or audit client-provided data.</li>
+          <li>Is not a third-party verification or certification body.</li>
+          <li>Does not guarantee specific emission-reduction outcomes, cost savings, or regulatory acceptance of the inventory.</li>
+          <li>The inventory and roadmap are advisory tools based on information provided, and are not a substitute for statutory reporting, external assurance, or official verification where required.</li>
+          <li>Does not replace the client's own internal controls or legal compliance obligations.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- EVIDENCE / SOURCE PLACEHOLDERS -->
+  <section style="background:var(--bg-surface); border-top:1px solid var(--border-subtle); border-bottom:1px solid var(--border-subtle);">
+    <div class="container">
+      <div class="section-header">
+        <span class="pill-badge">Source Verification</span>
+        <h2 class="section-title">Evidence &amp; Source Placeholders</h2>
+      </div>
+
+      <div class="info-grid-2">
+        <div class="trust-placeholder-box">
+          <span class="trust-tag">PLACEHOLDER</span>
+          <h5>Methodology Standards</h5>
+          <p>[Insert methodology references used — e.g., GHG Protocol, ISO 14064, as applicable]</p>
+        </div>
+
+        <div class="trust-placeholder-box">
+          <span class="trust-tag">PLACEHOLDER</span>
+          <h5>Sample Inventory Format</h5>
+          <p>[Insert sample redacted inventory/roadmap]</p>
+        </div>
+
+        <div class="trust-placeholder-box">
+          <span class="trust-tag">PLACEHOLDER</span>
+          <h5>Framework Links</h5>
+          <p>[Insert relevant public standard/framework links]</p>
+        </div>
+
+        <div class="trust-placeholder-box">
+          <span class="trust-tag">PLACEHOLDER</span>
+          <h5>Verified Testimonials</h5>
+          <p>[Insert client testimonial once available and verified]</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FREQUENTLY ASKED QUESTIONS -->
+  <section>
+    <div class="container">
+      <div class="section-header">
+        <span class="pill-badge">FAQ</span>
+        <h2 class="section-title">Frequently Asked Questions</h2>
+      </div>
+
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-question">Q1. Will you verify or certify my GHG inventory?</div>
+          <div class="faq-answer">No. This is advisory support only, not third-party verification or certification.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">Q2. What emissions scopes do you cover?</div>
+          <div class="faq-answer">Typically Scope 1 and Scope 2, with Scope 3 support where feasible and data permits.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">Q3. What standard or methodology do you use?</div>
+          <div class="faq-answer">[Placeholder: to be confirmed, e.g., GHG Protocol.]</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">Q4. Can this replace my statutory emissions reporting?</div>
+          <div class="faq-answer">No. It supports internal readiness but does not replace official/statutory processes.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">Q5. How much data do I need to provide?</div>
+          <div class="faq-answer">Typically 12 months of activity data; specifics are discussed at the scoping stage.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">Q6. Do you help implement the decarbonisation roadmap?</div>
+          <div class="faq-answer">[Placeholder: clarify whether this is advisory-roadmap only, or implementation support offered separately.]</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">Q7. Is this different from your CCTS advisory?</div>
+          <div class="faq-answer">Yes. GHG/MRV advisory is broader and can support CCTS readiness, but it is a distinct service.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTAKE FORM SECTION -->
+  <section class="form-section" id="intake-form">
+    <div class="container">
+      <div class="section-header">
+        <span class="pill-badge">Primary CTA</span>
+        <h2 class="section-title">Request a GHG &amp; Decarbonisation Assessment</h2>
+        <p class="section-subtitle">Submit your organization details to scope your GHG inventory and MRV framework.</p>
+      </div>
+
+      <div class="form-card-container">
+        <form id="diagnosticForm" onsubmit="handleFormSubmit(event)">
+          <div class="form-grid">
+            <div class="form-group">
+              <div class="label-wrapper">
+                <label class="form-label" for="account_name"><span>Company / Organisation</span> <span class="req">*</span></label>
+              </div>
+              <input type="text" id="account_name" class="form-control" placeholder="e.g. Sterling Synthetics Pvt Ltd" required>
+            </div>
+
+            <div class="form-group">
+              <div class="label-wrapper">
+                <label class="form-label" for="contact_name"><span>Contact Name</span> <span class="req">*</span></label>
+              </div>
+              <input type="text" id="contact_name" class="form-control" placeholder="e.g. Gaurav Pal" required>
+            </div>
+
+            <div class="form-group">
+              <div class="label-wrapper">
+                <label class="form-label" for="buyer_role"><span>Role / Designation</span> <span class="req">*</span></label>
+              </div>
+              <select id="buyer_role" class="form-control" required>
+                <option value="ESG / Sustainability Lead">ESG / Sustainability Lead</option>
+                <option value="Facilities Head">Facilities Head</option>
+                <option value="Plant Manager">Plant Manager</option>
+                <option value="CFO / Director">CFO / Director</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <div class="label-wrapper">
+                <label class="form-label" for="service_interest"><span>Service Area</span></label>
+              </div>
+              <input type="text" id="service_interest" class="form-control" value="GHG / MRV &amp; Decarbonisation Advisory" readonly>
+            </div>
+
+            <div class="form-group">
+              <div class="label-wrapper">
+                <label class="form-label" for="contact_email"><span>Corporate Email</span> <span class="req">*</span></label>
+              </div>
+              <input type="email" id="contact_email" class="form-control" placeholder="g.pal@company.com" required>
+            </div>
+
+            <div class="form-group">
+              <div class="label-wrapper">
+                <label class="form-label" for="contact_phone"><span>Phone Number</span> <span class="req">*</span></label>
+              </div>
+              <input type="tel" id="contact_phone" class="form-control" placeholder="+91 98765 43210" required>
+            </div>
+
+            <div class="form-group">
+              <div class="label-wrapper">
+                <label class="form-label" for="state_location"><span>Location / State</span></label>
+              </div>
+              <input type="text" id="state_location" class="form-control" placeholder="e.g. Karnataka / Tamil Nadu">
+            </div>
+
+            <div class="form-group">
+              <div class="label-wrapper">
+                <label class="form-label" for="sector_type"><span>Industry Sector</span></label>
+              </div>
+              <select id="sector_type" class="form-control">
+                <option value="Manufacturing">Manufacturing &amp; Industrial</option>
+                <option value="Commercial Real Estate">Commercial Real Estate</option>
+                <option value="Logistics">Logistics &amp; Warehousing</option>
+                <option value="Other">Other Sector</option>
+              </select>
+            </div>
+
+            <div class="form-group full-width">
+              <div class="checkbox-group">
+                <input type="checkbox" id="privacy_consent" required>
+                <label for="privacy_consent">
+                  <strong>Consent:</strong> Data used strictly for GHG inventory &amp; MRV advisory scoping.
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-submit-container">
+            <button type="submit" class="btn btn-emerald btn-lg-submit">
+              <span>Request GHG &amp; Decarbonisation Assessment &rarr;</span>
+            </button>
+          </div>
+        </form>
+
+        <div class="diagnostic-result-container" id="submissionResult">
+          <div class="diag-header">
+            <div class="diag-title-area">
+              <h3><img src="assets/success.png" alt="✓" style="width:28px;"> GHG Assessment Request Received</h3>
+              <p>Your request has been logged. Ref: <span id="generatedRef">IU-2026-0925-0000</span></p>
+            </div>
+          </div>
+          <div id="crmOutcomeBanner"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTERNAL LINKS BAR -->
+  <div class="cross-nav-pills">
+    <div class="container cross-nav-container">
+      <span style="font-size:0.85rem; font-weight:700; color:var(--text-muted);">Internal Links:</span>
+      <a href="index.html" class="nav-pill-item">Home</a>
+      <a href="renewable-energy-advisory.html" class="nav-pill-item">Renewable Energy Advisory</a>
+      <a href="carbon-markets-ccts.html" class="nav-pill-item">Carbon Markets / CCTS</a>
+      <a href="contact.html" class="nav-pill-item">Contact</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-bottom">
+        <div class="footer-copy">&copy; 2026 Insta Utility. All rights reserved. GHG Inventory &amp; MRV Advisory.</div>
+        <div class="footer-bottom-links">
+          <a href="index.html">Home</a>
+          <a href="renewable-energy-advisory.html">Renewable Energy</a>
+          <a href="carbon-markets-ccts.html">CCTS Advisory</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
