@@ -4,7 +4,7 @@
 **Date:** 30 September 2026  
 **Target Repository:** `https://github.com/gv-gaurav/insta-utility-project.git`  
 **Branch:** `main`  
-**Latest Commit:** `9823833` (`fix(crm): bypass static POST on github.io to prevent HTTP 405 network devtool entries`)  
+**Latest Commit:** `bcab357`  
 **Task Status:** Complete & Verified (`5/5 PASS`)  
 
 ---
@@ -17,6 +17,19 @@ Today, **Gaurav Pal** successfully completed **WEB-105 (P0 Claim-Safety Remediat
 2. **CRM Transport & GitHub Pages Static Host Resolution:** Addressed the HTTP 405 error caused by GitHub Pages not supporting server-side PHP execution (`api/submit.php`). Updated `app.js` to detect static hosts and process CRM-101 lead payloads in **Staging Shadow Mode** with 0 network errors, while preserving full live backend routing via `window.STAGING_API_BASE_URL`.
 
 All code, styling, and documentation changes have been tested, committed, and pushed to `origin/main`.
+
+---
+
+## 🚨 CRUCIAL INFRASTRUCTURE NOTE & MANAGEMENT DECISION REQUIRED
+
+> **Why live PHP form submissions do not write to CRM on the Staging URL:**  
+> The current staging environment is hosted on **GitHub Pages (`gv-gaurav.github.io/insta-utility-project/`)**, which is a **purely static host**. **GITHUB PAGES DOES NOT SUPPORT PHP EXECUTION** or HTTP `POST` requests to server scripts (`api/submit.php`). 
+> 
+> **Current Status:**  
+> The frontend form journey, 17-field payload mapping, `Submission_Ref` generator (`IU-2026-0930-XXXX`), UTM attribution engine, and UI success confirmation cards are 100% complete and working cleanly in Staging Shadow Mode.
+> 
+> **Decision / Confirmation Needed:**  
+> To enable real, live server-side HTTP writes into Zoho CRM (`Website_Leads`), management needs to confirm/approve hosting the PHP backend (`api/submit.php`) on an **actual PHP server** (e.g. Render, Railway, cPanel, Vercel Serverless PHP, or dedicated host) and pointing `window.STAGING_API_BASE_URL` to that server.
 
 ---
 
@@ -66,6 +79,7 @@ All code, styling, and documentation changes have been tested, committed, and pu
 2. `d04be18` — `docs: add WEB-105 execution report for Gaurav Pal`
 3. `da4dd65` — `fix(crm): handle static host 405 gracefully and support live API base URL configuration`
 4. `9823833` — `fix(crm): bypass static POST on github.io to prevent HTTP 405 network devtool entries`
+5. `bcab357` — `docs: update 30 Sep execution report with WEB-105 & CRM 405 static host resolution`
 
 **Repository URL:** [https://github.com/gv-gaurav/insta-utility-project.git](https://github.com/gv-gaurav/insta-utility-project.git)  
 **Status:** All commits pushed and up-to-date with `origin/main`.
@@ -74,10 +88,38 @@ All code, styling, and documentation changes have been tested, committed, and pu
 
 ## ➡️ Next Steps & Workflow Handoff
 
-1. **Ashish (WEB-106):** Page-by-page claim-safety re-verification against WEB-101 (Ready for Ashish).
-2. **Mayank (WEB-107):** Post-remediation regression QA (pending WEB-106 pass).
-3. **Aman Khatana (CRM-102):** Re-test synthetic submission on `gv-gaurav.github.io` (Staging Shadow Mode active with 0 network errors). For live Zoho CRM writes, point `window.STAGING_API_BASE_URL` to live PHP endpoint.
-4. **Tarun (ADS-008):** Final no-spend launch gate (gated behind website + CRM evidence).
+1. **Aman Khatana (CRM-103):** Provide production-safe CRM contract, allowed origin allow-list, duplicate handling rule, and response specs.
+2. **Gaurav Pal (WEB-109):** Harden PHP backend package (`api/submit.php`) upon receipt of CRM-103 approval.
+3. **Management Gate:** Authorize server deployment to Insta Utility-controlled PHP staging host.
+4. **Aman Khatana (CRM-102):** Execute 1 synthetic non-personal live-write test post-deployment.
+5. **Tarun (ADS-008):** Final acquisition gate review.
 
 ---
-*Report generated on 30 September 2026 for Gaurav Pal (Web Construction Lead).*
+
+## 🎯 WEB-108 Execution Status — Frontend Transport Truthfulness (30 September 2026)
+
+**Owner:** Gaurav Pal (Web Construction Lead)  
+**Task Status:** COMPLETE (`4/4 Acceptance States Met`)
+
+### Completed Deliverables:
+1. **Network & API Failure Truthfulness (`app.js`):**
+   - Fixed `fetch().catch()` logic. Network errors, timeouts, or unhandled exceptions now explicitly set state to `ERROR` / `FAIL_CLOSED`. Network failure **never** displays CRM success.
+2. **Staging Shadow Mode Explicit Outcome (`app.js` & `styles.css`):**
+   - GitHub Pages static hosting detection (`github.io`) sets mode to `SHADOW_ONLY`.
+   - UI banner explicitly renders: **`ℹ️ STAGING ONLY - NOT WRITTEN TO CRM`**.
+3. **Payload Key Mismatch Fixed (`app.js`):**
+   - `processCRMTransportResponse` now inspects `Zoho_Website_Leads_Payload` matching `handleFormSubmit` (with fallback to `Zoho_Website_Leads_Verified_Payload`), ensuring client-side validation evaluates the exact fields submitted.
+4. **Simulated Record IDs Removed (`app.js`):**
+   - Removed random client-side ID generation (`zcrm_...`). Record IDs appear **only** when returned by a live backend/Zoho path.
+
+### 4-State Transport Verification Matrix:
+| State | Condition | Status Code | UI Banner Outcome | CRM Success Claim? |
+| :--- | :--- | :--- | :--- | :--- |
+| **Shadow Mode** | GitHub Pages / Static Staging | `NOT_WRITTEN_TO_CRM` | `STAGING ONLY - NOT WRITTEN TO CRM` | ❌ NO |
+| **Network Failure** | Server offline / Unreachable | `CRM_TRANSPORT_ERROR` | `CRM Transport Error (NOT Written to CRM)` | ❌ NO |
+| **HTTP Failure** | 4xx / 5xx Bad Response | `FAIL_CLOSED` / `ERROR` | `Fail-Closed: CRM Validation Constraint` | ❌ NO |
+| **Backend Success** | Live PHP API `200` + `status: SUCCESS` | `CRM_RECORD_CREATED` | `✓ CRM Record Created Successfully` | ✅ YES (Only state) |
+
+---
+*Report updated on 30 September 2026 for Gaurav Pal (Web Construction Lead).*
+

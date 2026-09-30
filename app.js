@@ -607,8 +607,8 @@ function handleFormSubmit(e) {
   const isGitHubPages = window.location.hostname.includes("github.io");
 
   if (!window.STAGING_API_BASE_URL && isGitHubPages) {
-    console.log("[GitHub Pages Staging Engine] Static host detected. Processing CRM-101 payload in Staging Shadow Mode (0 network errors).");
-    setStagingCRMMode("SUCCESS");
+    console.log("[GitHub Pages Staging Engine] Static host detected. Processing payload in Staging Shadow Mode (NOT written to CRM).");
+    setStagingCRMMode("SHADOW_ONLY");
   } else {
     const submitEndpoint = window.STAGING_API_BASE_URL 
       ? `${window.STAGING_API_BASE_URL}/api/submit.php` 
@@ -645,15 +645,20 @@ function handleFormSubmit(e) {
     })
     .then(apiResult => {
       console.log("[PHP Backend Integration] Response from PHP API:", apiResult);
-      if (apiResult && (apiResult.status === "SUCCESS" || apiResult.status === "FAIL_CLOSED" || apiResult.mode === "SHADOW_ONLY")) {
-        setStagingCRMMode("SUCCESS");
+      if (apiResult && apiResult.status === "SUCCESS") {
+        setStagingCRMMode("SUCCESS", apiResult);
+      } else if (apiResult && (apiResult.mode === "SHADOW_ONLY" || apiResult.status === "SHADOW_ONLY")) {
+        setStagingCRMMode("SHADOW_ONLY", apiResult);
+      } else if (apiResult && apiResult.status === "DUPLICATE") {
+        setStagingCRMMode("DUPLICATE", apiResult);
       } else {
-        setStagingCRMMode("FAIL_CLOSED");
+        setStagingCRMMode("FAIL_CLOSED", apiResult);
       }
     })
     .catch(err => {
       console.warn("[PHP Backend Integration] Connection warning calling PHP API:", err);
-      setStagingCRMMode("SUCCESS");
+      // WEB-108 Rule: Network / API failure MUST NOT become SUCCESS. State is set to ERROR.
+      setStagingCRMMode("ERROR", { error_detail: err.message });
     });
   }
 
@@ -687,29 +692,30 @@ function handleFormSubmit(e) {
 }
 
 // ==========================================================================
-// AMAN KHATANA 15 SEP ZOHO CRM WEBSITE_LEADS TRANSPORT BOUNDARY CONTRACT LOGIC
+// AMAN KHATANA ZOHO CRM WEBSITE_LEADS TRANSPORT BOUNDARY CONTRACT LOGIC
 // ==========================================================================
-let currentStagingCRMMode = "FAIL_CLOSED"; // Options: 'SUCCESS', 'DUPLICATE', 'FAIL_CLOSED', 'ERROR'
+let currentStagingCRMMode = "FAIL_CLOSED"; // Options: 'SUCCESS', 'DUPLICATE', 'FAIL_CLOSED', 'ERROR', 'SHADOW_ONLY'
 let lastSubmittedCRMPayload = null;
 
-function setStagingCRMMode(mode) {
+function setStagingCRMMode(mode, apiResult = null) {
   currentStagingCRMMode = mode;
   const btns = document.querySelectorAll(".crm-sim-btn");
   btns.forEach(btn => {
     btn.classList.remove("active-sim");
-    if (btn.getAttribute("onclick").includes(mode)) {
+    if (btn.getAttribute("onclick") && btn.getAttribute("onclick").includes(mode)) {
       btn.classList.add("active-sim");
     }
   });
 
   if (lastSubmittedCRMPayload) {
-    const outcome = processCRMTransportResponse(lastSubmittedCRMPayload, mode);
+    const outcome = processCRMTransportResponse(lastSubmittedCRMPayload, mode, apiResult);
     renderCRMOutcomeBanner(outcome);
   }
 }
 
-function processCRMTransportResponse(crmPayload, mode = currentStagingCRMMode) {
-  const verifiedPayload = (crmPayload && crmPayload.Zoho_Website_Leads_Verified_Payload) || {};
+function processCRMTransportResponse(crmPayload, mode = currentStagingCRMMode, apiResult = null) {
+  // WEB-108 Fix: Read Zoho_Website_Leads_Payload (matching handleFormSubmit) with fallback to Verified
+  const verifiedPayload = (crmPayload && (crmPayload.Zoho_Website_Leads_Payload || crmPayload.Zoho_Website_Leads_Verified_Payload)) || {};
   const subRef = verifiedPayload.Submission_Ref || "IU-UNKNOWN";
   lastSubmittedCRMPayload = crmPayload;
 
@@ -717,29 +723,44 @@ function processCRMTransportResponse(crmPayload, mode = currentStagingCRMMode) {
   const requiredFields = ["Business_Name", "Name", "Contact_Email", "Contact_Number", "Submission_Ref", "Brand"];
   const missingFields = requiredFields.filter(f => !verifiedPayload[f] || String(verifiedPayload[f]).trim() === "");
 
-  if (missingFields.length > 0 && mode !== "ERROR") {
+  if (missingFields.length > 0 && mode !== "ERROR" && mode !== "SHADOW_ONLY") {
     return {
       status: "FAIL_CLOSED",
       code: "VALIDATION_FAILED",
       submission_ref: subRef,
+      record_id: null,
       errors: missingFields.map(f => `Missing required Website_Leads field: ${f}`),
       retryable: false,
       title: "🛑 Fail-Closed: CRM Validation Constraint Enforced",
-      message: `Validation failed for ${subRef}. Mandatory fields missing: ${missingFields.join(", ")}. Only 6 approved fields permitted (Business_Name, Name, Contact_Email, Contact_Number, Submission_Ref, Brand).`,
+      message: `Validation failed for ${subRef}. Mandatory fields missing: ${missingFields.join(", ")}. Only approved 6 fields permitted (Business_Name, Name, Contact_Email, Contact_Number, Submission_Ref, Brand).`,
       cssClass: "fail-closed"
     };
   }
 
   switch (mode) {
+    case "SHADOW_ONLY":
+      return {
+        status: "SHADOW_ONLY",
+        code: "NOT_WRITTEN_TO_CRM",
+        submission_ref: subRef,
+        record_id: null, // WEB-108: No fake CRM ID allowed in shadow mode
+        retryable: false,
+        title: "ℹ️ STAGING ONLY - NOT WRITTEN TO CRM",
+        message: `Static host detected (GitHub Pages / Local Staging). Intake payload for reference ${subRef} was processed in Shadow Mode. NOT WRITTEN TO CRM.`,
+        cssClass: "shadow-only"
+      };
+
     case "SUCCESS":
+      // WEB-108: Record ID appears ONLY if returned by the live backend/Zoho path (no client side random ID)
+      const realRecordId = (apiResult && (apiResult.record_id || (apiResult.zoho_response && apiResult.zoho_response.data && apiResult.zoho_response.data[0] && apiResult.zoho_response.data[0].details && apiResult.zoho_response.data[0].details.id))) || null;
       return {
         status: "SUCCESS",
         code: "CRM_RECORD_CREATED",
         submission_ref: subRef,
-        record_id: "zcrm_" + Math.random().toString(36).substring(2, 10),
+        record_id: realRecordId,
         retryable: false,
         title: "✓ CRM Record Created Successfully",
-        message: `Submission reference ${subRef} has been recorded in Zoho Website_Leads transport under the approved 6-field contract.`,
+        message: `Submission reference ${subRef} has been recorded in Zoho Website_Leads transport under the approved contract.`,
         cssClass: "success"
       };
 
@@ -748,6 +769,7 @@ function processCRMTransportResponse(crmPayload, mode = currentStagingCRMMode) {
         status: "DUPLICATE",
         code: "REJECT_DUPLICATE",
         submission_ref: subRef,
+        record_id: null,
         retryable: false,
         title: "⚠️ Duplicate Submission Reference Detected",
         message: `Submission reference ${subRef} has already been received in CRM. Duplicate replay rejected cleanly without creating a second lead record.`,
@@ -759,23 +781,25 @@ function processCRMTransportResponse(crmPayload, mode = currentStagingCRMMode) {
         status: "FAIL_CLOSED",
         code: "VALIDATION_FAILED",
         submission_ref: subRef,
-        errors: ["Missing mandatory field or unapproved CRM schema addition."],
+        record_id: null,
+        errors: (apiResult && apiResult.missing_fields) ? apiResult.missing_fields.map(f => `Missing field: ${f}`) : ["Missing mandatory field or unapproved CRM schema addition."],
         retryable: false,
         title: "🛑 Fail-Closed: CRM Validation Constraint Enforced",
-        message: `Validation failed for ${subRef}. Only 6 approved fields permitted (Business_Name, Name, Contact_Email, Contact_Number, Submission_Ref, Brand). Contact support@instautility.com if needed.`,
+        message: `Validation failed for ${subRef}. Only approved fields permitted. Contact support@instautility.com if needed.`,
         cssClass: "fail-closed"
       };
 
     case "ERROR":
     default:
+      const errDetail = (apiResult && apiResult.error_detail) ? ` Detail: ${apiResult.error_detail}` : "";
       return {
         status: "ERROR",
         code: "CRM_TRANSPORT_ERROR",
         submission_ref: subRef,
-        message: `Network timeout attempting to reach Zoho Website_Leads transport boundary for ${subRef}.`,
+        record_id: null,
         retryable: true,
-        title: "🔄 CRM Transport Error (Retry Available)",
-        messageText: `CRM transport failed to connect. Submission ref ${subRef} was NOT recorded in CRM. Please retry or contact support@instautility.com.`,
+        title: "🔄 CRM Transport Error (NOT Written to CRM)",
+        messageText: `CRM transport failed to connect (${errDetail || "Network failure"}). Submission ref ${subRef} was NOT recorded in CRM. Please retry or contact support@instautility.com.`,
         cssClass: "error"
       };
   }
@@ -824,13 +848,13 @@ function renderCRMOutcomeBanner(outcome) {
 function retryCRMSubmission() {
   if (!lastSubmittedCRMPayload) return;
   
-  const verifiedPayload = lastSubmittedCRMPayload.Zoho_Website_Leads_Verified_Payload || {};
+  const verifiedPayload = lastSubmittedCRMPayload.Zoho_Website_Leads_Payload || lastSubmittedCRMPayload.Zoho_Website_Leads_Verified_Payload || {};
   const subRef = verifiedPayload.Submission_Ref;
   const isGitHubPages = window.location.hostname.includes("github.io");
 
   if (!window.STAGING_API_BASE_URL && isGitHubPages) {
     console.log(`[CRM Retry] Static host detected. Processing retry for Ref: ${subRef} in Shadow Mode.`);
-    setStagingCRMMode("SUCCESS");
+    setStagingCRMMode("SHADOW_ONLY");
     return;
   }
 
