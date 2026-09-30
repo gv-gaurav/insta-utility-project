@@ -1,15 +1,37 @@
 <?php
 /**
- * Insta CRM Lead Submission PHP Backend Endpoint
- * Receives form inputs from frontend, validates 6 verified fields,
- * and securely forwards to Zoho CRM v8 Website_Leads API.
+ * Insta CRM Lead Submission Backend Endpoint (WEB-109 Hardened Implementation)
+ * Aligned strictly to Aman Khatana CRM-103 Production Contract
  */
 
-// Handle CORS headers
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
-header('Content-Type: application/json');
+require_once __DIR__ . '/config.php';
+
+// Set JSON content type
+header('Content-Type: application/json; charset=utf-8');
+
+// 1. Authorised CORS Origins Enforcement (CRM-103 Rule 1: No wildcard *)
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+$isAllowedOrigin = false;
+
+if ($origin) {
+    if (in_array($origin, ALLOWED_ORIGINS, true)) {
+        header('Access-Control-Allow-Origin: ' . $origin);
+        header('Access-Control-Allow-Methods: POST, OPTIONS');
+        header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+        header('Vary: Origin');
+        $isAllowedOrigin = true;
+    } else {
+        http_response_code(403);
+        echo json_encode([
+            'status' => 'FAIL_CLOSED',
+            'submission_ref' => null,
+            'crm_record_id' => null,
+            'error_code' => 'CORS_FORBIDDEN',
+            'message' => 'Origin not authorised by CORS policy.'
+        ]);
+        exit;
+    }
+}
 
 // Handle OPTIONS preflight request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -17,26 +39,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-// Ensure request method is POST
+// Ensure HTTP request method is POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode([
         'status' => 'FAIL_CLOSED',
-        'reason_code' => 'METHOD_NOT_ALLOWED',
-        'message' => 'Only POST requests are allowed.'
+        'submission_ref' => null,
+        'crm_record_id' => null,
+        'error_code' => 'METHOD_NOT_ALLOWED',
+        'message' => 'Only POST requests are permitted.'
     ]);
     exit;
 }
 
-require_once __DIR__ . '/config.php';
+// Helper: Privacy-Minimised Security & Audit Logger (CRM-103 Rule 9)
+function writeAuditLog($submissionRef, $status, $httpCode, $recordId = null) {
+    $timestamp = date('c');
+    $logLine = sprintf(
+        "[%s] REF: %s | STATUS: %s | HTTP: %d | RECORD_ID: %s\n",
+        $timestamp,
+        $submissionRef ?: 'N/A',
+        $status,
+        $httpCode,
+        $recordId ?: 'NONE'
+    );
+    @file_put_contents(SECURITY_LOG_FILE, $logLine, FILE_APPEND | LOCK_EX);
+}
 
-// Helper function to get or refresh Zoho OAuth Access Token
+// Helper: Check & Record Submission_Ref Idempotency (CRM-103 Rule 4)
+function isDuplicateSubmission($submissionRef) {
+    if (!file_exists(PROCESSED_SUBMISSIONS_FILE)) {
+        return false;
+    }
+    $raw = @file_get_contents(PROCESSED_SUBMISSIONS_FILE);
+    $data = json_decode($raw, true);
+    return is_array($data) && in_array(trim($submissionRef), $data, true);
+}
+
+function recordProcessedSubmission($submissionRef) {
+    $data = [];
+    if (file_exists(PROCESSED_SUBMISSIONS_FILE)) {
+        $raw = @file_get_contents(PROCESSED_SUBMISSIONS_FILE);
+        $data = json_decode($raw, true) ?: [];
+    }
+    $ref = trim($submissionRef);
+    if (!in_array($ref, $data, true)) {
+        $data[] = $ref;
+        @file_put_contents(PROCESSED_SUBMISSIONS_FILE, json_encode(array_values($data)), LOCK_EX);
+    }
+}
+
+// Helper: Secure Zoho OAuth Token Management
 function getZohoAccessToken() {
     $now = time();
-    
-    // Check cached token
     if (file_exists(TOKEN_CACHE_FILE)) {
-        $cacheData = json_decode(file_get_contents(TOKEN_CACHE_FILE), true);
+        $cacheData = json_decode(@file_get_contents(TOKEN_CACHE_FILE), true);
         if ($cacheData && isset($cacheData['access_token']) && isset($cacheData['expires_at'])) {
             if ($cacheData['expires_at'] > ($now + 60)) {
                 return ['token' => $cacheData['access_token'], 'error' => null];
@@ -44,7 +101,10 @@ function getZohoAccessToken() {
         }
     }
 
-    // Request new token from Zoho OAuth endpoint
+    if (!ZOHO_CLIENT_ID || !ZOHO_CLIENT_SECRET) {
+        return ['token' => null, 'error' => 'Missing server Zoho OAuth credentials in environment'];
+    }
+
     $postFields = http_build_query([
         'grant_type' => ZOHO_GRANT_TYPE,
         'client_id' => ZOHO_CLIENT_ID,
@@ -65,7 +125,7 @@ function getZohoAccessToken() {
     curl_close($ch);
 
     if ($curlErr) {
-        return ['token' => null, 'error' => "cURL Error fetching token: " . $curlErr];
+        return ['token' => null, 'error' => 'Upstream connection error during token refresh'];
     }
 
     $data = json_decode($response, true);
@@ -73,107 +133,153 @@ function getZohoAccessToken() {
         $accessToken = $data['access_token'];
         $expiresIn = isset($data['expires_in']) ? (int)$data['expires_in'] : 3600;
 
-        // Cache the token locally
         $cachePayload = [
             'access_token' => $accessToken,
             'expires_at' => $now + $expiresIn
         ];
-        @file_put_contents(TOKEN_CACHE_FILE, json_encode($cachePayload));
+        @file_put_contents(TOKEN_CACHE_FILE, json_encode($cachePayload), LOCK_EX);
 
         return ['token' => $accessToken, 'error' => null];
     }
 
-    $errMsg = isset($data['error']) ? $data['error'] : 'Unknown OAuth token error';
-    return ['token' => null, 'error' => $errMsg];
+    return ['token' => null, 'error' => 'OAuth token acquisition failed'];
 }
 
-// Read raw JSON body input
+// Read and decode JSON payload
 $rawInput = file_get_contents('php://input');
-$body = json_decode($rawInput, true) ?: [];
+$body = json_decode($rawInput, true);
 
-// Extract frontend fields according to Aman Khatana's CRM-101 specification
+if (!is_array($body)) {
+    http_response_code(422);
+    $res = [
+        'status' => 'FAIL_CLOSED',
+        'submission_ref' => null,
+        'crm_record_id' => null,
+        'error_code' => 'VALIDATION_FAILED',
+        'message' => 'Request was not written to CRM. Invalid JSON payload body.'
+    ];
+    writeAuditLog(null, 'FAIL_CLOSED', 422);
+    echo json_encode($res);
+    exit;
+}
+
+// Extract payload fields per CRM-103 contract
 $accountName = trim($body['account_name'] ?? $body['Business_Name'] ?? '');
 $contactName = trim($body['contact_name'] ?? $body['Name'] ?? '');
 $contactEmail = trim($body['contact_email'] ?? $body['Contact_Email'] ?? '');
 $contactPhone = trim($body['contact_phone'] ?? $body['Contact_Number'] ?? '');
-$postcode = trim($body['postcode'] ?? $body['Postcode'] ?? '');
-$submissionRef = trim($body['submission_ref'] ?? $body['Submission_Ref'] ?? ('IU-2026-' . time()));
-$brand = 'Insta utility'; // Enforce exact Brand value per CRM-101
+$submissionRef = trim($body['submission_ref'] ?? $body['Submission_Ref'] ?? '');
+$serviceInterest = trim($body['service_interest'] ?? $body['Service_Interest'] ?? '');
 
-// Marketing / Attribution fields
+// Server-controlled Brand (CRM-103 Rule 2: Never trust arbitrary frontend input)
+$brand = 'Insta utility';
+
+// Optional fields
+$sector = trim($body['sector'] ?? $body['Sector'] ?? '');
+$geography = trim($body['geography'] ?? $body['Geography'] ?? '');
+$postcode = trim($body['postcode'] ?? $body['Postcode'] ?? '');
+$preferredContactRoute = trim($body['preferred_contact_route'] ?? $body['Preferred_Contact_Route'] ?? '');
+$enquiryContext = trim($body['enquiry_context'] ?? $body['Enquiry_Context'] ?? '');
+$landingPage = trim($body['landing_page'] ?? $body['Landing_Page'] ?? '');
 $utmSource = trim($body['utm_source'] ?? $body['UTM_Source'] ?? '');
 $utmMedium = trim($body['utm_medium'] ?? $body['UTM_Medium'] ?? '');
 $utmCampaign = trim($body['utm_campaign'] ?? $body['UTM_Campaign'] ?? '');
 $gclid = trim($body['gclid'] ?? $body['GCLID'] ?? '');
-$landingPage = trim($body['landing_page'] ?? $body['Landing_Page'] ?? '');
 
-// New Insta Utility CRM-101 fields
-$sector = trim($body['sector'] ?? $body['Sector'] ?? $body['sector_type'] ?? '');
-$geography = trim($body['geography'] ?? $body['Geography'] ?? $body['state_location'] ?? '');
-$serviceInterest = trim($body['service_interest'] ?? $body['Service_Interest'] ?? '');
-$preferredContactRoute = trim($body['preferred_contact_route'] ?? $body['Preferred_Contact_Route'] ?? '');
-$enquiryContext = trim($body['enquiry_context'] ?? $body['Enquiry_Context'] ?? '');
+// 2. Field Validation & Allowed Service Interest Values (CRM-103 Rule 2 & Rule 3)
+$allowedServiceInterests = [
+    'Renewable Energy Advisory',
+    'Carbon Markets / CCTS',
+    'GHG / MRV & Decarbonisation'
+];
 
-// Validation: Ensure mandatory contact fields exist
-$missingFields = [];
-if (empty($accountName)) $missingFields[] = 'account_name';
-if (empty($contactName)) $missingFields[] = 'contact_name';
-if (empty($contactEmail)) $missingFields[] = 'contact_email';
-if (empty($contactPhone)) $missingFields[] = 'contact_phone';
+$validationErrors = [];
+if (empty($accountName)) $validationErrors[] = 'Missing required Business_Name / account_name';
+if (empty($contactName)) $validationErrors[] = 'Missing required Name / contact_name';
+if (empty($contactEmail) || !filter_var($contactEmail, FILTER_VALIDATE_EMAIL)) $validationErrors[] = 'Missing or invalid Contact_Email';
+if (empty($contactPhone)) $validationErrors[] = 'Missing required Contact_Number / contact_phone';
+if (empty($submissionRef)) $validationErrors[] = 'Missing required Submission_Ref';
+if (empty($serviceInterest) || !in_array($serviceInterest, $allowedServiceInterests, true)) {
+    $validationErrors[] = 'Invalid or unapproved Service_Interest value';
+}
 
-if (!empty($missingFields)) {
-    http_response_code(400);
-    echo json_encode([
+if (!empty($validationErrors)) {
+    http_response_code(422);
+    $res = [
         'status' => 'FAIL_CLOSED',
-        'reason_code' => 'MISSING_MANDATORY_FIELDS',
-        'missing_fields' => $missingFields
-    ]);
+        'submission_ref' => $submissionRef ?: null,
+        'crm_record_id' => null,
+        'error_code' => 'VALIDATION_FAILED',
+        'message' => 'Request was not written to CRM.'
+    ];
+    writeAuditLog($submissionRef, 'FAIL_CLOSED', 422);
+    echo json_encode($res);
     exit;
 }
 
-// Build Full Zoho Website_Leads Record Payload matching Aman Khatana's CRM-101 contract
+// 4. Submission_Ref Duplicate / Idempotency Rule (CRM-103 Rule 4)
+if (isDuplicateSubmission($submissionRef)) {
+    http_response_code(409);
+    $res = [
+        'status' => 'DUPLICATE',
+        'submission_ref' => $submissionRef,
+        'crm_record_id' => null,
+        'message' => 'Submission reference already processed; no new CRM record created.'
+    ];
+    writeAuditLog($submissionRef, 'DUPLICATE', 409);
+    echo json_encode($res);
+    exit;
+}
+
+// 6. Shadow-Mode Rule (CRM-103 Rule 6)
+if (!LIVE_WRITE_ENABLED) {
+    recordProcessedSubmission($submissionRef);
+    http_response_code(200);
+    $res = [
+        'status' => 'SHADOW_ONLY',
+        'submission_ref' => $submissionRef,
+        'crm_record_id' => null,
+        'message' => 'STAGING ONLY - NOT WRITTEN TO CRM'
+    ];
+    writeAuditLog($submissionRef, 'SHADOW_ONLY', 200);
+    echo json_encode($res);
+    exit;
+}
+
+// Construct Zoho Website_Leads Record Payload
 $zohoRecord = array_filter([
     'Business_Name' => $accountName,
     'Name' => $contactName,
     'Contact_Email' => $contactEmail,
     'Contact_Number' => $contactPhone,
-    'Postcode' => $postcode ?: null,
     'Submission_Ref' => $submissionRef,
     'Brand' => $brand,
+    'Service_Interest' => $serviceInterest,
+    'Sector' => $sector ?: null,
+    'Geography' => $geography ?: null,
+    'Postcode' => $postcode ?: null,
+    'Preferred_Contact_Route' => $preferredContactRoute ?: null,
+    'Enquiry_Context' => $enquiryContext ?: null,
+    'Landing_Page' => $landingPage ?: null,
     'UTM_Source' => $utmSource ?: null,
     'UTM_Medium' => $utmMedium ?: null,
     'UTM_Campaign' => $utmCampaign ?: null,
-    'GCLID' => $gclid ?: null,
-    'Landing_Page' => $landingPage ?: null,
-    'Sector' => $sector ?: null,
-    'Geography' => $geography ?: null,
-    'Service_Interest' => $serviceInterest ?: null,
-    'Preferred_Contact_Route' => $preferredContactRoute ?: null,
-    'Enquiry_Context' => $enquiryContext ?: null
+    'GCLID' => $gclid ?: null
 ], function($val) { return $val !== null; });
-
-// If LIVE_WRITE_ENABLED is false (Shadow / Dry-run Mode), return controlled success
-if (!LIVE_WRITE_ENABLED) {
-    http_response_code(200);
-    echo json_encode([
-        'status' => 'FAIL_CLOSED',
-        'mode' => 'SHADOW_ONLY',
-        'message' => 'PHP Backend Integration PASS. LIVE_WRITE_ENABLED=false (0 CRM writes).',
-        'submission_ref' => $submissionRef,
-        'mapped_payload' => $zohoRecord
-    ]);
-    exit;
-}
 
 // Retrieve Zoho Access Token
 $tokenResult = getZohoAccessToken();
 if (!$tokenResult['token']) {
     http_response_code(500);
-    echo json_encode([
-        'status' => 'FAIL_CLOSED',
-        'reason_code' => 'OAUTH_AUTHENTICATION_FAILURE',
-        'error_detail' => $tokenResult['error']
-    ]);
+    $res = [
+        'status' => 'ERROR',
+        'submission_ref' => $submissionRef,
+        'crm_record_id' => null,
+        'error_code' => 'UPSTREAM_ERROR',
+        'message' => 'CRM submission failed.'
+    ];
+    writeAuditLog($submissionRef, 'ERROR_TOKEN', 500);
+    echo json_encode($res);
     exit;
 }
 
@@ -198,30 +304,45 @@ curl_close($ch);
 
 if ($curlErr) {
     http_response_code(500);
-    echo json_encode([
-        'status' => 'FAIL_CLOSED',
-        'reason_code' => 'HTTP_CONNECTION_ERROR',
-        'error_detail' => $curlErr
-    ]);
+    $res = [
+        'status' => 'ERROR',
+        'submission_ref' => $submissionRef,
+        'crm_record_id' => null,
+        'error_code' => 'UPSTREAM_ERROR',
+        'message' => 'CRM submission failed.'
+    ];
+    writeAuditLog($submissionRef, 'ERROR_CURL', 500);
+    echo json_encode($res);
     exit;
 }
 
 $resData = json_decode($zohoResponse, true);
+$realRecordId = null;
 
-if ($httpCode === 200 || $httpCode === 201) {
-    http_response_code(200);
-    echo json_encode([
+if (isset($resData['data'][0]['details']['id'])) {
+    $realRecordId = (string)$resData['data'][0]['details']['id'];
+}
+
+if (($httpCode === 200 || $httpCode === 201) && isset($resData['data'][0]['status']) && $resData['data'][0]['status'] === 'SUCCESS') {
+    recordProcessedSubmission($submissionRef);
+    http_response_code(201);
+    $res = [
         'status' => 'SUCCESS',
-        'message' => 'Lead record successfully created in Zoho CRM via PHP backend.',
         'submission_ref' => $submissionRef,
-        'zoho_response' => $resData
-    ]);
+        'crm_record_id' => $realRecordId,
+        'message' => 'Written to Website_Leads'
+    ];
+    writeAuditLog($submissionRef, 'SUCCESS', 201, $realRecordId);
+    echo json_encode($res);
 } else {
-    http_response_code($httpCode ?: 500);
-    echo json_encode([
-        'status' => 'FAIL_CLOSED',
-        'reason_code' => 'ZOHO_API_ERROR',
-        'http_code' => $httpCode,
-        'zoho_error' => $resData
-    ]);
+    http_response_code(500);
+    $res = [
+        'status' => 'ERROR',
+        'submission_ref' => $submissionRef,
+        'crm_record_id' => null,
+        'error_code' => 'UPSTREAM_ERROR',
+        'message' => 'CRM submission failed.'
+    ];
+    writeAuditLog($submissionRef, 'ERROR_ZOHO_REJECT', 500);
+    echo json_encode($res);
 }

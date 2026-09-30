@@ -1,19 +1,20 @@
 <?php
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, OPTIONS');
-
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit;
-}
+/**
+ * Minimal Non-Sensitive Health Endpoint (WEB-109 Hardened Spec)
+ */
 
 require_once __DIR__ . '/config.php';
+
+header('Content-Type: application/json; charset=utf-8');
+
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+if ($origin && in_array($origin, ALLOWED_ORIGINS, true)) {
+    header('Access-Control-Allow-Origin: ' . $origin);
+}
 
 echo json_encode([
     'status' => 'PASS',
     'service' => 'insta-crm-php-backend',
     'live_write_enabled' => LIVE_WRITE_ENABLED,
-    'target_endpoint' => ZOHO_LEAD_URL,
     'timestamp' => date('c')
 ]);
