@@ -637,27 +637,33 @@ function handleFormSubmit(e) {
         enquiry_context: enquiryContext
       })
     })
-    .then(res => {
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    .then(async res => {
+      let apiResult = null;
+      try {
+        apiResult = await res.json();
+      } catch (e) {
+        // Non-JSON response
       }
-      return res.json();
-    })
-    .then(apiResult => {
-      console.log("[PHP Backend Integration] Response from PHP API:", apiResult);
-      if (apiResult && apiResult.status === "SUCCESS") {
+      console.log("[PHP Backend Integration] Response from PHP API:", res.status, apiResult);
+      if (res.ok && apiResult && apiResult.status === "SUCCESS") {
         setStagingCRMMode("SUCCESS", apiResult);
       } else if (apiResult && (apiResult.mode === "SHADOW_ONLY" || apiResult.status === "SHADOW_ONLY")) {
         setStagingCRMMode("SHADOW_ONLY", apiResult);
       } else if (apiResult && apiResult.status === "DUPLICATE") {
         setStagingCRMMode("DUPLICATE", apiResult);
+      } else if (apiResult && apiResult.status === "FAIL_CLOSED") {
+        setStagingCRMMode("FAIL_CLOSED", apiResult);
+      } else if (apiResult && apiResult.status === "ERROR") {
+        setStagingCRMMode("ERROR", apiResult);
+      } else if (!res.ok) {
+        setStagingCRMMode("ERROR", { error_detail: `HTTP ${res.status}: ${res.statusText}` });
       } else {
         setStagingCRMMode("FAIL_CLOSED", apiResult);
       }
     })
     .catch(err => {
       console.warn("[PHP Backend Integration] Connection warning calling PHP API:", err);
-      // WEB-108 Rule: Network / API failure MUST NOT become SUCCESS. State is set to ERROR.
+      // WEB-108 & WEB-110 Rule: Network / API failure MUST NOT become SUCCESS. State is set to ERROR.
       setStagingCRMMode("ERROR", { error_detail: err.message });
     });
   }
@@ -876,19 +882,34 @@ function retryCRMSubmission() {
       brand: verifiedPayload.Brand || "Insta utility"
     })
   })
-  .then(res => {
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+  .then(async res => {
+    let apiResult = null;
+    try {
+      apiResult = await res.json();
+    } catch (e) {
+      // Non-JSON response
     }
-    return res.json();
-  })
-  .then(apiResult => {
-    console.log("[CRM Retry Outcome] Response from API:", apiResult);
-    setStagingCRMMode("SUCCESS");
+    console.log("[CRM Retry Outcome] Response from API:", res.status, apiResult);
+    if (res.ok && apiResult && apiResult.status === "SUCCESS") {
+      setStagingCRMMode("SUCCESS", apiResult);
+    } else if (apiResult && (apiResult.mode === "SHADOW_ONLY" || apiResult.status === "SHADOW_ONLY")) {
+      setStagingCRMMode("SHADOW_ONLY", apiResult);
+    } else if (apiResult && apiResult.status === "DUPLICATE") {
+      setStagingCRMMode("DUPLICATE", apiResult);
+    } else if (apiResult && apiResult.status === "FAIL_CLOSED") {
+      setStagingCRMMode("FAIL_CLOSED", apiResult);
+    } else if (apiResult && apiResult.status === "ERROR") {
+      setStagingCRMMode("ERROR", apiResult);
+    } else if (!res.ok) {
+      setStagingCRMMode("ERROR", { error_detail: `HTTP ${res.status}: ${res.statusText}` });
+    } else {
+      setStagingCRMMode("FAIL_CLOSED", apiResult);
+    }
   })
   .catch(err => {
-    console.warn("[CRM Retry Outcome] Error during retry:", err);
-    setStagingCRMMode("SUCCESS");
+    console.warn("[CRM Retry Outcome] Connection warning or network error during retry:", err);
+    // WEB-110 Rule: Catch handler MUST NEVER call setStagingCRMMode("SUCCESS").
+    setStagingCRMMode("ERROR", { error_detail: err.message });
   });
 }
 
