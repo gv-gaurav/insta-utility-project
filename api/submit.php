@@ -333,6 +333,7 @@ if (isset($resData['data'][0]['details']['id'])) {
 }
 
 $isZohoSuccess = ($httpCode === 200 || $httpCode === 201) && (strtoupper($resData['data'][0]['status'] ?? '') === 'SUCCESS' || ($resData['data'][0]['code'] ?? '') === 'SUCCESS');
+$isZohoDuplicate = ($httpCode === 409) || (isset($resData['data'][0]['code']) && $resData['data'][0]['code'] === 'DUPLICATE_DATA');
 
 if ($isZohoSuccess) {
     recordProcessedSubmission($submissionRef);
@@ -345,7 +346,19 @@ if ($isZohoSuccess) {
     ];
     writeAuditLog($submissionRef, 'SUCCESS', 201, $realRecordId);
     echo json_encode($res);
+} else if ($isZohoDuplicate) {
+    recordProcessedSubmission($submissionRef);
+    http_response_code(409);
+    $res = [
+        'status' => 'DUPLICATE',
+        'submission_ref' => $submissionRef,
+        'crm_record_id' => null,
+        'message' => 'Submission reference already processed in Zoho CRM.'
+    ];
+    writeAuditLog($submissionRef, 'DUPLICATE', 409);
+    echo json_encode($res);
 } else {
+
     http_response_code(500);
     $res = [
         'status' => 'ERROR',
