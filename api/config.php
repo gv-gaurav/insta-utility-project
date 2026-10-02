@@ -4,9 +4,30 @@
  * Aligned to Aman Khatana CRM-103 Production Contract
  */
 
+// Load local .env file if present
+$envPath = __DIR__ . '/../.env';
+if (file_exists($envPath)) {
+    $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        $line = trim($line);
+        if ($line === '' || strpos($line, '#') === 0) continue;
+        if (strpos($line, '=') !== false) {
+            list($k, $v) = explode('=', $line, 2);
+            $k = trim($k);
+            $v = trim($v, " \t\n\r\0\x0B\"'");
+            if (getenv($k) === false) {
+                putenv("{$k}={$v}");
+                $_ENV[$k] = $v;
+                $_SERVER[$k] = $v;
+            }
+        }
+    }
+}
+
 // Safety Switch: Default LIVE_WRITE_ENABLED to false (Shadow / Dry-Run Mode)
 $liveWriteEnv = getenv('LIVE_WRITE_ENABLED');
 define('LIVE_WRITE_ENABLED', filter_var($liveWriteEnv, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? false);
+
 
 // Authorised CORS Origins Allow-List (CRM-103 Rule 1: No wildcard *)
 $envOrigins = getenv('ALLOWED_ORIGINS') ?: getenv('CORS_ALLOWED_ORIGINS');

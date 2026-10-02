@@ -1,8 +1,11 @@
 # Ignore secret environment files
 .env
 
-# Ignore PHP token cache
+# Ignore PHP token cache and processed submissions
 api/zoho_token_cache.json
+api/.zoho_token_cache.json
+api/.processed_submissions.json
+
 
 # Ignore temporary scratch and log files
 *.log

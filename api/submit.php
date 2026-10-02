@@ -6,8 +6,11 @@
 
 require_once __DIR__ . '/config.php';
 
+$sslVerify = (getenv('SSL_VERIFYPEER') !== 'false') && (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN' || getenv('SSL_VERIFYPEER') === 'true');
+
 // Set JSON content type
 header('Content-Type: application/json; charset=utf-8');
+
 
 // 1. Authorised CORS Origins Enforcement (CRM-103 Rule 1: No wildcard *)
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
@@ -113,12 +116,16 @@ function getZohoAccessToken() {
         'soid' => ZOHO_SOID
     ]);
 
+    $sslVerify = (getenv('SSL_VERIFYPEER') !== 'false') && (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN' || getenv('SSL_VERIFYPEER') === 'true');
+
     $ch = curl_init(ZOHO_TOKEN_URL);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
     curl_setopt($ch, CURLOPT_TIMEOUT, 15);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $sslVerify);
+    if (!$sslVerify) curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+
 
     $response = curl_exec($ch);
     $curlErr = curl_error($ch);
@@ -295,7 +302,9 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, [
     'Authorization: Zoho-oauthtoken ' . $tokenResult['token'],
     'Content-Type: application/json'
 ]);
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $sslVerify);
+if (!$sslVerify) curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+
 
 $zohoResponse = curl_exec($ch);
 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -323,7 +332,9 @@ if (isset($resData['data'][0]['details']['id'])) {
     $realRecordId = (string)$resData['data'][0]['details']['id'];
 }
 
-if (($httpCode === 200 || $httpCode === 201) && isset($resData['data'][0]['status']) && $resData['data'][0]['status'] === 'SUCCESS') {
+$isZohoSuccess = ($httpCode === 200 || $httpCode === 201) && (strtoupper($resData['data'][0]['status'] ?? '') === 'SUCCESS' || ($resData['data'][0]['code'] ?? '') === 'SUCCESS');
+
+if ($isZohoSuccess) {
     recordProcessedSubmission($submissionRef);
     http_response_code(201);
     $res = [
