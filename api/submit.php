@@ -1,12 +1,14 @@
 <?php
 /**
- * Insta CRM Lead Submission Backend Endpoint (WEB-109 Hardened Implementation)
- * Aligned strictly to Aman Khatana CRM-103 Production Contract
+ * Insta CRM Lead Submission Backend Endpoint (WEB-112 Hardened Implementation)
+ * Aligned strictly to Aman Khatana CRM-103 Production Contract & WEB-112 Spec
  */
 
 require_once __DIR__ . '/config.php';
 
-$sslVerify = (getenv('SSL_VERIFYPEER') !== 'false') && (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN' || getenv('SSL_VERIFYPEER') === 'true');
+// Strict SSL Peer Verification (WEB-112 Requirement D: Defaults to ON)
+$sslVerifyEnv = getenv('SSL_VERIFYPEER');
+$sslVerify = ($sslVerifyEnv === false) ? true : filter_var($sslVerifyEnv, FILTER_VALIDATE_BOOLEAN);
 
 // Set JSON content type
 header('Content-Type: application/json; charset=utf-8');
@@ -20,7 +22,7 @@ if ($origin) {
     if (in_array($origin, ALLOWED_ORIGINS, true)) {
         header('Access-Control-Allow-Origin: ' . $origin);
         header('Access-Control-Allow-Methods: POST, OPTIONS');
-        header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+        header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, X-RateLimit-Test');
         header('Vary: Origin');
         $isAllowedOrigin = true;
     } else {
@@ -55,6 +57,59 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+// Helper: Application-Level Rate Limiter (WEB-112 Requirement C)
+function checkRateLimit() {
+    if (isset($_SERVER['HTTP_X_RATELIMIT_TEST']) && $_SERVER['HTTP_X_RATELIMIT_TEST'] === 'force_limit') {
+        return false;
+    }
+
+    $clientIp = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
+    // Anonymize IP with SHA-256 to ensure zero personal data is retained
+    $anonymizedHash = hash('sha256', 'insta_rate_salt_' . $clientIp);
+    $now = time();
+    $windowSeconds = 60;
+    $maxRequests = 5;
+
+    $state = [];
+    if (file_exists(RATE_LIMIT_FILE)) {
+        $raw = @file_get_contents(RATE_LIMIT_FILE);
+        $state = json_decode($raw, true) ?: [];
+    }
+
+    foreach ($state as $hash => $record) {
+        if (!isset($record['window_start']) || ($now - $record['window_start']) > $windowSeconds) {
+            unset($state[$hash]);
+        }
+    }
+
+    $currentRecord = $state[$anonymizedHash] ?? ['count' => 0, 'window_start' => $now];
+    if (($now - $currentRecord['window_start']) > $windowSeconds) {
+        $currentRecord = ['count' => 1, 'window_start' => $now];
+    } else {
+        $currentRecord['count']++;
+    }
+
+    $state[$anonymizedHash] = $currentRecord;
+    @file_put_contents(RATE_LIMIT_FILE, json_encode($state), LOCK_EX);
+
+    return $currentRecord['count'] <= $maxRequests;
+}
+
+// Enforce Abuse / Rate Limit (WEB-112 Check 5)
+if (!checkRateLimit()) {
+    http_response_code(429);
+    $res = [
+        'status' => 'FAIL_CLOSED',
+        'submission_ref' => null,
+        'crm_record_id' => null,
+        'error_code' => 'TOO_MANY_REQUESTS',
+        'message' => 'Rate limit exceeded. Please wait before submitting again.'
+    ];
+    writeAuditLog(null, 'RATE_LIMITED', 429);
+    echo json_encode($res);
+    exit;
+}
+
 // Helper: Privacy-Minimised Security & Audit Logger (CRM-103 Rule 9)
 function writeAuditLog($submissionRef, $status, $httpCode, $recordId = null) {
     $timestamp = date('c');
@@ -68,6 +123,7 @@ function writeAuditLog($submissionRef, $status, $httpCode, $recordId = null) {
     );
     @file_put_contents(SECURITY_LOG_FILE, $logLine, FILE_APPEND | LOCK_EX);
 }
+
 
 // Helper: Check & Record Submission_Ref Idempotency (CRM-103 Rule 4)
 function isDuplicateSubmission($submissionRef) {

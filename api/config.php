@@ -1,8 +1,20 @@
 <?php
 /**
- * Insta CRM Integration Configuration (WEB-109 Hardened Spec)
+ * Insta CRM Integration Configuration (WEB-112 Hardened Spec)
  * Aligned to Aman Khatana CRM-103 Production Contract
  */
+
+// Direct web access protection
+if (basename($_SERVER['SCRIPT_FILENAME'] ?? '') === 'config.php') {
+    http_response_code(403);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode([
+        'status' => 'FAIL_CLOSED',
+        'error_code' => 'FORBIDDEN',
+        'message' => 'Direct access to configuration file is forbidden.'
+    ]);
+    exit;
+}
 
 // Load local .env file if present
 $envPath = __DIR__ . '/../.env';
@@ -27,7 +39,6 @@ if (file_exists($envPath)) {
 // Safety Switch: Default LIVE_WRITE_ENABLED to false (Shadow / Dry-Run Mode)
 $liveWriteEnv = getenv('LIVE_WRITE_ENABLED');
 define('LIVE_WRITE_ENABLED', filter_var($liveWriteEnv, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? false);
-
 
 // Authorised CORS Origins Allow-List (CRM-103 Rule 1: No wildcard *)
 $envOrigins = getenv('ALLOWED_ORIGINS') ?: getenv('CORS_ALLOWED_ORIGINS');
@@ -59,3 +70,5 @@ define('ZOHO_LEAD_URL', getenv('ZOHO_LEAD_URL') ?: 'https://www.zohoapis.in/crm/
 define('TOKEN_CACHE_FILE', __DIR__ . '/.zoho_token_cache.json');
 define('PROCESSED_SUBMISSIONS_FILE', __DIR__ . '/.processed_submissions.json');
 define('SECURITY_LOG_FILE', __DIR__ . '/.submission_audit.log');
+define('RATE_LIMIT_FILE', __DIR__ . '/.rate_limit_state.json');
+

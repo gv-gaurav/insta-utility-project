@@ -1,14 +1,19 @@
 # Ignore secret environment files
 .env
 
-# Ignore PHP token cache and processed submissions
+# Ignore PHP token cache, rate limit state and processed submissions
 api/zoho_token_cache.json
 api/.zoho_token_cache.json
 api/.processed_submissions.json
+api/.rate_limit_state.json
 
 
-# Ignore temporary scratch and log files
+
+# Ignore temporary scratch, zip archives and test scripts
 *.log
+*.zip
+test_web112.py
 .DS_Store
 Thumbs.db
 .vscode/
+
