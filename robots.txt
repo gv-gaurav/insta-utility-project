@@ -1,0 +1,9 @@
+# Insta Utility Robots Control File (SEO-003 Staging & Production Controls)
+User-agent: *
+Disallow: /api/
+Disallow: *.json
+
+# Staging Environment Crawl Control Notice
+# Note: Staging header and meta tag set to noindex, nofollow
+
+Sitemap: https://www.instautility.com/sitemap.xml
