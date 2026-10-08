@@ -666,16 +666,23 @@ function handleFormSubmit(e) {
   renderCRMOutcomeBanner(crmOutcome);
 
   // Hide form & render result box
-  document.getElementById("diagnosticForm").style.display = "none";
-  document.getElementById("generatedRef").innerText = subRef;
-  document.getElementById("payloadJsonDisplay").innerText = JSON.stringify(crmPayload, null, 2);
-  document.getElementById("submissionResult").classList.add("active");
+  const diagForm = document.getElementById("diagnosticForm");
+  if (diagForm) diagForm.style.display = "none";
+  
+  const genRef = document.getElementById("generatedRef");
+  if (genRef) genRef.innerText = subRef;
+
+  const payloadDisplay = document.getElementById("payloadJsonDisplay");
+  if (payloadDisplay) payloadDisplay.innerText = JSON.stringify(crmPayload, null, 2);
+
+  const subResult = document.getElementById("submissionResult");
+  if (subResult) subResult.classList.add("active");
 
   // Fire Tarun's Measurement Events (Dual dataLayer + gtag emission with debug_mode: true)
   pushAnalyticsEvent("diagnostic_completed", {
     Submission_Ref: subRef,
     demand_kw: contractedDemandKW,
-    state_location: stateLocation,
+    state_location: geography,
     buyer_role: buyerRole,
     fit_band: scoreResult.fitBand,
     total_pts: scoreResult.totalPts,

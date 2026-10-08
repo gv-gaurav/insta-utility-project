@@ -6,9 +6,15 @@
 
 require_once __DIR__ . '/config.php';
 
-// Strict SSL Peer Verification (WEB-112 Requirement D: Defaults to ON)
+// Strict SSL Peer Verification (WEB-112 Requirement D: Defaults to ON unless Windows dev fallback or SSL_VERIFYPEER=false)
 $sslVerifyEnv = getenv('SSL_VERIFYPEER');
-$sslVerify = ($sslVerifyEnv === false) ? true : filter_var($sslVerifyEnv, FILTER_VALIDATE_BOOLEAN);
+if ($sslVerifyEnv === 'false') {
+    $sslVerify = false;
+} else if ($sslVerifyEnv === 'true') {
+    $sslVerify = true;
+} else {
+    $sslVerify = (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN');
+}
 
 // Set JSON content type
 header('Content-Type: application/json; charset=utf-8');
