@@ -879,7 +879,18 @@ function retryCRMSubmission() {
       contact_email: verifiedPayload.Contact_Email,
       contact_phone: verifiedPayload.Contact_Number,
       submission_ref: subRef,
-      brand: verifiedPayload.Brand || "Insta utility"
+      brand: verifiedPayload.Brand || "Insta utility",
+      service_interest: verifiedPayload.Service_Interest || "Renewable Energy Advisory",
+      sector: verifiedPayload.Sector || null,
+      geography: verifiedPayload.Geography || null,
+      postcode: verifiedPayload.Postcode || null,
+      preferred_contact_route: verifiedPayload.Preferred_Contact_Route || null,
+      enquiry_context: verifiedPayload.Enquiry_Context || null,
+      utm_source: verifiedPayload.UTM_Source || null,
+      utm_medium: verifiedPayload.UTM_Medium || null,
+      utm_campaign: verifiedPayload.UTM_Campaign || null,
+      gclid: verifiedPayload.GCLID || null,
+      landing_page: verifiedPayload.Landing_Page || null
     })
   })
   .then(async res => {

@@ -420,15 +420,16 @@ if ($isZohoSuccess) {
     writeAuditLog($submissionRef, 'DUPLICATE', 409);
     echo json_encode($res);
 } else {
-
+    $zohoErrorDetail = is_array($resData) ? json_encode($resData) : (string)$zohoResponse;
     http_response_code(500);
     $res = [
         'status' => 'ERROR',
         'submission_ref' => $submissionRef,
         'crm_record_id' => null,
         'error_code' => 'UPSTREAM_ERROR',
-        'message' => 'CRM submission failed.'
+        'error_detail' => $zohoErrorDetail,
+        'message' => 'CRM submission failed: ' . $zohoErrorDetail
     ];
-    writeAuditLog($submissionRef, 'ERROR_ZOHO_REJECT', 500);
+    writeAuditLog($submissionRef, 'ERROR_ZOHO_REJECT (' . substr($zohoErrorDetail, 0, 100) . ')', 500);
     echo json_encode($res);
 }
