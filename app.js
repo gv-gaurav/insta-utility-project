@@ -191,16 +191,9 @@ if (GA4_MEASUREMENT_ID && !document.getElementById("ga4-gtag-loader")) {
 }
 
 if (GA4_MEASUREMENT_ID) {
-  const ga4ConfigPayload = Object.assign({
-    debug_mode: true,
-    send_page_view: true
-  }, capturedUTMs);
-
   if (Object.keys(capturedUTMs).length > 0) {
     window.gtag("set", capturedUTMs);
   }
-
-  window.gtag("config", GA4_MEASUREMENT_ID, ga4ConfigPayload);
 }
 
 // Function to emit utm_captured_on_load to dataLayer
