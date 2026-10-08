@@ -252,7 +252,14 @@ $enquiryContext = trim($body['enquiry_context'] ?? $body['Enquiry_Context'] ?? '
 $landingPageRaw = trim($body['landing_page'] ?? $body['Landing_Page'] ?? '');
 if ($landingPageRaw) {
     if (preg_match('/^https?:\/\//i', $landingPageRaw)) {
-        $landingPage = $landingPageRaw;
+        $parsed = parse_url($landingPageRaw);
+        $host = strtolower($parsed['host'] ?? '');
+        if ($host === 'localhost' || $host === '127.0.0.1' || strpos($host, 'localhost') !== false || strpos($host, '127.0.0.1') !== false || strpos($host, '.') === false) {
+            $path = $parsed['path'] ?? '/index.html';
+            $landingPage = 'https://www.instautility.com' . (strpos($path, '/') === 0 ? '' : '/') . $path;
+        } else {
+            $landingPage = $landingPageRaw;
+        }
     } else {
         $landingPage = 'https://www.instautility.com' . (strpos($landingPageRaw, '/') === 0 ? '' : '/') . $landingPageRaw;
     }
