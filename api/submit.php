@@ -249,7 +249,16 @@ $geography = trim($body['geography'] ?? $body['Geography'] ?? '');
 $postcode = trim($body['postcode'] ?? $body['Postcode'] ?? '');
 $preferredContactRoute = trim($body['preferred_contact_route'] ?? $body['Preferred_Contact_Route'] ?? '');
 $enquiryContext = trim($body['enquiry_context'] ?? $body['Enquiry_Context'] ?? '');
-$landingPage = trim($body['landing_page'] ?? $body['Landing_Page'] ?? '');
+$landingPageRaw = trim($body['landing_page'] ?? $body['Landing_Page'] ?? '');
+if ($landingPageRaw) {
+    if (preg_match('/^https?:\/\//i', $landingPageRaw)) {
+        $landingPage = $landingPageRaw;
+    } else {
+        $landingPage = 'https://www.instautility.com' . (strpos($landingPageRaw, '/') === 0 ? '' : '/') . $landingPageRaw;
+    }
+} else {
+    $landingPage = 'https://www.instautility.com/index.html';
+}
 $utmSource = trim($body['utm_source'] ?? $body['UTM_Source'] ?? '');
 $utmMedium = trim($body['utm_medium'] ?? $body['UTM_Medium'] ?? '');
 $utmCampaign = trim($body['utm_campaign'] ?? $body['UTM_Campaign'] ?? '');
