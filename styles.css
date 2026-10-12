@@ -193,6 +193,7 @@ a:hover {
 .announcement-icon-img {
   width: 16px;
   height: 16px;
+  aspect-ratio: 1 / 1;
   vertical-align: middle;
   display: inline-block;
   margin-right: 0.35rem;
@@ -240,6 +241,7 @@ header {
 .header-logo-img {
   height: 44px;
   width: auto;
+  aspect-ratio: 697 / 141;
   max-width: 100%;
   display: block;
   object-fit: contain;
@@ -426,6 +428,7 @@ header {
 .footer-logo-img {
   height: 40px;
   width: auto;
+  aspect-ratio: 697 / 141;
   max-width: 100%;
   display: block;
   margin-bottom: 0.5rem;
@@ -593,6 +596,7 @@ header {
 .spec-icon-img {
   width: 22px;
   height: 22px;
+  aspect-ratio: 1 / 1;
   object-fit: contain;
   flex-shrink: 0;
   margin-top: 0.1rem;
@@ -1511,6 +1515,7 @@ footer {
 
   .hero {
     padding: 3rem 0 2.5rem 0;
+    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(241, 245, 249, 0.98) 100%);
   }
 
   .hero-cta-group {

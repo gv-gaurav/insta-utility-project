@@ -1,0 +1,6 @@
+# Insta Utility Pre-Production Release Candidate Redirect Map (WEB-118)
+# Maps legacy early-stage screening URLs to approved core launch pages
+
+/open-access-eligibility-screening.html  /renewable-energy-advisory.html  301
+/group-captive-screening-for-ci.html    /renewable-energy-advisory.html  301
+/paid-renewable-power-diagnostic.html   /renewable-energy-advisory.html  301

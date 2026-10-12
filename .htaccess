@@ -1,0 +1,38 @@
+# ==============================================================================
+# INSTA UTILITY PRE-PRODUCTION RELEASE CANDIDATE (.htaccess) - WEB-118
+# Domain: https://www.instautility.com
+# Hardened HTTP/HTTPS, Canonical Domain, Legacy Redirects & Security Headers
+# ==============================================================================
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # 1. 301 Permanent Redirects: Legacy Screening URLs to Core Launch Pages
+    RewriteRule ^open-access-eligibility-screening\.html$ /renewable-energy-advisory.html [R=301,L]
+    RewriteRule ^group-captive-screening-for-ci\.html$ /renewable-energy-advisory.html [R=301,L]
+    RewriteRule ^paid-renewable-power-diagnostic\.html$ /renewable-energy-advisory.html [R=301,L]
+
+    # 2. Canonical HTTPS & WWW Enforcement (Active upon production deployment)
+    # RewriteCond %{HTTPS} off [OR]
+    # RewriteCond %{HTTP_HOST} ^instautility\.com$ [NC]
+    # RewriteRule ^(.*)$ https://www.instautility.com/$1 [R=301,L]
+</IfModule>
+
+# Security Headers
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Browser Caching for Optimized Performance (CWV Hardening)
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType text/css "access plus 1 week"
+    ExpiresByType application/javascript "access plus 1 week"
+</IfModule>
