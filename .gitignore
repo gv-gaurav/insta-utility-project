@@ -17,5 +17,6 @@ test_web114.py
 .DS_Store
 Thumbs.db
 .vscode/
+node_modules/
 
 

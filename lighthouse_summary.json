@@ -1,0 +1,62 @@
+[
+  {
+    "page": "index.html",
+    "perf": 60,
+    "a11y": 92,
+    "bp": 92,
+    "seo": 69,
+    "cls": "0",
+    "lcp": "6.1\u00a0s",
+    "fcp": "2.9\u00a0s",
+    "tbt": "460\u00a0ms",
+    "json_path": "lighthouse_report_index.json"
+  },
+  {
+    "page": "renewable-energy-advisory.html",
+    "perf": 63,
+    "a11y": 92,
+    "bp": 92,
+    "seo": 69,
+    "cls": "0",
+    "lcp": "5.9\u00a0s",
+    "fcp": "2.9\u00a0s",
+    "tbt": "370\u00a0ms",
+    "json_path": "lighthouse_report_renewable.json"
+  },
+  {
+    "page": "carbon-markets-ccts.html",
+    "perf": 63,
+    "a11y": 92,
+    "bp": 92,
+    "seo": 69,
+    "cls": "0",
+    "lcp": "6.0\u00a0s",
+    "fcp": "2.9\u00a0s",
+    "tbt": "350\u00a0ms",
+    "json_path": "lighthouse_report_carbon.json"
+  },
+  {
+    "page": "ghg-mrv-decarbonisation.html",
+    "perf": 64,
+    "a11y": 92,
+    "bp": 92,
+    "seo": 69,
+    "cls": "0.013",
+    "lcp": "5.9\u00a0s",
+    "fcp": "2.9\u00a0s",
+    "tbt": "390\u00a0ms",
+    "json_path": "lighthouse_report_ghg.json"
+  },
+  {
+    "page": "contact.html",
+    "perf": 62,
+    "a11y": 94,
+    "bp": 92,
+    "seo": 69,
+    "cls": "0",
+    "lcp": "5.9\u00a0s",
+    "fcp": "2.9\u00a0s",
+    "tbt": "400\u00a0ms",
+    "json_path": "lighthouse_report_contact.json"
+  }
+]

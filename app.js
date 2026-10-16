@@ -196,11 +196,17 @@ if (GA4_MEASUREMENT_ID) {
   }
 }
 
-// Function to emit utm_captured_on_load to dataLayer
+// Function to emit utm_captured_on_load to dataLayer (strictly single-fire guarded)
+let utmLoadEmitted = false;
 function emitUTMCapturedOnLoad() {
+  if (utmLoadEmitted || window.__utm_captured_on_load_emitted) {
+    return;
+  }
   const utms = getCapturedUTMParams();
   if (Object.keys(utms).length > 0) {
-    window.dataLayer.push(Object.assign({
+    utmLoadEmitted = true;
+    window.__utm_captured_on_load_emitted = true;
+    const payload = Object.assign({
       event: "utm_captured_on_load",
       debug_mode: true,
       campaign_source: utms.utm_source || undefined,
@@ -208,18 +214,18 @@ function emitUTMCapturedOnLoad() {
       campaign_name: utms.utm_campaign || undefined,
       campaign_term: utms.utm_term || undefined,
       campaign_content: utms.utm_content || undefined
-    }, utms));
+    }, utms);
+    window.dataLayer.push(payload);
+    console.log("[UTM Engine] Single-fire utm_captured_on_load emitted to dataLayer (count: 1):", payload);
   }
 }
 
-// Immediately push captured UTM parameters on script execution
-emitUTMCapturedOnLoad();
-
-// Re-emit on DOMContentLoaded & window load to guarantee GTM Window Loaded trigger capture
+// Single-fire listener: execute once when DOM is ready (or immediately if already parsed)
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", emitUTMCapturedOnLoad);
+  document.addEventListener("DOMContentLoaded", emitUTMCapturedOnLoad, { once: true });
+} else {
+  emitUTMCapturedOnLoad();
 }
-window.addEventListener("load", emitUTMCapturedOnLoad);
 
 // Unified Analytics Event Emitter (Dual dataLayer + direct gtag emission for GA4 DebugView transmission)
 function pushAnalyticsEvent(eventName, params) {
